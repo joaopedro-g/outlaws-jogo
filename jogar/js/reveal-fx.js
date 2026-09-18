@@ -19,9 +19,10 @@
   'use strict';
   const SP = root.OutlawsLib.sprite;
 
-  /** Cor de cada raridade (rank 0..5): a escala que todo jogador já conhece. */
-  const RARITY = ['#A7ADB2', '#6CC24A', '#4AA3F0', '#B06CF0', '#F5A623', '#FF4F5E'];
-  const MYTHIC_ALT = '#FFD166'; //  a Lenda alterna vermelho e ouro
+  /* Cor de cada raridade: da tabela de ranks (lib/traits.js), a mesma dos cartazes e do mapa. */
+  const RANKS = root.OutlawsLib.traits.RANKS;
+  const RARITY = RANKS.map((r) => r.rarity[0]);
+  const altOf = (rank) => RANKS[rank]?.rarity[1] || null; //  a Lenda alterna vermelho e ouro
   const W = 360, H = 220; //         tamanho lógico do palco
   const TAU = Math.PI * 2;
 
@@ -222,7 +223,7 @@
 
   function chestScene(spec) {
     const color = RARITY[spec.rarity] || RARITY[0];
-    const alt = spec.rarity === 5 ? MYTHIC_ALT : null;
+    const alt = altOf(spec.rarity);
     const BURST = 1.6, S = 5, cx = W / 2, cy = H / 2 + 22;
     let fx = [], burst = false;
     return {
@@ -263,7 +264,7 @@
     const sa = spriteOf(spec.a), sb = spriteOf(spec.b), born = spec.born ? spriteOf(spec.born) : null;
     const good = spec.outcome === 0, crit = spec.outcome === 2;
     const color = good ? RARITY[spec.rarity] || RARITY[0] : crit ? '#FF3B3B' : '#C9C9C9';
-    const alt = good && spec.rarity === 5 ? MYTHIC_ALT : null;
+    const alt = good ? altOf(spec.rarity) : null;
     const BURST = 2.1, cx = W / 2, cy = H / 2 + 6;
     let fx = [], ashes = [], burst = false;
     return {

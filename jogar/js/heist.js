@@ -280,26 +280,39 @@
     return c;
   }
 
+  /**
+   * O boneco com um contorno de 1 pixel na cor da raridade (34×34: o sprite no
+   * meio). Uma versão por cor — a Lenda tem duas e o desenho alterna.
+   */
   function look(o) {
     if (looks.has(o.id)) return looks.get(o.id);
     const grid = SP.build(o.iso), pal = SP.palette(o.iso);
-    const img = bitmap(SP.W, SP.H, (px) => {
-      for (let y = 0; y < SP.H; y++)
-        for (let x = 0; x < SP.W; x++) {
-          const ch = grid[y][x], i = (y * SP.W + x) * 4;
-          if (ch === '.' || !pal[ch]) continue;
-          [px[i], px[i + 1], px[i + 2]] = pal[ch];
-          px[i + 3] = 255;
-        }
+    const on = (x, y) => x >= 0 && y >= 0 && x < SP.W && y < SP.H && grid[y][x] !== '.' && !!pal[grid[y][x]];
+    const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+    const frames = o.iso.rank.rarity.map((color) => {
+      const rc = hex(color);
+      const img = bitmap(SP.W + 2, SP.H + 2, (px) => {
+        for (let y = -1; y <= SP.H; y++)
+          for (let x = -1; x <= SP.W; x++) {
+            const i = ((y + 1) * (SP.W + 2) + x + 1) * 4;
+            let c = null;
+            if (on(x, y)) c = pal[grid[y][x]];
+            else if (on(x - 1, y) || on(x + 1, y) || on(x, y - 1) || on(x, y + 1)) c = rc;
+            if (!c) continue;
+            [px[i], px[i + 1], px[i + 2]] = c;
+            px[i + 3] = 255;
+          }
+      });
+      const flip = document.createElement('canvas');
+      flip.width = img.width;
+      flip.height = img.height;
+      const f = flip.getContext('2d');
+      f.scale(-1, 1);
+      f.drawImage(img, -img.width, 0);
+      return { img, flip };
     });
-    const flip = document.createElement('canvas');
-    flip.width = SP.W;
-    flip.height = SP.H;
-    const f = flip.getContext('2d');
-    f.scale(-1, 1);
-    f.drawImage(img, -SP.W, 0);
-    looks.set(o.id, { img, flip });
-    return looks.get(o.id);
+    looks.set(o.id, frames);
+    return frames;
   }
 
   /** Ladrilhos da sala: chão, árvores/pedras e armadilhas num desenho só; caixote e baú vão por cima. */
@@ -428,7 +441,8 @@
 
   function drawOutlaw(o, x, y, st) {
     const px = x * CELL, py = y * CELL;
-    const lk = look(o), v = vis.get(o.id);
+    const frames = look(o), v = vis.get(o.id);
+    const lk = frames[frames.length > 1 ? Math.floor(performance.now() / 700) % frames.length : 0];
     const moving = st.working && st.a.state === 'walk' && st.a.stun <= 0;
     const bob = moving ? -Math.abs(Math.sin(v.t * 12)) * 3 : Math.sin(v.t * 2.2);
     let lx = 0, ly = 0;
@@ -442,7 +456,7 @@
     ctx.ellipse(px + CELL / 2, py + CELL - 3, 10, 3.5, 0, 0, Math.PI * 2);
     ctx.fill();
     ctx.globalAlpha = st.working ? 1 : 0.55;
-    ctx.drawImage(st.a && st.a.face < 0 ? lk.flip : lk.img, Math.round(px + lx), Math.round(py - 5 + bob + ly));
+    ctx.drawImage(st.a && st.a.face < 0 ? lk.flip : lk.img, Math.round(px - 1 + lx), Math.round(py - 6 + bob + ly)); // -1: o contorno
     ctx.globalAlpha = 1;
 
     // barra de vida sobre a cabeça

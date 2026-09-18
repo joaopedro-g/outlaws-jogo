@@ -67,6 +67,14 @@
     return left > 0 ? `sorteio em ~${dur(left)}` : 'sorteio saindo…';
   };
 
+  /** Cores da raridade como variáveis de CSS (--rc, e --rc2 pra quem alterna). */
+  const rarityStyle = (rank) => {
+    const [a, b = a] = T.RANKS[rank].rarity;
+    return `--rc:${a};--rc2:${b}`;
+  };
+  const rarityClass = (rank) => `r-${rank}${T.RANKS[rank].rarity.length > 1 ? ' myth' : ''}`;
+  const gem = '<i class="gem" aria-hidden="true"></i>';
+
   function dur(sec) {
     sec = Math.max(0, Math.round(sec));
     const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
@@ -288,9 +296,9 @@
   function revealCard(o, cls = '', i = 0) {
     const { url, iso } = art(o);
     const st = iso.stats;
-    return `<figure class="rv-card r-${o.rank} ${cls}" style="--i:${i}">
+    return `<figure class="rv-card ${rarityClass(o.rank)} ${cls}" style="--i:${i};${rarityStyle(o.rank)}">
       <img src="${url}" alt="Fora-da-lei #${o.id}" width="128" height="128">
-      <figcaption><span class="rv-id">#${o.id}</span><b><i class="gem" aria-hidden="true"></i>${esc(RANK[o.rank])}</b>
+      <figcaption><span class="rv-id">#${o.id}</span><b>${gem}${esc(RANK[o.rank])}</b>
         <small>Pont. ${st.pontaria.toFixed(0)} · Força ${st.forca.toFixed(0)} · Furt. ${st.furtividade.toFixed(0)}<br>Peso ${(o.weight / 10_000).toFixed(2)}×</small>
       </figcaption></figure>`;
   }
@@ -800,11 +808,11 @@
     if (o.status === 1) acts.push(`<button class="btn" data-act="stop" data-id="${o.id}">Encerrar</button>`);
     if (o.status === 2 && o.ransom !== undefined) acts.push(`<button class="btn btn-danger" data-act="ransom" data-id="${o.id}">Resgate · ${fmtB(o.ransom)}</button>`);
 
-    return `<article class="card ${sel ? 'is-sel' : ''} st-${STATUS_KEY[o.status]}">
+    return `<article class="card ${rarityClass(o.rank)} ${sel ? 'is-sel' : ''} st-${STATUS_KEY[o.status]}" style="${rarityStyle(o.rank)}">
       <label class="pick" title="Selecionar"><input type="checkbox" data-act="select" data-id="${o.id}" ${sel ? 'checked' : ''}></label>
       <img src="${url}" alt="Fora-da-lei #${o.id}" width="96" height="96">
       <div class="c-id">#${o.id}</div>
-      <div class="c-rank">${esc(RANK[o.rank])}</div>
+      <div class="c-rank">${gem}${esc(RANK[o.rank])}</div>
       <div class="c-bounty">${bounty} $BOUNTY</div>
       <dl class="c-stats">
         <div><dt>Pont.</dt><dd>${iso.stats.pontaria.toFixed(2)}</dd></div>

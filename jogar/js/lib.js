@@ -203,43 +203,53 @@ const { stream } = require('./rng');
 
 /* ----------------------------------------------------------------- ranks */
 /* A raridade é a recompensa que a Coroa paga pela cabeça dele. Quanto mais
- * famoso o fora-da-lei, mais raro — e mais caro de manter. */
+ * famoso o fora-da-lei, mais raro — e mais caro de manter.
+ * `rarity` é a cor da raridade na tela (borda do cartaz, contorno no mapa, luz
+ * do baú): a escala que todo jogador conhece, cinza → verde → azul → roxo →
+ * laranja, e a Lenda alternando vermelho e ouro. Só visual — não entra no
+ * contrato nem no teste de paridade. */
 const RANKS = [
   {
     id: 0, tier: 'NINGUÉM', bounty: 5,
     drop: 45, weight: 1.0, repairPct: 0.15,
     cloth: ['#7d6a4f', '#9c876a', '#4e4133'],   // estopa crua
     accent: ['#b9a77f', '#d8c8a4'],
+    rarity: ['#A7ADB2'],
   },
   {
     id: 1, tier: 'LADRÃO', bounty: 25,
     drop: 27, weight: 1.5, repairPct: 0.18,
     cloth: ['#6b7a4e', '#889a67', '#414b2f'],   // musgo
     accent: ['#b6a05a', '#d6c079'],
+    rarity: ['#6CC24A'],
   },
   {
     id: 2, tier: 'FORAGIDO', bounty: 100,
     drop: 15, weight: 2.2, repairPct: 0.21,
     cloth: ['#4a7a52', '#679b70', '#2c4a31'],   // verde da mata
     accent: ['#c9a23f', '#e8c163'],
+    rarity: ['#4AA3F0'],
   },
   {
     id: 3, tier: 'PROCURADO', bounty: 500,
     drop: 8, weight: 3.2, repairPct: 0.25,
     cloth: ['#2f6b57', '#468a72', '#1b4032'],   // verde profundo
     accent: ['#d8a93a', '#f2cc66'],
+    rarity: ['#B06CF0'],
   },
   {
     id: 4, tier: 'INIMIGO DA COROA', bounty: 2500,
     drop: 4, weight: 5.0, repairPct: 0.30,
     cloth: ['#3b4a6b', '#55688c', '#232c42'],   // azul da noite
     accent: ['#e2bc46', '#ffe08a'],
+    rarity: ['#F5A623'],
   },
   {
     id: 5, tier: 'LENDA', bounty: 10000,
     drop: 1, weight: 8.0, repairPct: 0.36,
     cloth: ['#5e2233', '#803044', '#36121e'],   // carmesim
     accent: ['#f0c95a', '#fff0b0'],
+    rarity: ['#FF4F5E', '#FFD166'],
   },
 ];
 

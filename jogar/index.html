@@ -129,9 +129,17 @@
     padding: 14px 12px 12px;
     background: #D8C8A2 url("../assets/parchment.png") repeat center / 172px;
     color: var(--ink);
-    box-shadow: 0 10px 24px rgba(0,0,0,.5), inset 0 0 0 1px rgba(43,33,21,.2), inset 0 0 36px rgba(90,68,36,.25);
-    outline: 3px solid transparent; outline-offset: 3px; transition: outline-color .15s;
+    --rc: #A7ADB2; --rc2: var(--rc);
+    box-shadow: 0 10px 24px rgba(0,0,0,.5), 0 0 0 3px var(--rc), 0 0 16px 3px var(--rc), inset 0 0 36px rgba(90,68,36,.25);
+    outline: 3px solid transparent; outline-offset: 6px; transition: outline-color .15s;
   }
+  .card.myth { animation: card-myth 1.4s linear infinite; }
+  @keyframes card-myth {
+    0%, 100% { box-shadow: 0 10px 24px rgba(0,0,0,.5), 0 0 0 3px var(--rc), 0 0 16px 3px var(--rc), inset 0 0 36px rgba(90,68,36,.25); }
+    50% { box-shadow: 0 10px 24px rgba(0,0,0,.5), 0 0 0 3px var(--rc2), 0 0 22px 5px var(--rc2), inset 0 0 36px rgba(90,68,36,.25); }
+  }
+  .gem { display: inline-block; width: 9px; height: 9px; margin: 0 7px 2px 0; transform: rotate(45deg);
+         background: var(--rc); box-shadow: 0 0 0 1px rgba(43,33,21,.6), 0 0 6px var(--rc); vertical-align: middle; }
   .card.is-sel { outline-color: var(--gold); }
   .card.st-capturado img { filter: grayscale(.85) brightness(.8); }
   .pick { position: absolute; top: 8px; left: 8px; }
@@ -223,25 +231,20 @@
   .rv-card.small small { display: none; }
   .rv-card.is-gone { filter: grayscale(1) brightness(.75); opacity: .55; }
   .rv-card.is-gone::after { content: "✕"; position: absolute; inset: 0; display: grid; place-items: center; font: 42px var(--pixel); color: #7A2A1C; }
-  /* raridade: mesma escala da cena (panel/js/reveal-fx.js) */
-  .rv-card { --rc: #A7ADB2; }
-  .rv-card.r-1 { --rc: #6CC24A; } .rv-card.r-2 { --rc: #4AA3F0; } .rv-card.r-3 { --rc: #B06CF0; }
-  .rv-card.r-4 { --rc: #F5A623; } .rv-card.r-5 { --rc: #FF4F5E; }
-  .rv-card .gem { display: inline-block; width: 9px; height: 9px; margin: 0 7px 2px 0; transform: rotate(45deg);
-                  background: var(--rc); box-shadow: 0 0 0 1px rgba(43,33,21,.6), 0 0 6px var(--rc); vertical-align: middle; }
+  /* raridade: --rc/--rc2 vêm da tabela de ranks (lib/traits.js), no estilo de cada cartaz */
   .rv-card.is-new { outline: 3px solid var(--rc); outline-offset: 3px;
                     box-shadow: 0 8px 20px rgba(0,0,0,.5), 0 0 26px 6px var(--rc), inset 0 0 30px rgba(90,68,36,.25);
                     animation: rv-pop .45s cubic-bezier(.2,1.6,.4,1) both; animation-delay: calc(var(--i, 0) * 140ms); }
-  .rv-card.is-new.r-5 { animation: rv-pop .45s cubic-bezier(.2,1.6,.4,1) both, rv-myth 1.4s linear infinite;
+  .rv-card.is-new.myth { animation: rv-pop .45s cubic-bezier(.2,1.6,.4,1) both, rv-myth 1.4s linear infinite;
                         animation-delay: calc(var(--i, 0) * 140ms), 0s; }
   @keyframes rv-pop { from { transform: scale(.55); opacity: 0; } }
   @keyframes rv-myth {
-    0%, 100% { outline-color: #FF4F5E; box-shadow: 0 8px 20px rgba(0,0,0,.5), 0 0 26px 6px #FF4F5E, inset 0 0 30px rgba(90,68,36,.25); }
-    50% { outline-color: #FFD166; box-shadow: 0 8px 20px rgba(0,0,0,.5), 0 0 34px 10px #FFD166, inset 0 0 30px rgba(90,68,36,.25); }
+    0%, 100% { outline-color: var(--rc); box-shadow: 0 8px 20px rgba(0,0,0,.5), 0 0 26px 6px var(--rc), inset 0 0 30px rgba(90,68,36,.25); }
+    50% { outline-color: var(--rc2); box-shadow: 0 8px 20px rgba(0,0,0,.5), 0 0 34px 10px var(--rc2), inset 0 0 30px rgba(90,68,36,.25); }
   }
   .rv-stage { display: block; width: 100%; max-width: 360px; aspect-ratio: 360 / 220; margin: -4px auto 14px; cursor: pointer; image-rendering: pixelated; }
   .rv-lead small { font-size: 12px; }
-  @media (prefers-reduced-motion: reduce) { .rv-card.is-new, .rv-card.is-new.r-5 { animation: none; } }
+  @media (prefers-reduced-motion: reduce) { .rv-card.is-new, .rv-card.is-new.myth, .card.myth { animation: none; } }
   .rv-actions { text-align: center; margin: 18px 0 0; }
 
   footer { padding: 20px; text-align: center; font-size: 12px; color: var(--text-dim); border-top: 1px solid var(--line); }
