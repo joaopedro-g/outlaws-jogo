@@ -26,6 +26,11 @@
     multicall: '0xcA11bde05977b3631167028862bE2a173976CA11',
     faucet: '0x21a10A8bCD4Dee550437B756AA5D27bd8550C07C', //  torneira de $BOUNTY (só testnet)
     ethFaucet: 'https://faucet.testnet.chain.robinhood.com', // ETH de teste pro gás, da Robinhood
+    /* Plano B: o Google dá 0,05 ETH na Ethereum Sepolia (não tem a Robinhood) e a
+     * ponte oficial da Arbitrum leva pra testnet em ~10 min — foi assim que a
+     * carteira de dev ganhou o ETH dela. Endereço da ponte conferido em 18/09/2026. */
+    googleFaucet: 'https://cloud.google.com/application/web3/faucet/ethereum/sepolia',
+    bridge: 'https://portal.arbitrum.io/bridge?sourceChain=sepolia&destinationChain=robinhood-chain-testnet',
   };
   const ABI = root.OutlawsABI;
   const MAX_UINT = (1n << 256n) - 1n;

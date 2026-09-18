@@ -417,6 +417,14 @@
       try { await window.ethereum.request({ method: 'wallet_revokePermissions', params: [{ eth_accounts: {} }] }); } catch {}
       await refresh();
     },
+    async 'copy-address'() {
+      try {
+        await navigator.clipboard.writeText(S.me);
+        toast('Endereço copiado: ' + short(S.me) + '. Cole no faucet.');
+      } catch {
+        prompt('Copie o seu endereço:', S.me);
+      }
+    },
     faucet() {
       return run('Torneira', () => tx('Pegar $BOUNTY de teste', C.faucet, 'claim()', []));
     },
@@ -552,8 +560,22 @@
    * $BOUNTY (a nossa torneira). Some sozinho quando não falta nada, e a
    * torneira fica como uma linha só.
    */
+  /** Os dois jeitos de conseguir ETH de teste, com o endereço à mão pra colar. */
+  function ethWays() {
+    const copy = S.me ? '<button class="btn" data-act="copy-address">Copiar meu endereço</button>' : '';
+    return `<div class="eth-ways">
+      <div><a class="btn btn-gold" href="${C.ethFaucet}" target="_blank" rel="noopener">Faucet da Robinhood</a>
+        <small>ETH direto na testnet.</small></div>
+      <div><a class="btn" href="${C.googleFaucet}" target="_blank" rel="noopener">Faucet do Google</a>
+        <a class="btn" href="${C.bridge}" target="_blank" rel="noopener">Depois, a ponte</a>
+        <small>O Google dá 0,05 ETH na Sepolia (entre com a conta Google); a ponte leva pra Robinhood em ~10 min.</small></div>
+      ${copy}
+    </div>`;
+  }
+
   function renderStart() {
     const box = $('#start'), u = S.user;
+    const open = !!box.querySelector('.more-eth')?.open; // o redesenho a cada leitura não fecha o que a pessoa abriu
     if (S.readOnly && !S.demo) return void (box.hidden = true);
     box.hidden = false;
     const price = S.cfg?.price || 0n;
@@ -572,13 +594,14 @@
 
     if (connected && hasEth && hasBounty) { //   tudo certo: só a torneira, pra quem quiser mais
       box.innerHTML = `<div class="row" style="border:0;padding:0"><div><b>Torneira de teste</b><br><small>${
-        dry ? 'secou: avise no grupo' : 'a cada 24 h, de graça'}</small></div>${tapBtn}</div>`;
+        dry ? 'secou: avise no grupo' : 'a cada 24 h, de graça'}</small></div>${tapBtn}</div>
+        <details class="more-eth" ${open ? 'open' : ''}><summary>Precisa de mais ETH pro gás?</summary>${ethWays()}</details>`;
       return;
     }
     const step = (ok, n, html) => `<li class="${ok ? 'ok' : ''}"><span class="n">${ok ? '✓' : n}</span><div>${html}</div></li>`;
     box.innerHTML = `<h2>Primeiros passos</h2><ol class="steps">
       ${step(connected, 1, connected ? 'Carteira conectada' : 'Conecte o MetaMask. A rede da Robinhood entra sozinha.<br><button class="btn btn-gold" data-act="connect">Conectar MetaMask</button>')}
-      ${step(hasEth, 2, `ETH de teste pro gás (cada ação custa menos de 0,00001).<br><a href="${C.ethFaucet}" target="_blank" rel="noopener">Pegar no faucet da Robinhood</a>`)}
+      ${step(hasEth, 2, `ETH de teste pro gás (cada ação custa menos de 0,00001).${hasEth ? '' : ethWays()}`)}
       ${step(hasBounty, 3, `$BOUNTY pra comprar sacos (1 saco = ${fmtB(price, 0)}).<br>${hasEth ? tapBtn : '<small class="muted">depois do ETH</small>'}`)}
     </ol>`;
   }
