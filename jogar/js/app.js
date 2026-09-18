@@ -384,11 +384,16 @@
     return receipt;
   }
 
-  /** Autoriza o jogo a usar $BOUNTY uma vez, se ainda não tiver saldo aprovado. */
+  /**
+   * Autoriza o jogo a usar exatamente o $BOUNTY desta ação — nunca "ilimitado".
+   * Autorização ilimitada é o padrão dos golpes de drenar carteira: o MetaMask
+   * alerta, e um contrato com defeito levaria o saldo inteiro, não só o valor
+   * da compra. Custa uma confirmação a mais por ação; vale.
+   */
   async function ensureAllowance(amount) {
     if (S.user.allowance >= amount) return;
-    await tx('Autorizar o jogo a usar seu $BOUNTY (uma vez só)', C.bounty, 'approve(address,uint256)', [C.game, Chain.MAX_UINT]);
-    S.user.allowance = Chain.MAX_UINT;
+    await tx(`Autorizar o jogo a usar ${fmtB(amount)} $BOUNTY (só esta ação)`, C.bounty, 'approve(address,uint256)', [C.game, amount]);
+    S.user.allowance = amount;
   }
 
   const byId = (id) => S.user.outlaws.find((o) => o.id === id);
@@ -560,6 +565,8 @@
    * $BOUNTY (a nossa torneira). Some sozinho quando não falta nada, e a
    * torneira fica como uma linha só.
    */
+  const SAFETY = 'Use uma carteira só pra teste. O OUTLAWS nunca pede a sua frase secreta, nem por mensagem.';
+
   /** Os dois jeitos de conseguir ETH de teste, com o endereço à mão pra colar. */
   function ethWays() {
     const copy = S.me ? '<button class="btn" data-act="copy-address">Copiar meu endereço</button>' : '';
@@ -595,11 +602,12 @@
     if (connected && hasEth && hasBounty) { //   tudo certo: só a torneira, pra quem quiser mais
       box.innerHTML = `<div class="row" style="border:0;padding:0"><div><b>Torneira de teste</b><br><small>${
         dry ? 'secou: avise no grupo' : 'a cada 24 h, de graça'}</small></div>${tapBtn}</div>
-        <details class="more-eth" ${open ? 'open' : ''}><summary>Precisa de mais ETH pro gás?</summary>${ethWays()}</details>`;
+        <details class="more-eth" ${open ? 'open' : ''}><summary>Precisa de mais ETH pro gás?</summary>${ethWays()}</details>
+        <p class="safety">${SAFETY}</p>`;
       return;
     }
     const step = (ok, n, html) => `<li class="${ok ? 'ok' : ''}"><span class="n">${ok ? '✓' : n}</span><div>${html}</div></li>`;
-    box.innerHTML = `<h2>Primeiros passos</h2><ol class="steps">
+    box.innerHTML = `<h2>Primeiros passos</h2><p class="safety">${SAFETY}</p><ol class="steps">
       ${step(connected, 1, connected ? 'Carteira conectada' : 'Conecte o MetaMask. A rede da Robinhood entra sozinha.<br><button class="btn btn-gold" data-act="connect">Conectar MetaMask</button>')}
       ${step(hasEth, 2, `ETH de teste pro gás (cada ação custa menos de 0,00001).${hasEth ? '' : ethWays()}`)}
       ${step(hasBounty, 3, `$BOUNTY pra comprar sacos (1 saco = ${fmtB(price, 0)}).<br>${hasEth ? tapBtn : '<small class="muted">depois do ETH</small>'}`)}
@@ -848,7 +856,7 @@
   function renderLog() {
     $('#log').innerHTML = S.log.length
       ? S.log.map((l) => `<li class="log-${l.kind}"><time>${l.at.toLocaleTimeString('pt-BR')}</time> ${esc(l.msg)}${
-        l.hash ? ` <a href="${C.explorer}/tx/${l.hash}" target="_blank" rel="noopener">ver</a>` : ''}</li>`).join('')
+        /^0x[0-9a-fA-F]{64}$/.test(l.hash || '') ? ` <a href="${C.explorer}/tx/${l.hash}" target="_blank" rel="noopener">ver</a>` : ''}</li>`).join('')
       : '<li class="muted">As transações aparecem aqui.</li>';
   }
 
@@ -909,6 +917,12 @@
 
   /* ------------------------------------------------------------ início */
   async function start() {
+    // O GitHub Pages não deixa mandar cabeçalho anti-moldura; então o próprio
+    // painel se recusa a rodar dentro de outra página.
+    if (window.top !== window.self) {
+      document.body.innerHTML = '<p style="padding:24px;font:16px sans-serif;color:#DCE0D2">O OUTLAWS só roda na própria página. <a style="color:#F2CE7E" target="_top" href="' + esc(location.href) + '">Abrir direto</a></p>';
+      return;
+    }
     const watch = params.get('carteira');
     if (S.demo) demoState();
     else if (watch && /^0x[0-9a-fA-F]{40}$/.test(watch)) {

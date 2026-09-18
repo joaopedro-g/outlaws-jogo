@@ -17,9 +17,12 @@
     chainId: 46630,
     chainHex: '0xb626',
     chainName: 'Robinhood Chain Testnet',
-    /* Oficial primeiro. Onde o DNS não resolve o domínio da Robinhood (a rede
-     * do JP), a primeira chamada falha na hora e o painel passa pra thirdweb. */
-    rpcs: ['https://rpc.testnet.chain.robinhood.com/rpc', 'https://46630.rpc.thirdweb.com'],
+    /* Oficial primeiro; depois o publicnode (listado no registro oficial de
+     * redes, CORS liberado, aguentou 50 seguidas); a thirdweb por último, porque
+     * corta em ~30 seguidas. Onde o DNS não resolve o domínio da Robinhood (a
+     * rede do JP), a primeira chamada falha na hora e o painel passa adiante.
+     * Mudou a lista: mude também o connect-src do CSP em panel/index.html. */
+    rpcs: ['https://rpc.testnet.chain.robinhood.com/rpc', 'https://robinhood-sepolia-rpc.publicnode.com', 'https://46630.rpc.thirdweb.com'],
     explorer: 'https://explorer.testnet.chain.robinhood.com',
     bounty: '0xb714EfEa333C292Fd79faaD77eaf8AC64Ca35428',
     game: '0xD1dFCB39D5f264243059BFFd1baa93aeA81122d3',
@@ -214,7 +217,7 @@
           chainId: CFG.chainHex,
           chainName: CFG.chainName,
           nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
-          rpcUrls: CFG.rpcs,
+          rpcUrls: CFG.rpcs.slice(0, 2), // os dois do registro oficial de redes (chainid.network)
           blockExplorerUrls: [CFG.explorer],
         }],
       });
