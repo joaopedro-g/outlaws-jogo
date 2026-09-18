@@ -285,12 +285,12 @@
   /* --------------------------------------------------------- revelação */
   const OUTCOME = ['SUCESSO', 'FALHOU', 'CRÍTICA'];
 
-  function revealCard(o, cls = '') {
+  function revealCard(o, cls = '', i = 0) {
     const { url, iso } = art(o);
     const st = iso.stats;
-    return `<figure class="rv-card ${cls}">
+    return `<figure class="rv-card r-${o.rank} ${cls}" style="--i:${i}">
       <img src="${url}" alt="Fora-da-lei #${o.id}" width="128" height="128">
-      <figcaption><span class="rv-id">#${o.id}</span><b>${esc(RANK[o.rank])}</b>
+      <figcaption><span class="rv-id">#${o.id}</span><b><i class="gem" aria-hidden="true"></i>${esc(RANK[o.rank])}</b>
         <small>Pont. ${st.pontaria.toFixed(0)} · Força ${st.forca.toFixed(0)} · Furt. ${st.furtividade.toFixed(0)}<br>Peso ${(o.weight / 10_000).toFixed(2)}×</small>
       </figcaption></figure>`;
   }
@@ -309,15 +309,18 @@
     return { id, seed, rank: 2, flags: 0, weight: T.deriveWithRank(seed, 2).raw.weightBps };
   }
 
+  const stage = { show: null, onClose: null }; // a cena que está no palco da revelação
+
   async function showReveal(rv) {
     let title, lead, body, bad = false;
+    let got = [];
     if (rv.kind === 'sack') {
-      const got = (await Promise.all(rv.ids.map(outlawById))).filter(Boolean);
+      got = (await Promise.all(rv.ids.map(outlawById))).filter(Boolean);
       title = `SACO #${rv.id} ABERTO`;
       lead = rv.expired
         ? 'O prazo tinha vencido: saiu no piso (Ninguém, stats mínimos).'
         : got.length === 1 ? 'Entrou no bando:' : `Entraram ${got.length} no bando:`;
-      body = got.map((o) => revealCard(o, 'is-new')).join('');
+      body = got.map((o, i) => revealCard(o, 'is-new', i)).join('');
       toast(`Saco #${rv.id}: ${got.map((o) => `#${o.id} ${RANK[o.rank]}`).join(', ')}`, 'ok');
     } else {
       const { a, b } = rv;
@@ -328,7 +331,7 @@
         const born = await outlawById(rv.newId);
         lead = `${names} viraram um ${RANK[rv.rank + 1]}:`;
         body = (a ? revealCard(a, 'is-gone small') : '') + '<span class="rv-op">+</span>' + (b ? revealCard(b, 'is-gone small') : '') +
-          '<span class="rv-op">→</span>' + (born ? revealCard(born, 'is-new') : '');
+          '<span class="rv-op">→</span>' + (born ? revealCard(born, 'is-new', 1) : '');
         if (born) toast(`Fusão #${rv.id}: sucesso → #${born.id} ${RANK[born.rank]}`, 'ok');
       } else if (rv.outcome === 1) {
         lead = a && b ? `O #${b.id} foi consumido. O #${a.id} sobreviveu e voltou livre.` : 'Um foi consumido, o outro voltou livre.';
@@ -340,11 +343,50 @@
         toast(`Fusão #${rv.id}: crítica — perdeu ${names}`, 'erro');
       }
     }
+    // A cena: baú na cor da maior raridade que saiu, ou a fusão com o desfecho.
+    let spec, suspense;
+    if (rv.kind === 'sack') {
+      const best = Math.max(0, ...got.map((o) => o.rank));
+      spec = { kind: 'chest', rarity: best };
+      suspense = `ABRINDO O SACO #${rv.id}…`;
+    } else {
+      const born = rv.outcome === 0 ? await outlawById(rv.newId) : null;
+      spec = {
+        kind: 'fusion', outcome: rv.outcome,
+        a: rv.a ? art(rv.a).iso : null, b: rv.b ? art(rv.b).iso : null,
+        born: born ? art(born).iso : null, rarity: born ? born.rank : rv.rank,
+      };
+      suspense = rv.a && rv.b ? `FUNDINDO #${rv.a.id} + #${rv.b.id}…` : `FUNDINDO…`;
+    }
+    const canAnimate = spec.kind === 'chest' || (spec.a && spec.b && (spec.outcome !== 0 || spec.born));
+
     const dlg = $('#reveal');
-    dlg.innerHTML = `<h3 id="reveal-title" class="rv-title ${bad ? 'bad' : ''}">${esc(title)}</h3><p class="rv-lead">${esc(lead)}</p>
-      <div class="rv-row">${body}</div>
+    dlg.innerHTML = `<h3 id="reveal-title" class="rv-title">${esc(canAnimate ? suspense : title)}</h3>
+      <p class="rv-lead">${canAnimate ? '<small class="muted">toque na cena pra pular</small>' : esc(lead)}</p>
+      ${canAnimate ? '<canvas class="rv-stage" aria-hidden="true"></canvas>' : ''}
+      <div class="rv-row" ${canAnimate ? 'hidden' : ''}>${body}</div>
       <form method="dialog" class="rv-actions"><button class="btn btn-gold">Beleza</button></form>`;
     dlg.showModal();
+    if (!canAnimate) return;
+
+    // Uma cena por vez: a anterior para aqui. E o aviso de "fechou" chega atrasado —
+    // se a janela já reabriu com outra cena, ele não é com esta.
+    stage.show?.stop();
+    if (stage.onClose) dlg.removeEventListener('close', stage.onClose);
+    const show = RevealFX.play($('.rv-stage', dlg), spec);
+    stage.show = show;
+    stage.onClose = () => { if (!dlg.open) show.stop(); };
+    dlg.addEventListener('close', stage.onClose);
+    $('.rv-stage', dlg).addEventListener('click', () => show.skip());
+    await show.revealed;
+    if (!dlg.open) return;
+    const h = $('#reveal-title', dlg);
+    h.textContent = title;
+    h.classList.toggle('bad', bad);
+    $('.rv-lead', dlg).textContent = lead;
+    const row = $('.rv-row', dlg);
+    row.hidden = false;
+    row.classList.add('rv-in');
   }
 
   /* -------------------------------------------------------------- ações */
