@@ -42,10 +42,16 @@
     padding: 10px 20px; background: rgba(11,15,8,.92); backdrop-filter: blur(6px);
     border-bottom: 1px solid var(--line);
   }
-  .brand { display: flex; align-items: center; gap: 10px; margin-right: auto; color: inherit; text-decoration: none; }
+  .brand { display: flex; align-items: center; gap: 10px; color: inherit; text-decoration: none; }
   .brand img { width: 36px; height: 36px; }
   .brand b { font: 13px var(--pixel); letter-spacing: .02em; text-shadow: 2px 2px 0 var(--gold-dim); }
   .brand small { font: 8px var(--pixel); color: var(--text-dim); letter-spacing: .1em; display: block; margin-top: 4px; }
+  .topnav { margin-right: auto; }
+  .topnav a { font: 8px var(--pixel); letter-spacing: .06em; color: var(--text-dim); text-decoration: none; padding: 6px 4px; }
+  .topnav a:hover { color: var(--gold-hi); }
+  #wallet { display: flex; align-items: center; gap: 8px; }
+  #wallet .btn { font-size: 8px; padding: 7px 9px; }
+  .banner a { color: var(--gold-hi); margin-left: 6px; }
   #balances { display: flex; gap: 14px; font-size: 13px; color: var(--text-dim); }
   #balances b { color: var(--text); font-variant-numeric: tabular-nums; }
 
@@ -222,6 +228,9 @@
     <img src="../assets/crest.png" alt="">
     <div><b>OUTLAWS</b><small>PAINEL · ROBINHOOD TESTNET</small></div>
   </a>
+  <nav class="topnav" aria-label="Navegação">
+    <a href="../">← Início</a>
+  </nav>
   <div id="balances"></div>
   <div id="wallet"></div>
 </header>

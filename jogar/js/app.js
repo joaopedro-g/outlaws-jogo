@@ -36,6 +36,21 @@
     demoRoll: 0,
   };
 
+  /* -------------------------------------------------------- carteira */
+  // Quem clicou em Desconectar não é reconectado sozinho ao abrir de novo.
+  const LEFT = 'outlaws:desconectou';
+  const leftOn = (on) => { try { on ? localStorage.setItem(LEFT, '1') : localStorage.removeItem(LEFT); } catch {} };
+  const hasLeft = () => { try { return localStorage.getItem(LEFT) === '1'; } catch { return false; } };
+
+  /** Troca a carteira em uso (null = nenhuma) e apaga o que era da anterior. */
+  function useAccount(a) {
+    S.me = a || null;
+    S.view = S.me;
+    S.readOnly = false;
+    S.user = null;
+    S.selected.clear();
+  }
+
   /* ------------------------------------------------------ formatação */
   const WEI = 10n ** 18n;
   function fmtB(wei, digits = 2) {
@@ -383,15 +398,24 @@
     async connect() {
       if (!Chain.hasWallet()) return toast('Não achei o MetaMask neste navegador.', 'erro');
       try {
-        S.me = await Chain.connect();
-        S.view = S.me;
-        S.readOnly = false;
+        useAccount(await Chain.connect());
+        leftOn(false);
         history.replaceState(null, '', location.pathname);
         toast('Carteira conectada: ' + short(S.me));
+        render();
         await refresh();
       } catch (e) {
         toast('Conexão: ' + Chain.humanError(e), 'erro');
       }
+    },
+    async disconnect() {
+      leftOn(true);
+      useAccount(null);
+      toast('Carteira desconectada.');
+      render();
+      // o MetaMask também esquece a permissão deste site (versão antiga não tem a chamada: tudo bem)
+      try { await window.ethereum.request({ method: 'wallet_revokePermissions', params: [{ eth_accounts: {} }] }); } catch {}
+      await refresh();
     },
     faucet() {
       return run('Torneira', () => tx('Pegar $BOUNTY de teste', C.faucet, 'claim()', []));
@@ -592,16 +616,17 @@
   function renderHeader() {
     const w = $('#wallet');
     if (S.demo) w.innerHTML = '<span class="chip chip-fusao">Demonstração</span>';
-    else if (S.me) w.innerHTML = `<span class="chip chip-livre">${esc(short(S.me))}</span>`;
+    else if (S.me) w.innerHTML = `<span class="chip chip-livre" title="${esc(S.me)}">${esc(short(S.me))}</span>
+      <button class="btn" data-act="disconnect" title="Desconectar a carteira deste site">Desconectar</button>`;
     else w.innerHTML = `<button class="btn btn-gold" data-act="connect">Conectar MetaMask</button>`;
 
     const banner = $('#banner');
     if (S.demo) {
       banner.hidden = false;
-      banner.textContent = 'Demonstração: bonecos de exemplo, nada disto está na rede. Tire o ?demo do endereço pra jogar.';
+      banner.innerHTML = 'Demonstração: bonecos de exemplo, nada disto está na rede. <a href="./">Sair da demonstração e jogar</a>';
     } else if (S.readOnly && S.view) {
       banner.hidden = false;
-      banner.innerHTML = `Vendo a carteira <b>${esc(short(S.view))}</b> só pra leitura. Conecte a sua pra jogar.`;
+      banner.innerHTML = `Vendo a carteira <b>${esc(short(S.view))}</b> só pra leitura. <a href="./">Jogar com a minha</a>`;
     } else banner.hidden = true;
 
     const u = S.user;
@@ -849,10 +874,11 @@
 
   if (Chain.hasWallet()) {
     window.ethereum.on?.('accountsChanged', (acc) => {
-      if (!S.me) return;
-      S.me = acc[0] || null;
-      S.view = S.me;
-      S.selected.clear();
+      if (!S.me || S.readOnly) return; // só segue a carteira que está conectada aqui
+      if (acc[0]?.toLowerCase() === S.me.toLowerCase()) return;
+      useAccount(acc[0]);
+      toast(S.me ? 'Conta trocada no MetaMask: ' + short(S.me) : 'O MetaMask desconectou a carteira.', 'aviso');
+      render();
       refresh();
     });
     window.ethereum.on?.('chainChanged', () => refresh());
@@ -865,7 +891,7 @@
     else if (watch && /^0x[0-9a-fA-F]{40}$/.test(watch)) {
       S.view = watch;
       S.readOnly = true;
-    } else if (Chain.hasWallet()) {
+    } else if (Chain.hasWallet() && !hasLeft()) {
       try {
         const acc = await window.ethereum.request({ method: 'eth_accounts' }); // sem pop-up: só se já autorizou
         if (acc[0]) {
