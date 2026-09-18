@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src https://rpc.testnet.chain.robinhood.com https://robinhood-sepolia-rpc.publicnode.com https://46630.rpc.thirdweb.com; object-src 'none'; base-uri 'none'; form-action 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
-<title>OUTLAWS · Painel</title>
+<title data-i18n="p.title">OUTLAWS · Game</title>
 <link rel="icon" href="../assets/crest.png">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=IM+Fell+English&family=Archivo:wght@400;500;600;700&display=swap">
@@ -49,6 +49,7 @@
   .brand b { font: 13px var(--pixel); letter-spacing: .02em; text-shadow: 2px 2px 0 var(--gold-dim); }
   .brand small { font: 8px var(--pixel); color: var(--text-dim); letter-spacing: .1em; display: block; margin-top: 4px; }
   .topnav { margin-right: auto; }
+  header .langs { margin-right: 4px; }
   .topnav a { font: 8px var(--pixel); letter-spacing: .06em; color: var(--text-dim); text-decoration: none; padding: 6px 4px; }
   .topnav a:hover { color: var(--gold-hi); }
   #wallet { display: flex; align-items: center; gap: 8px; }
@@ -253,75 +254,74 @@
 </head>
 <body>
 <header>
-  <a class="brand" href="../" title="Voltar pra página do OUTLAWS">
+  <a class="brand" href="../" title="Back to the OUTLAWS page" data-i18n-title="p.brand.title">
     <img src="../assets/crest.png" alt="">
-    <div><b>OUTLAWS</b><small>PAINEL · ROBINHOOD TESTNET</small></div>
+    <div><b>OUTLAWS</b><small data-i18n="p.brand.sub">GAME · ROBINHOOD TESTNET</small></div>
   </a>
-  <nav class="topnav" aria-label="Navegação">
-    <a href="../">← Início</a>
+  <nav class="topnav" aria-label="Navigation" data-i18n-aria-label="p.nav">
+    <a href="../" data-i18n="p.nav.home">← Home</a>
   </nav>
+  <div class="langs" data-flags aria-label="Language" data-i18n-aria-label="lang.label"></div>
   <div id="balances"></div>
   <div id="wallet"></div>
 </header>
 <p id="banner" class="banner" hidden></p>
 
 <dl class="stats">
-  <div class="stat"><dt>Caixa livre</dt><dd><span id="stat-pool">…</span><small>$BOUNTY</small></dd></div>
-  <div class="stat"><dt>Paga por época</dt><dd><span id="stat-emission">…</span><small>0,5% do caixa</small></dd></div>
-  <div class="stat"><dt>Peso em serviço</dt><dd id="stat-weight">…</dd></div>
-  <div class="stat"><dt>Época atual</dt><dd id="stat-epoch">…</dd></div>
-  <div class="stat hot"><dt>Próxima época em</dt><dd id="stat-next">…</dd></div>
+  <div class="stat"><dt data-i18n="p.stat.pool">Free vault</dt><dd><span id="stat-pool">…</span><small>$BOUNTY</small></dd></div>
+  <div class="stat"><dt data-i18n="p.stat.emission">Paid per epoch</dt><dd><span id="stat-emission">…</span><small data-i18n="p.stat.emission.note">0.5% of the vault</small></dd></div>
+  <div class="stat"><dt data-i18n="p.stat.weight">Weight on duty</dt><dd id="stat-weight">…</dd></div>
+  <div class="stat"><dt data-i18n="p.stat.epoch">Current epoch</dt><dd id="stat-epoch">…</dd></div>
+  <div class="stat hot"><dt data-i18n="p.stat.next">Next epoch in</dt><dd id="stat-next">…</dd></div>
 </dl>
 
 <main>
   <div class="col">
   <section id="heist" class="heist" aria-labelledby="t-assalto" hidden>
-    <h2 id="t-assalto">O assalto <small>quem está em serviço, trabalhando ao vivo</small></h2>
-    <canvas id="heist-map" width="544" height="416" role="img" aria-label="Mapa do assalto: os foras-da-lei em serviço quebrando caixotes e abrindo baús"></canvas>
-    <p class="note">Furtividade é a velocidade, Força o golpe, Pontaria a flecha. O mapa é a vitrine:
-      quanto cada um rende quem decide é o contrato (peso × caixa), e os baús mostram essa estimativa.
-      O que vale é o "Sacar" do cartaz.</p>
+    <h2 id="t-assalto"><span data-i18n="p.heist.title">The heist</span> <small data-i18n="p.heist.sub">who is on duty, working live</small></h2>
+    <canvas id="heist-map" width="544" height="416" role="img" aria-label="Heist map: outlaws on duty breaking crates and opening chests" data-i18n-aria-label="p.heist.aria"></canvas>
+    <p class="note" data-i18n="p.heist.note">Stealth is speed, Strength is the hit, Aim is the arrow. The map is a showcase: how much each one earns is decided by the contract (weight × vault), and the chests show that estimate. What counts is the "Claim" button on the card.</p>
   </section>
 
   <section aria-labelledby="t-bando">
-    <h2 id="t-bando">Seu bando <small>marque pra agir em vários de uma vez</small></h2>
+    <h2 id="t-bando"><span data-i18n="p.band.title">Your gang</span> <small data-i18n="p.band.sub">tick to act on several at once</small></h2>
     <div id="bar" class="bar" hidden>
       <span id="bar-count"></span>
-      <label for="shift">turno de <input id="shift" type="number" min="1" max="30" value="10"> épocas</label>
-      <button id="b-work" class="btn" data-act="b-work">Trabalhar</button>
-      <button id="b-stop" class="btn" data-act="b-stop">Encerrar</button>
-      <button class="btn" data-act="select-free">Marcar livres</button>
-      <button class="btn" data-act="clear">Limpar</button>
-      <button id="b-claim" class="btn btn-gold" data-act="b-claim">Sacar tudo</button>
+      <label for="shift"><span data-i18n="p.bar.shiftA">shift of</span> <input id="shift" type="number" min="1" max="30" value="10"> <span data-i18n="p.bar.shiftB">epochs</span></label>
+      <button id="b-work" class="btn" data-act="b-work" data-i18n="p.bar.work">Work</button>
+      <button id="b-stop" class="btn" data-act="b-stop" data-i18n="p.bar.stop">End shift</button>
+      <button class="btn" data-act="select-free" data-i18n="p.bar.selectFree">Select free</button>
+      <button class="btn" data-act="clear" data-i18n="p.bar.clear">Clear</button>
+      <button id="b-claim" class="btn btn-gold" data-act="b-claim">Claim all</button>
     </div>
     <div id="band"></div>
   </section>
   </div>
 
   <aside>
-    <section id="start" class="panel start" aria-label="Primeiros passos" hidden></section>
+    <section id="start" class="panel start" aria-label="First steps" data-i18n-aria-label="p.start.aria" hidden></section>
 
     <section class="panel" aria-labelledby="t-taverna">
-      <h2 id="t-taverna">Taverna</h2>
-      <p>Cada saco é um fora-da-lei sorteado. O sorteio sai uns 40 segundos depois da compra, e você abre em até ~50 minutos.</p>
+      <h2 id="t-taverna" data-i18n="p.tavern.title">Tavern</h2>
+      <p data-i18n="p.tavern.desc">Each bag is a random outlaw. The draw comes out about 40 seconds after you buy, and you have up to ~50 minutes to open it.</p>
       <div class="buyline">
         <div class="stepper">
-          <button data-act="qty-" aria-label="Menos um saco">−</button><span id="qty">1</span><button data-act="qty+" aria-label="Mais um saco">+</button>
+          <button data-act="qty-" aria-label="One bag less" data-i18n-aria-label="p.tavern.less">−</button><span id="qty">1</span><button data-act="qty+" aria-label="One bag more" data-i18n-aria-label="p.tavern.more">+</button>
         </div>
         <div class="total"><b id="price">…</b> $BOUNTY</div>
       </div>
-      <button id="buy" class="btn btn-gold" data-act="buy">Comprar</button>
-      <p id="approve-note" class="note" hidden>O MetaMask pede duas confirmações: autorizar o valor exato desta compra e a compra em si. Nunca aprove "ilimitado".</p>
+      <button id="buy" class="btn btn-gold" data-act="buy" data-i18n="p.tavern.buy">Buy</button>
+      <p id="approve-note" class="note" hidden data-i18n="p.tavern.approve">MetaMask asks for two confirmations: approving the exact amount of this purchase, and the purchase itself. Never approve "unlimited".</p>
       <div id="sacks" style="margin-top:12px"></div>
     </section>
 
     <section class="panel" aria-labelledby="t-fusao">
-      <h2 id="t-fusao">Fusão</h2>
+      <h2 id="t-fusao" data-i18n="p.fusion.title">Fusion</h2>
       <div id="fusion"></div>
     </section>
 
     <section class="panel" aria-labelledby="t-registro">
-      <h2 id="t-registro">Registro</h2>
+      <h2 id="t-registro" data-i18n="p.log.title">Log</h2>
       <ul id="log"></ul>
     </section>
   </aside>
@@ -330,13 +330,14 @@
 <dialog id="reveal" class="reveal" aria-labelledby="reveal-title"></dialog>
 
 <footer>
-  Contratos com código verificado:
+  <span data-i18n="p.footer">Contracts with verified code:</span>
   <a href="https://explorer.testnet.chain.robinhood.com/address/0xD1dFCB39D5f264243059BFFd1baa93aeA81122d3" target="_blank" rel="noopener">OUTLAWS</a>
   <a href="https://explorer.testnet.chain.robinhood.com/address/0xb714EfEa333C292Fd79faaD77eaf8AC64Ca35428" target="_blank" rel="noopener">$BOUNTY</a>
 </footer>
 
 <script src="js/abi.js"></script>
 <script src="js/lib.js"></script>
+<script src="js/i18n.js"></script>
 <script src="js/chain.js"></script>
 <script src="js/heist.js"></script>
 <script src="js/reveal-fx.js"></script>

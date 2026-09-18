@@ -36,6 +36,8 @@
   const RANGED = new Set(['bow', 'crossbow', 'both']);
   const HIT_EVERY = 0.6, ARROW_TIME = 0.2, TRAP_STUN = 0.9, CLEAR_PAUSE = 1.6;
   const PIXEL = '"Press Start 2P", monospace';
+  const t = (k, v) => root.I18N.t(k, v);
+  const roomName = (sim) => t('h.room', { terrain: t('terrain.' + sim.room.m.terrain.id).toUpperCase(), n: sim.roomNo + 1 });
 
   const seedOf = (text) => '0x' + [...sha256(new TextEncoder().encode(text))].map((b) => b.toString(16).padStart(2, '0')).join('');
 
@@ -261,7 +263,7 @@
   const vis = new Map(); //                      id -> { t, swing } (só animação)
   let fx = [], shake = new Map(), born = new Map();
 
-  const fmt = (n) => n.toLocaleString('pt-BR', { maximumFractionDigits: n < 10 ? 2 : n < 100 ? 1 : 0 });
+  const fmt = (n) => n.toLocaleString(root.I18N.locale(), { maximumFractionDigits: n < 10 ? 2 : n < 100 ? 1 : 0 });
   const rand = (a, b) => a + Math.random() * (b - a); // só efeito visual, nunca na simulação
   function dur(sec) {
     sec = Math.max(0, Math.round(sec));
@@ -348,7 +350,7 @@
       shake = new Map();
       born = new Map();
       fx = fx.filter((f) => f.kind === 'text');
-      fx.push({ kind: 'banner', text: `${sim.room.m.terrain.name.toUpperCase()} · SALA ${sim.roomNo + 1}`, age: 0, life: 1.8 });
+      fx.push({ kind: 'banner', text: roomName(sim), age: 0, life: 1.8 });
     } else if (type === 'arrow') {
       fx.push({
         kind: 'arrow', age: 0, life: ARROW_TIME,
@@ -370,9 +372,9 @@
       burst(t.x, t.y, 'coin', 14);
       say(t.x, t.y, '+' + fmt(perSec(ev.a.id) * ev.elapsed), '#F2CE7E', true);
     } else if (type === 'miss') {
-      say(t.x, t.y, 'errou', '#949D86');
+      say(t.x, t.y, root.I18N.t('h.miss'), '#949D86');
     } else if (type === 'trap') {
-      say(ev.a.cx, ev.a.cy, 'ai!', '#F2A493');
+      say(ev.a.cx, ev.a.cy, root.I18N.t('h.ouch'), '#F2A493');
     }
   }
 
@@ -467,7 +469,7 @@
     ctx.fillStyle = life > 0.5 ? '#6E9A42' : life > 0.2 ? '#C99A2E' : '#B4462F';
     ctx.fillRect(bx, by, Math.max(1, Math.round(bw * life)), 3);
 
-    if (!st.working) text('em ' + dur(data.genesis + o.shiftStart * data.epochLength - Date.now() / 1000), px + CELL / 2, py - 21, '#F2CE7E', 7, 'center');
+    if (!st.working) text(t('h.in', { t: dur(data.genesis + o.shiftStart * data.epochLength - Date.now() / 1000) }), px + CELL / 2, py - 21, '#F2CE7E', 7, 'center');
     if (st.a && st.a.stun > 0) text('*', px + CELL / 2 + Math.sin(v.t * 14) * 6, py - 20, '#FFF6D0', 8, 'center');
   }
 
@@ -535,16 +537,16 @@
     // letreiro de cima
     ctx.fillStyle = 'rgba(11,15,8,.72)';
     ctx.fillRect(0, 0, cv.width, 22);
-    text(`${sim.room.m.terrain.name.toUpperCase()} · SALA ${sim.roomNo + 1}`, 8, 7, '#DCE0D2', 8);
+    text(roomName(sim), 8, 7, '#DCE0D2', 8);
     if (crew.length) {
       const total = crew.reduce((s, o) => s + o.perEpoch, 0);
-      text(`~${fmt(total)} $BOUNTY / ÉPOCA`, cv.width - 8, 7, '#F2CE7E', 8, 'right');
+      text(t('h.perEpoch', { v: fmt(total) }), cv.width - 8, 7, '#F2CE7E', 8, 'right');
     }
     if (!crew.length && !waiting.length) {
       ctx.fillStyle = 'rgba(11,15,8,.66)';
       ctx.fillRect(0, 0, cv.width, cv.height);
-      text('NINGUÉM EM SERVIÇO', cv.width / 2, cv.height / 2 - 16, '#F2CE7E', 10, 'center');
-      text('Mande alguém trabalhar pra ver o assalto.', cv.width / 2, cv.height / 2 + 6, '#DCE0D2', 7, 'center');
+      text(t('h.none'), cv.width / 2, cv.height / 2 - 16, '#F2CE7E', 10, 'center');
+      text(t('h.noneSub'), cv.width / 2, cv.height / 2 + 6, '#DCE0D2', 7, 'center');
     }
   }
 

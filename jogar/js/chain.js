@@ -72,7 +72,7 @@
       }
       return j.result;
     }
-    throw new Error('A rede não respondeu. Espere uns segundos e tente de novo.');
+    throw new Error(tr('e.noNetwork'));
   }
 
   /* ----------------------------------------------------------- abi */
@@ -110,39 +110,23 @@
   const asHex32 = (w) => '0x' + w.toString(16).padStart(64, '0');
 
   /* ------------------------------------------------------ erros */
-  const MSG = {
-    'CedoDemais()': 'Ainda não: o sorteio sai uns 40 s depois da compra. O botão acende sozinho quando sair.',
-    'SacoInexistente()': 'Esse saco não existe ou já foi aberto.',
-    'QuantidadeInvalida()': 'Quantidade inválida.',
-    'FusaoInvalida()': 'Fusão inválida: precisam ser dois diferentes, seus, do mesmo rank e abaixo de Lenda.',
-    'FusaoInexistente()': 'Essa fusão não existe ou já foi revelada.',
-    'EmServico(uint256)': 'O #{id} está em serviço.',
-    'ForaDeServico(uint256)': 'O #{id} não está em serviço.',
-    'NaFusao(uint256)': 'O #{id} está numa fusão.',
-    'VidaInsuficiente(uint256)': 'O #{id} não tem vida pra isso (capturado, ou turno maior que a vida).',
-    'Capturado(uint256)': 'O #{id} está capturado: só sai pagando o resgate.',
-    'NaoCapturado(uint256)': 'O #{id} não está capturado.',
-    'NaoAutorizado(uint256)': 'O #{id} não é seu.',
-    'ERC20InsufficientBalance(address,uint256,uint256)': 'Saldo de $BOUNTY insuficiente.',
-    'ERC20InsufficientAllowance(address,uint256,uint256)': 'Falta autorizar o jogo a usar seu $BOUNTY.',
-    'ERC721NonexistentToken(uint256)': 'Esse fora-da-lei não existe mais.',
-    'AindaNao(uint256)': 'Você já pegou $BOUNTY de teste: a torneira libera de novo 24 h depois do último saque.',
-    'TorneiraSeca()': 'A torneira secou. Avise no grupo dos testers pra reabastecer.',
-  };
+  /* As frases de cada erro do contrato estão no dicionário (i18n.js), com a
+   * assinatura do erro como chave: 'e.CedoDemais()', 'e.EmServico(uint256)'… */
+  const tr = (k, v) => (root.I18N ? root.I18N.t(k, v) : k);
 
   function explain(data) {
     if (typeof data !== 'string' || data.length < 10) return null;
     const sig = ABI.errors[data.slice(0, 10).toLowerCase()];
     if (!sig) return null;
     const params = words('0x' + data.slice(10));
-    const msg = MSG[sig] || sig;
-    return msg.replace('{id}', params[0] !== undefined ? params[0].toString() : '?');
+    const msg = tr('e.' + sig, { id: params[0] !== undefined ? params[0].toString() : '?' });
+    return msg === 'e.' + sig ? sig : msg; // sem frase no dicionário: mostra o nome do erro
   }
 
   /** Transforma qualquer erro de RPC ou carteira em frase legível. */
   function humanError(e) {
-    if (!e) return 'Erro desconhecido.';
-    if (e.code === 4001 || /user (rejected|denied)/i.test(e.message || '')) return 'Você recusou no MetaMask.';
+    if (!e) return tr('e.unknown');
+    if (e.code === 4001 || /user (rejected|denied)/i.test(e.message || '')) return tr('e.rejected');
     const data = e.data?.data || e.data?.originalError?.data || e.data;
     return explain(typeof data === 'string' ? data : null) || e.message || String(e);
   }
@@ -267,12 +251,12 @@
     for (let i = 0; i < 120; i++) {
       const r = await rpc('eth_getTransactionReceipt', [hash]);
       if (r) {
-        if (r.status !== '0x1') throw new Error('A transação foi pra rede mas falhou.');
+        if (r.status !== '0x1') throw new Error(tr('e.txFailed'));
         return r;
       }
       await new Promise((ok) => setTimeout(ok, 1500));
     }
-    throw new Error('A rede demorou demais pra confirmar. Confira no explorador.');
+    throw new Error(tr('e.slow'));
   }
 
   root.Chain = {

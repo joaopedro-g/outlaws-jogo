@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>OUTLAWS · Não encontrado</title>
+<title>OUTLAWS · Not found</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Archivo:wght@400;600&display=swap">
 <style>
   :root { --ground: #0B0F08; --gold: #D9A441; --gold-hi: #F2CE7E; --text: #DCE0D2; --text-dim: #949D86; }
@@ -19,9 +19,9 @@
 </head>
 <body>
 <main>
-  <h1>Essa trilha não leva a lugar nenhum</h1>
-  <p>O endereço não existe. Volte pra estrada:</p>
-  <a id="play" href="/jogar/">Jogar</a><a id="home" class="alt" href="/">Início</a>
+  <h1 id="h">This trail leads nowhere</h1>
+  <p id="p">This address doesn't exist. Back to the road:</p>
+  <a id="play" href="/jogar/">Play</a><a id="home" class="alt" href="/">Home</a>
 </main>
 <script>
   // No GitHub Pages o site mora em /<repositório>/; na Vercel, na raiz.
@@ -29,6 +29,22 @@
   const base = location.hostname.endsWith('.github.io') && seg ? '/' + seg + '/' : '/';
   document.getElementById('home').href = base;
   document.getElementById('play').href = base + 'jogar/';
+  // o idioma que a pessoa escolheu no jogo (mesma chave do i18n.js)
+  const T = {
+    pt: ['Essa trilha não leva a lugar nenhum', 'O endereço não existe. Volte pra estrada:', 'Jogar', 'Início', 'pt-BR'],
+    es: ['Este sendero no lleva a ninguna parte', 'Esta dirección no existe. Vuelve al camino:', 'Jugar', 'Inicio', 'es'],
+    fil: ['Walang patutunguhan ang landas na ito', 'Walang ganitong address. Bumalik sa daan:', 'Maglaro', 'Simula', 'fil'],
+  };
+  let l = null;
+  try { l = localStorage.getItem('outlaws:lang'); } catch {}
+  if (T[l]) {
+    const [h, p, play, home, html] = T[l];
+    document.getElementById('h').textContent = h;
+    document.getElementById('p').textContent = p;
+    document.getElementById('play').textContent = play;
+    document.getElementById('home').textContent = home;
+    document.documentElement.lang = html;
+  }
 </script>
 </body>
 </html>
