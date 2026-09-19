@@ -450,14 +450,26 @@
     S.user.allowance = amount;
   }
 
+  /** Escolha da carteira: uma linha por extensão instalada, com ícone e nome. */
+  function pickWallet() {
+    const dlg = $('#wallets');
+    dlg.innerHTML = `<h3>${esc(t('p.wallet.pick'))}</h3><p class="muted">${esc(t('p.wallet.pick.sub'))}</p>
+      <ul class="wlist">${Chain.wallets().map((w) => `<li><button class="btn" data-act="use-wallet" data-rdns="${esc(w.info.rdns)}">
+        ${w.info.icon ? `<img src="${esc(w.info.icon)}" alt="" width="28" height="28">` : ''}<span>${esc(w.info.name)}</span></button></li>`).join('')}</ul>
+      <button class="btn" data-act="close-wallets">${esc(t('p.wallet.cancel'))}</button>`;
+    dlg.showModal();
+  }
+
   const byId = (id) => S.user.outlaws.find((o) => o.id === id);
   const selectedOutlaws = () => [...S.selected].map(byId).filter(Boolean);
 
   const actions = {
-    async connect() {
+    async connect(rdns) {
       if (!Chain.hasWallet()) return toast(t('p.noWallet'), 'erro');
+      // mais de uma carteira instalada: o jogador escolhe qual conecta
+      if (!rdns && !Chain.current()) return pickWallet();
       try {
-        useAccount(await Chain.connect());
+        useAccount(await Chain.connect(rdns));
         leftOn(false);
         history.replaceState(null, '', location.pathname);
         toast(t('p.connected', { a: short(S.me) }));
@@ -472,8 +484,7 @@
       useAccount(null);
       toast(t('p.disconnected'));
       render();
-      // o MetaMask também esquece a permissão deste site (versão antiga não tem a chamada: tudo bem)
-      try { await window.ethereum.request({ method: 'wallet_revokePermissions', params: [{ eth_accounts: {} }] }); } catch {}
+      await Chain.forget(); //                    a carteira também esquece a permissão deste site
       await refresh();
     },
     async 'copy-address'() {
@@ -999,6 +1010,8 @@
       renderFusion();
       return;
     }
+    if (act === 'use-wallet') { $('#wallets').close(); return actions.connect(b.dataset.rdns); }
+    if (act === 'close-wallets') return $('#wallets').close();
     if (act === 'b-work') return actions.work([...S.selected]);
     if (act === 'b-stop') return actions.stop([...S.selected]);
     if (act === 'b-claim') return actions.claim(S.user.outlaws.map((o) => o.id));
@@ -1016,7 +1029,7 @@
   });
 
   if (Chain.hasWallet()) {
-    window.ethereum.on?.('accountsChanged', (acc) => {
+    Chain.onWallet('accountsChanged', (acc) => {
       if (!S.me || S.readOnly) return; // só segue a carteira que está conectada aqui
       if (acc[0]?.toLowerCase() === S.me.toLowerCase()) return;
       useAccount(acc[0]);
@@ -1024,7 +1037,7 @@
       render();
       refresh();
     });
-    window.ethereum.on?.('chainChanged', () => refresh());
+    Chain.onWallet('chainChanged', () => refresh());
   }
 
   /* ------------------------------------------------------------ início */
@@ -1042,7 +1055,7 @@
       S.readOnly = true;
     } else if (Chain.hasWallet() && !hasLeft()) {
       try {
-        const acc = await window.ethereum.request({ method: 'eth_accounts' }); // sem pop-up: só se já autorizou
+        const acc = await Chain.accounts(); //      sem pop-up: só se já autorizou
         if (acc[0]) {
           S.me = acc[0];
           S.view = acc[0];

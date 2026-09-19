@@ -118,6 +118,15 @@
     font: 11px var(--pixel);
   }
 
+  /* ------------------------------------------------- escolha da carteira */
+  .wallets { background: var(--surface); color: var(--text); border: 1px solid var(--line); padding: 20px; min-width: 288px; }
+  .wallets::backdrop { background: rgba(0,0,0,.65); }
+  .wallets h3 { font: 11px var(--pixel); color: var(--gold); margin: 0 0 6px; line-height: 1.6; }
+  .wallets p { font-size: 13px; margin: 0; }
+  .wlist { list-style: none; padding: 0; margin: 14px 0; display: grid; gap: 8px; }
+  .wlist .btn { width: 100%; display: flex; align-items: center; gap: 10px; justify-content: flex-start; }
+  .wlist img { width: 28px; height: 28px; image-rendering: auto; }
+
   /* -------------------------------------------------------- assalto */
   .col { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
   .heist canvas {
@@ -335,6 +344,7 @@
 </main>
 
 <dialog id="reveal" class="reveal" aria-labelledby="reveal-title"></dialog>
+<dialog id="wallets" class="wallets"></dialog>
 
 <footer>
   <span data-i18n="p.footer">Contracts with verified code:</span>

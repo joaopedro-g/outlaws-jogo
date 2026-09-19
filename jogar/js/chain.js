@@ -5,7 +5,8 @@
  * vem primeiro (CORS liberado e sem limite apertado); a thirdweb é a reserva —
  * resolve em qualquer DNS, mas corta em ~30 chamadas seguidas. Tudo que dá pra
  * juntar vai numa chamada só pelo Multicall3.
- * Escrita: pelo MetaMask. Toda transação é SIMULADA antes — se for reverter,
+ * Escrita: pela carteira do navegador (MetaMask, Rabby, qualquer uma que se
+ * anuncie pelo EIP-6963). Toda transação é SIMULADA antes — se for reverter,
  * o motivo aparece em português e a assinatura nem é pedida.
  * Seletores: gerados do compilador (abi.js), nunca digitados à mão — exceto os
  * do Multicall3, que não é nosso (conferidos no bytecode da testnet).
@@ -185,8 +186,84 @@
   const ethBalance = async (a) => BigInt(await rpc('eth_getBalance', [a, 'latest']));
 
   /* ------------------------------------------------------ carteira */
-  const wallet = () => root.ethereum;
-  const hasWallet = () => !!root.ethereum;
+  /**
+   * Qualquer carteira do navegador, não só a MetaMask. Pelo EIP-6963 cada
+   * extensão instalada se anuncia com nome, ícone e um identificador (rdns);
+   * o jogador escolhe qual usar e a escolha fica salva. Carteira antiga, que
+   * não se anuncia, ainda entra pelo window.ethereum.
+   */
+  const announced = new Map(); //                rdns -> { info, provider }
+  let chosen = null;
+  const PICKED = 'outlaws:wallet';
+
+  root.addEventListener('eip6963:announceProvider', (e) => {
+    const d = e.detail;
+    if (d && d.info && d.provider) announced.set(d.info.rdns, { info: d.info, provider: d.provider });
+  });
+  root.dispatchEvent(new Event('eip6963:requestProvider'));
+
+  /** Nome de uma extensão antiga, que só aparece como window.ethereum. */
+  function legacyName(p) {
+    if (p.isRabby) return 'Rabby';
+    if (p.isMetaMask) return 'MetaMask';
+    if (p.isCoinbaseWallet) return 'Coinbase Wallet';
+    if (p.isTrust) return 'Trust';
+    return tr('p.wallet.browser');
+  }
+
+  /** As carteiras achadas neste navegador. */
+  function wallets() {
+    const list = [...announced.values()];
+    if (!list.length && root.ethereum) {
+      list.push({ info: { rdns: 'injected', name: legacyName(root.ethereum), icon: '' }, provider: root.ethereum });
+    }
+    return list;
+  }
+
+  /** Escolhe pelo rdns (ou a única que existir); devolve a escolhida. */
+  function use(rdns) {
+    const list = wallets();
+    chosen = list.find((w) => w.info.rdns === rdns) || (list.length === 1 ? list[0] : chosen);
+    if (chosen) { try { localStorage.setItem(PICKED, chosen.info.rdns); } catch {} }
+    return chosen;
+  }
+
+  /** A carteira em uso: a escolhida, a lembrada do último acesso, ou a única. */
+  function current() {
+    if (chosen) return chosen;
+    let saved = null;
+    try { saved = localStorage.getItem(PICKED); } catch {}
+    const list = wallets();
+    return (saved && list.find((w) => w.info.rdns === saved)) || (list.length === 1 ? list[0] : null);
+  }
+
+  const wallet = () => {
+    const w = current();
+    if (!w) throw new Error(tr('p.noWallet'));
+    return w.provider;
+  };
+  const hasWallet = () => wallets().length > 0;
+
+  /** Eventos da carteira em uso (troca de conta, troca de rede). */
+  function onWallet(event, fn) {
+    const w = current();
+    w && w.provider.on && w.provider.on(event, fn);
+  }
+
+  /** Contas já autorizadas, sem abrir pop-up. */
+  async function accounts() {
+    const w = current();
+    if (!w) return [];
+    try { return await w.provider.request({ method: 'eth_accounts' }); } catch { return []; }
+  }
+
+  /** Tira a permissão deste site (carteira antiga não tem a chamada: tudo bem). */
+  async function forget() {
+    const w = current();
+    chosen = null;
+    try { localStorage.removeItem(PICKED); } catch {}
+    try { await w.provider.request({ method: 'wallet_revokePermissions', params: [{ eth_accounts: {} }] }); } catch {}
+  }
 
   async function ensureChain() {
     const id = await wallet().request({ method: 'eth_chainId' });
@@ -208,7 +285,9 @@
     }
   }
 
-  async function connect() {
+  async function connect(rdns) {
+    if (rdns) use(rdns);
+    else if (!current()) use(); //                 uma só instalada: essa mesmo
     const [a] = await wallet().request({ method: 'eth_requestAccounts' });
     await ensureChain();
     return a;
@@ -261,6 +340,7 @@
 
   root.Chain = {
     CFG, MAX_UINT, rpc, encode, words, asAddr, asHex32, call, calls, contractBlock, ethBalance,
-    hasWallet, connect, ensureChain, send, waitReceipt, logsOf, humanError,
+    hasWallet, wallets, use, current, onWallet, accounts, forget,
+    connect, ensureChain, send, waitReceipt, logsOf, humanError,
   };
 })(window);
