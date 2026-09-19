@@ -460,24 +460,115 @@
     dlg.showModal();
   }
 
+  /* ---------------------------------------------------------- ranking */
+  /**
+   * O ranking sai só da rede, sem servidor: todo boneco que existe, quem é o
+   * dono e quanto ele pesa, somados por carteira. São 3 leituras por boneco,
+   * todas em lote pelo Multicall; o resultado vale um minuto e só é buscado
+   * quando alguém abre a aba.
+   */
+  async function loadBoard() {
+    const [[total]] = await Chain.calls([[C.game, 'totalSupply()']]);
+    const n = Math.min(Number(total), 3000); //   teto de segurança na leitura
+    const idx = [...Array(n).keys()];
+    const ids = (await Chain.calls(idx.map((i) => [C.game, 'tokenByIndex(uint256)', [i]]), { partial: true }))
+      .map((w) => (w ? Number(w[0]) : 0)).filter(Boolean);
+    const owners = await Chain.calls(ids.map((id) => [C.game, 'ownerOf(uint256)', [id]]), { partial: true });
+    const outs = await Chain.calls(ids.map((id) => [C.game, 'outlaw(uint256)', [id]]), { partial: true });
+
+    const by = new Map();
+    ids.forEach((id, i) => {
+      const ow = owners[i], w = outs[i];
+      if (!ow || !w) return;
+      const who = Chain.asAddr(ow[0]);
+      const o = asOutlaw(id, w);
+      const g = by.get(who) || { who, n: 0, weight: 0, duty: 0, best: 0, bounty: 0 };
+      g.n++;
+      g.weight += o.weight / 10_000;
+      if (o.status === 1) g.duty++;
+      if (o.rank > g.best) g.best = o.rank;
+      g.bounty += T.RANKS[o.rank].bounty;
+      by.set(who, g);
+    });
+    const list = [...by.values()].sort((a, b) => b.weight - a.weight || b.n - a.n);
+    list.forEach((g, i) => (g.pos = i + 1));
+    S.board = { list, total: Number(total), at: Date.now() };
+  }
+
+  /** Pede o ranking quando a aba abre (ou quando o dado já envelheceu). */
+  function wantBoard(force) {
+    if (S.demo || S.boardBusy) return;
+    if (!force && S.board && Date.now() - S.board.at < 60_000) return;
+    S.boardBusy = true;
+    renderBoard();
+    loadBoard()
+      .catch((e) => toast(t('p.board.err', { e: Chain.humanError(e) }), 'erro'))
+      .finally(() => { S.boardBusy = false; renderBoard(); });
+  }
+
+  function renderBoard() {
+    const box = $('#board');
+    if (!box) return;
+    if (S.demo) return void (box.innerHTML = `<p class="muted">${esc(t('p.board.demo'))}</p>`);
+    if (!S.board) return void (box.innerHTML = `<p class="muted">${esc(t(S.boardBusy ? 'p.board.loading' : 'p.board.empty'))}</p>`);
+    const { list, total } = S.board;
+    const me = S.view && list.find((g) => g.who.toLowerCase() === S.view.toLowerCase());
+    const top = list.slice(0, 25);
+    if (me && !top.includes(me)) top.push(me); //  a sua linha aparece mesmo fora do topo
+    const row = (g) => `<tr class="${me === g ? 'is-me' : ''}" style="${rarityStyle(g.best)}">
+      <td class="pos">${g.pos}</td>
+      <td class="who">${esc(short(g.who))}${me === g ? ` <span class="tag">${esc(t('p.board.you'))}</span>` : ''}</td>
+      <td>${g.n}</td>
+      <td>${dec(g.weight)}×</td>
+      <td>${g.duty}</td>
+      <td class="best"><i class="gem"></i>${esc(RANK[g.best])}</td>
+    </tr>`;
+    box.innerHTML = `<p class="muted board-sub">${esc(t('p.board.sub', { n: list.length, o: total }))}
+        ${S.boardBusy ? esc(t('p.board.loading')) : `<button class="btn" data-act="board-refresh">${esc(t('p.board.refresh'))}</button>`}</p>
+      <div class="board-scroll"><table class="board">
+        <thead><tr><th>#</th><th>${esc(t('p.board.wallet'))}</th><th>${esc(t('p.board.outlaws'))}</th>
+          <th>${esc(t('p.board.weight'))}</th><th>${esc(t('p.board.duty'))}</th><th>${esc(t('p.board.best'))}</th></tr></thead>
+        <tbody>${top.map(row).join('')}</tbody>
+      </table></div>`;
+  }
+
   /** Abas de baixo: trocam o que aparece no meio do HUD. */
   function showTab(name) {
     S.tab = name;
     try { localStorage.setItem('outlaws:tab', name); } catch {}
     for (const el of document.querySelectorAll('.col-main .tab')) el.hidden = el.id !== 'tab-' + name;
     for (const el of document.querySelectorAll('.tab-btn')) el.setAttribute('aria-selected', String(el.dataset.tab === name));
+    if (name === 'ranking') wantBoard();
   }
 
   const byId = (id) => S.user.outlaws.find((o) => o.id === id);
   const selectedOutlaws = () => [...S.selected].map(byId).filter(Boolean);
 
   const actions = {
+    /**
+     * A carteira pode demorar ou nem abrir: se a janela estiver em segundo
+     * plano, a extensão às vezes engole o pedido e fica esperando. Então: um
+     * pedido de cada vez, aviso quando demora e o botão volta sozinho em vez
+     * de ficar morto até o F5.
+     */
     async connect(rdns) {
+      if (S.connecting) return toast(t('p.conn.waiting'), 'aviso');
+      Chain.rediscover(); //                     extensão que entrou depois
       if (!Chain.hasWallet()) return toast(t('p.noWallet'), 'erro');
       // mais de uma carteira instalada: o jogador escolhe qual conecta
       if (!rdns && !Chain.current()) return pickWallet();
+      S.connecting = true;
+      render();
+      const slow = setTimeout(() => toast(t('p.conn.slow'), 'aviso'), 8000);
+      const dead = setTimeout(() => {
+        if (!S.connecting) return;
+        S.connecting = false;
+        toast(t('p.conn.timeout'), 'erro');
+        render();
+      }, 30_000);
       try {
-        useAccount(await Chain.connect(rdns));
+        const a = await Chain.connect(rdns);
+        useAccount(a);
         leftOn(false);
         history.replaceState(null, '', location.pathname);
         toast(t('p.connected', { a: short(S.me) }));
@@ -485,6 +576,11 @@
         await refresh();
       } catch (e) {
         toast(t('p.connErr', { e: Chain.humanError(e) }), 'erro');
+      } finally {
+        clearTimeout(slow);
+        clearTimeout(dead);
+        S.connecting = false;
+        render();
       }
     },
     async disconnect() {
@@ -748,6 +844,7 @@
     if (S.demo) w.innerHTML = `<span class="chip chip-fusao">${esc(t('p.demoChip'))}</span>`;
     else if (S.me) w.innerHTML = `<span class="chip chip-livre" title="${esc(S.me)}">${esc(short(S.me))}</span>
       <button class="btn" data-act="disconnect" title="${esc(t('p.disconnect.title'))}">${esc(t('p.disconnect'))}</button>`;
+    else if (S.connecting) w.innerHTML = `<button class="btn" disabled>${esc(t('p.conn.opening'))}</button>`;
     else w.innerHTML = `<button class="btn btn-gold" data-act="connect">${esc(t('p.connect'))}</button>`;
 
     const banner = $('#banner');
@@ -1021,6 +1118,7 @@
       return;
     }
     if (act === 'tab') return showTab(b.dataset.tab);
+    if (act === 'board-refresh') return wantBoard(true);
     if (act === 'use-wallet') { $('#wallets').close(); return actions.connect(b.dataset.rdns); }
     if (act === 'close-wallets') return $('#wallets').close();
     if (act === 'b-work') return actions.work([...S.selected]);
@@ -1037,6 +1135,20 @@
       const v = Math.max(1, Math.min(S.cfg?.maxLife || 30, Number(e.target.value) || 1));
       S.shiftLen = v;
     }
+  });
+
+  // carteira que se anunciou depois do carregamento (aba em segundo plano)
+  window.addEventListener('outlaws:wallets', () => { if (!S.me && !S.demo && !S.readOnly) render(); });
+
+  // ao voltar pra aba: talvez a permissão tenha sido dada na extensão, sem a página ver
+  document.addEventListener('visibilitychange', async () => {
+    if (document.hidden || S.demo || S.readOnly || S.me || S.connecting || !Chain.hasWallet()) return;
+    const acc = await Chain.accounts();
+    if (!acc[0]) return;
+    useAccount(acc[0]);
+    toast(t('p.connected', { a: short(S.me) }));
+    render();
+    refresh();
   });
 
   if (Chain.hasWallet()) {
@@ -1083,6 +1195,7 @@
     await refresh();
     setInterval(tick, 1000);
     setInterval(() => { if (!S.busy) refresh(); }, 20_000);
+    setInterval(() => { if (!S.busy && S.tab === 'ranking') wantBoard(); }, 60_000);
   }
   start();
 })();

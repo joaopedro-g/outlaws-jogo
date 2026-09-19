@@ -271,6 +271,23 @@
   .more-eth { margin-top: 12px; font-size: 13px; }
   .more-eth summary { cursor: pointer; color: var(--text-dim); }
 
+  /* --------------------------------------------------------- ranking */
+  .board-sub { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 0 0 12px; font-size: 13px; }
+  .board-scroll { overflow-x: auto; }
+  table.board { width: 100%; border-collapse: collapse; min-width: 520px; font-variant-numeric: tabular-nums; }
+  table.board th {
+    font: 7px var(--pixel); letter-spacing: .1em; text-transform: uppercase; color: var(--text-dim);
+    text-align: right; padding: 0 10px 10px; white-space: nowrap;
+  }
+  table.board th:nth-child(-n+2), table.board td:nth-child(-n+2) { text-align: left; }
+  table.board td { padding: 9px 10px; border-top: 1px solid var(--wood-mid); text-align: right; font-size: 14px; }
+  table.board .pos { font: 11px var(--pixel); color: var(--gold); width: 1%; }
+  table.board .who { font-family: var(--press); font-size: 17px; }
+  table.board .best { color: var(--text); white-space: nowrap; }
+  table.board .best .gem { width: 9px; height: 9px; margin-right: 7px; box-shadow: 0 0 0 1px #0004, 0 0 6px var(--rc); }
+  table.board tr.is-me td { background: rgba(217,164,65,.12); }
+  table.board .tag { font: 7px var(--pixel); color: var(--gold-hi); border: 1px solid var(--gold-dim); padding: 3px 5px; margin-left: 6px; }
+
   /* ------------------------------------------------- escolha da carteira */
   .wallets { background: linear-gradient(#2E1E10, #241708); color: var(--text); border: 3px solid var(--wood-lo);
              box-shadow: inset 0 0 0 2px var(--wood-mid), 0 20px 50px rgba(0,0,0,.6); padding: 20px; min-width: 288px; }
@@ -415,6 +432,11 @@
       <h2 id="t-fusao" data-i18n="p.fusion.title">Fusion</h2>
       <div class="pbody"><div id="fusion"></div></div>
     </section>
+
+    <section id="tab-ranking" class="tab panel" aria-labelledby="t-ranking" hidden>
+      <h2 id="t-ranking"><span data-i18n="p.board.title">Leaderboard</span> <small data-i18n="p.board.head">gangs by weight on the chain</small></h2>
+      <div class="pbody"><div id="board"></div></div>
+    </section>
   </main>
 </div>
 
@@ -430,6 +452,9 @@
   </button>
   <button class="tab-btn" role="tab" data-act="tab" data-tab="fusao" aria-selected="false" aria-controls="tab-fusao">
     <img src="../assets/icon-gem.png" alt="" width="30" height="30"><span data-i18n="p.tab.fusion">Fusion</span>
+  </button>
+  <button class="tab-btn" role="tab" data-act="tab" data-tab="ranking" aria-selected="false" aria-controls="tab-ranking">
+    <img src="../assets/icon-trophy.png" alt="" width="30" height="30"><span data-i18n="p.tab.board">Ranking</span>
   </button>
 </nav>
 

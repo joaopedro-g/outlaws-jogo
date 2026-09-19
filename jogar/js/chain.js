@@ -128,6 +128,7 @@
   function humanError(e) {
     if (!e) return tr('e.unknown');
     if (e.code === 4001 || /user (rejected|denied)/i.test(e.message || '')) return tr('e.rejected');
+    if (e.code === -32002) return tr('e.pending'); //  já tem pedido aberto na extensão
     const data = e.data?.data || e.data?.originalError?.data || e.data;
     return explain(typeof data === 'string' ? data : null) || e.message || String(e);
   }
@@ -198,9 +199,13 @@
 
   root.addEventListener('eip6963:announceProvider', (e) => {
     const d = e.detail;
-    if (d && d.info && d.provider) announced.set(d.info.rdns, { info: d.info, provider: d.provider });
+    if (!d || !d.info || !d.provider || announced.has(d.info.rdns)) return;
+    announced.set(d.info.rdns, { info: d.info, provider: d.provider });
+    root.dispatchEvent(new Event('outlaws:wallets')); //  o painel se redesenha
   });
-  root.dispatchEvent(new Event('eip6963:requestProvider'));
+  /** Pergunta de novo quem está aí: extensão que acordou depois (aba em segundo plano). */
+  const rediscover = () => root.dispatchEvent(new Event('eip6963:requestProvider'));
+  rediscover();
 
   /** Nome de uma extensão antiga, que só aparece como window.ethereum. */
   function legacyName(p) {
@@ -340,7 +345,7 @@
 
   root.Chain = {
     CFG, MAX_UINT, rpc, encode, words, asAddr, asHex32, call, calls, contractBlock, ethBalance,
-    hasWallet, wallets, use, current, onWallet, accounts, forget,
+    hasWallet, wallets, use, current, onWallet, accounts, forget, rediscover,
     connect, ensureChain, send, waitReceipt, logsOf, humanError,
   };
 })(window);
