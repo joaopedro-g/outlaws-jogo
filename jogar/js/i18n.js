@@ -65,7 +65,7 @@
       'p.heist.title': 'The heist',
       'p.heist.sub': 'who is on duty, working live',
       'p.heist.aria': 'Heist map: outlaws on duty breaking crates and opening chests',
-      'p.heist.note': 'Stealth is speed, Strength is the hit (the number that pops off the crate), Aim is the arrow. Every cleared room moves on to the next terrain, from the road to the castle. The map is a showcase: how much each one earns is decided by the contract (weight × vault), and the chests show that estimate. What counts is the "Claim" button on the card.',
+      'p.heist.note': 'Stealth is speed, Strength is the hit (the number that pops off the crate), Aim is the arrow. Every cleared room moves on to the next terrain, from the road to the castle. The Crown\'s gold strongboxes (0 to 5 per room) take many more hits and pay out the whole gang\'s loot at once. The map is a showcase: how much each one earns is decided by the contract (weight × vault), and the chests show that estimate. What counts is the "Claim" button on the card.',
       'p.band.title': 'Your gang',
       'p.band.sub': 'tick to act on several at once',
       'p.bar.shiftA': 'shift of',
@@ -237,6 +237,7 @@
       'h.in': 'in {t}',
       'h.miss': 'miss',
       'h.ouch': 'ouch!',
+      'h.gold': 'CROWN GOLD!',
 
       // erros do contrato e da rede
       'e.CedoDemais()': 'Not yet: the draw comes out about 40 s after buying. The button lights up by itself when it does.',
@@ -285,7 +286,7 @@
       'p.heist.title': 'O assalto',
       'p.heist.sub': 'quem está em serviço, trabalhando ao vivo',
       'p.heist.aria': 'Mapa do assalto: os foras-da-lei em serviço quebrando caixotes e abrindo baús',
-      'p.heist.note': 'Furtividade é a velocidade, Força o golpe (o número que salta do caixote), Pontaria a flecha. Cada sala limpa leva ao terreno seguinte, da estrada ao castelo. O mapa é a vitrine: quanto cada um rende quem decide é o contrato (peso × caixa), e os baús mostram essa estimativa. O que vale é o "Sacar" do cartaz.',
+      'p.heist.note': 'Furtividade é a velocidade, Força o golpe (o número que salta do caixote), Pontaria a flecha. Cada sala limpa leva ao terreno seguinte, da estrada ao castelo. Os cofres dourados da Coroa (0 a 5 por sala) aguentam muito mais golpes e soltam de uma vez o butim do bando inteiro. O mapa é a vitrine: quanto cada um rende quem decide é o contrato (peso × caixa), e os baús mostram essa estimativa. O que vale é o "Sacar" do cartaz.',
       'p.band.title': 'Seu bando',
       'p.band.sub': 'marque pra agir em vários de uma vez',
       'p.bar.shiftA': 'turno de',
@@ -455,6 +456,7 @@
       'h.in': 'em {t}',
       'h.miss': 'errou',
       'h.ouch': 'ai!',
+      'h.gold': 'OURO DA COROA!',
 
       'e.CedoDemais()': 'Ainda não: o sorteio sai uns 40 s depois da compra. O botão acende sozinho quando sair.',
       'e.SacoInexistente()': 'Esse saco não existe ou já foi aberto.',
@@ -502,7 +504,7 @@
       'p.heist.title': 'El atraco',
       'p.heist.sub': 'quién está de servicio, trabajando en vivo',
       'p.heist.aria': 'Mapa del atraco: los forajidos de servicio rompiendo cajas y abriendo cofres',
-      'p.heist.note': 'Sigilo es la velocidad, Fuerza el golpe (el número que salta de la caja), Puntería la flecha. Cada sala limpia lleva al terreno siguiente, del camino al castillo. El mapa es una vitrina: cuánto gana cada uno lo decide el contrato (peso × bóveda), y los cofres muestran esa estimación. Lo que vale es el botón "Reclamar" del cartel.',
+      'p.heist.note': 'Sigilo es la velocidad, Fuerza el golpe (el número que salta de la caja), Puntería la flecha. Cada sala limpia lleva al terreno siguiente, del camino al castillo. Los cofres dorados de la Corona (0 a 5 por sala) aguantan muchos más golpes y sueltan de una vez el botín de toda la banda. El mapa es una vitrina: cuánto gana cada uno lo decide el contrato (peso × bóveda), y los cofres muestran esa estimación. Lo que vale es el botón "Reclamar" del cartel.',
       'p.band.title': 'Tu banda',
       'p.band.sub': 'marca para actuar en varios a la vez',
       'p.bar.shiftA': 'turno de',
@@ -672,6 +674,7 @@
       'h.in': 'en {t}',
       'h.miss': 'falló',
       'h.ouch': '¡ay!',
+      'h.gold': '¡ORO DE LA CORONA!',
 
       'e.CedoDemais()': 'Todavía no: el sorteo sale unos 40 s después de la compra. El botón se enciende solo cuando sale.',
       'e.SacoInexistente()': 'Ese saco no existe o ya fue abierto.',
@@ -719,7 +722,7 @@
       'p.heist.title': 'Ang nakawan',
       'p.heist.sub': 'ang mga nasa trabaho, live',
       'p.heist.aria': 'Mapa ng nakawan: mga tulisang nasa trabaho na bumabasag ng kahon at nagbubukas ng baul',
-      'p.heist.note': 'Ang Lihim ay bilis, ang Lakas ay tama (ang numerong lumalabas sa kahon), ang Asinta ay ang palaso. Bawat nalinis na kuwarto ay papunta sa susunod na lupain, mula sa daan hanggang sa kastilyo. Palabas lang ang mapa: ang kontrata ang nagpapasya kung magkano ang kita ng bawat isa (timbang × kaha), at ipinapakita ng mga baul ang tantiyang iyon. Ang mahalaga ay ang "Kunin" sa card.',
+      'p.heist.note': 'Ang Lihim ay bilis, ang Lakas ay tama (ang numerong lumalabas sa kahon), ang Asinta ay ang palaso. Bawat nalinis na kuwarto ay papunta sa susunod na lupain, mula sa daan hanggang sa kastilyo. Ang mga gintong baul ng Korona (0 hanggang 5 bawat kuwarto) ay mas matibay at inilalabas nang sabay ang nakaw ng buong gang. Palabas lang ang mapa: ang kontrata ang nagpapasya kung magkano ang kita ng bawat isa (timbang × kaha), at ipinapakita ng mga baul ang tantiyang iyon. Ang mahalaga ay ang "Kunin" sa card.',
       'p.band.title': 'Ang pangkat mo',
       'p.band.sub': 'markahan para kumilos sa marami nang sabay',
       'p.bar.shiftA': 'shift na',
@@ -889,6 +892,7 @@
       'h.in': 'sa {t}',
       'h.miss': 'mintis',
       'h.ouch': 'aray!',
+      'h.gold': 'GINTO NG KORONA!',
 
       'e.CedoDemais()': 'Hindi pa: lalabas ang bunot mga 40 s matapos bumili. Kusang sisindi ang button kapag lumabas na.',
       'e.SacoInexistente()': 'Wala ang sakong iyan o nabuksan na.',

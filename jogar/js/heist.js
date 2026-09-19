@@ -19,6 +19,12 @@
  * duas casas; o resto bate de perto. O terreno sai do gerador de lib/map.js — o
  * mesmo do Node, conferido pixel a pixel no build.
  *
+ * Cofres dourados da Coroa: de 0 a 5 por sala, sorteados pela seed dela, com 8x
+ * a vida do caixote. O rendimento estimado corre em dois potes: 30% vai pros
+ * baús de cada boneco, 70% pro pote do bando, que só um cofre solta — por
+ * isso o cofre dropa muito mais que o baú. É o mesmo dinheiro da estimativa,
+ * só que agrupado: somando baús e cofres, a época bate com o contrato.
+ *
  *   Heist.mount(canvas)
  *   Heist.update({ key, genesis, epochLength, maxLife,
  *                  outlaws: [{ id, iso, shiftStart, shiftEnd, lifeUsed, perEpoch }] })   // os em serviço
@@ -34,6 +40,9 @@
   const DIRS = [[1, 0], [-1, 0], [0, 1], [0, -1]];
   const RANGED = new Set(['bow', 'crossbow', 'both']);
   const HIT_EVERY = 0.6, ARROW_TIME = 0.2, TRAP_STUN = 0.9, CLEAR_PAUSE = 1.6;
+  const GOLD_HP = 8; //                         o cofre dourado aguenta 8 caixotes
+  const GOLD_ODDS = [30, 26, 20, 12, 8, 4]; //   % de sair 0, 1, 2, 3, 4 ou 5 numa sala
+  const GOLD_SHARE = 0.7; //                     parte do rendimento que vai pro pote dos cofres
   const PIXEL = '"Press Start 2P", monospace';
   const t = (k, v) => root.I18N.t(k, v);
   const roomName = (sim) => t('h.room', { terrain: t('terrain.' + sim.room.m.terrain.id).toUpperCase(), n: sim.roomNo + 1 });
@@ -48,7 +57,7 @@
 
   function createSim(key, epoch, crew) {
     const sim = {
-      key, epoch, t: 0, roomNo: -1, room: null, emit: null,
+      key, epoch, t: 0, roomNo: -1, room: null, emit: null, goldSince: 0,
       rnd: RNG.stream(seedOf(`assalto:${key}:${epoch}`), 'acao'),
       actors: crew.map((o) => {
         const s = o.iso.stats;
@@ -77,10 +86,11 @@
     const maxHp = 4 + (m.terrain.id - 1) * 2; // 4 na Estrada … 12 no Castelo: a Força faz diferença
     const hp = new Map(); //                      chaves das casas: y * largura + x
     for (let y = 0; y < m.h; y++) for (let x = 0; x < m.w; x++) if (m.grid[y][x] === 'o') hp.set(y * m.w + x, maxHp);
+    const hidden = new Set(m.hidden.map(([x, y]) => y * m.w + x));
     sim.room = {
-      seed, m, hp, maxHp, w: m.w,
+      seed, m, hp, maxHp, w: m.w, hidden,
       grid: m.grid.map((r) => r.slice()),
-      hidden: new Set(m.hidden.map(([x, y]) => y * m.w + x)),
+      gold: goldOf(seed, hp, hidden, maxHp),
       taken: new Map(), left: hp.size, cleared: 0,
     };
     const spawn = spawns(m.w, m.h);
@@ -89,6 +99,22 @@
       Object.assign(a, { x, y, px: x, py: y, cx: x, cy: y, path: [], target: null, state: 'idle', cool: 0, stun: 0, shot: null });
     });
     fire(sim, 'room', {});
+  }
+
+  /** Os cofres dourados da sala: quantos (0 a 5, pelas chances de GOLD_ODDS) e onde, entre os caixotes sem baú. */
+  function goldOf(seed, hp, hidden, maxHp) {
+    const rnd = RNG.stream(seed, 'ouro');
+    let roll = rnd.float() * 100, n = 0;
+    while (n < GOLD_ODDS.length - 1 && (roll -= GOLD_ODDS[n]) >= 0) n++;
+    const plain = [...hp.keys()].filter((k) => !hidden.has(k));
+    const gold = new Set();
+    for (let i = 0; i < Math.min(n, plain.length); i++) {
+      const j = rnd.int(i, plain.length - 1);
+      [plain[i], plain[j]] = [plain[j], plain[i]];
+      gold.add(plain[i]);
+      hp.set(plain[i], maxHp * GOLD_HP);
+    }
+    return gold;
   }
 
   function release(sim, a) {
@@ -205,16 +231,24 @@
     if (r.grid[t.y][t.x] === '$') { //          abrir o baú
       r.grid[t.y][t.x] = '.';
       r.left--;
-      fire(sim, 'open', { a, t, elapsed: sim.t - a.since });
+      fire(sim, 'open', { a, t, elapsed: (sim.t - a.since) * (1 - GOLD_SHARE) });
       a.since = sim.t;
       a.state = 'idle';
       return release(sim, a);
     }
+    const gold = r.gold.has(t.k);
     const hp = r.hp.get(t.k) - a.power;
-    fire(sim, 'chip', { t, dmg: a.power });
+    fire(sim, 'chip', { t, dmg: a.power, gold });
     if (hp > 0) return void r.hp.set(t.k, hp);
     r.hp.delete(t.k);
-    if (r.hidden.has(t.k)) {
+    if (gold) { //                               o cofre solta o pote do bando, acumulado desde o último cofre
+      r.gold.delete(t.k);
+      r.grid[t.y][t.x] = '.';
+      r.left--;
+      const paid = sim.actors.map((b) => ({ id: b.id, elapsed: (sim.t - sim.goldSince) * GOLD_SHARE }));
+      sim.goldSince = sim.t;
+      fire(sim, 'jackpot', { a, t, paid });
+    } else if (r.hidden.has(t.k)) {
       r.grid[t.y][t.x] = '$'; //                 o baú salta de dentro; alguém vem abrir
       fire(sim, 'reveal', { t });
     } else {
@@ -360,15 +394,23 @@
       fx.push({ kind: 'slash', age: 0, life: 0.14, x: center(ev.a.cx), y: center(ev.a.cy), ang: Math.atan2(t.y - ev.a.cy, t.x - ev.a.cx) });
     } else if (type === 'chip') {
       shake.set(t.k, 0.18);
-      burst(t.x, t.y, 'chip', 3);
+      burst(t.x, t.y, ev.gold ? 'gold' : 'chip', ev.gold ? 4 : 3);
       // o dano do golpe sobe do caixote: dá pra ver quem bate forte
-      say(t.x, t.y + 0.35, '-' + ev.dmg.toLocaleString(root.I18N.locale(), { maximumFractionDigits: 1 }), '#E8E0CC');
+      say(t.x, t.y + 0.35, '-' + ev.dmg.toLocaleString(root.I18N.locale(), { maximumFractionDigits: 1 }), '#E8E0CC').cell = t.k;
     } else if (type === 'break') {
       burst(t.x, t.y, 'chip', 12);
     } else if (type === 'reveal') {
       burst(t.x, t.y, 'chip', 12);
       burst(t.x, t.y, 'spark', 6);
       born.set(t.k, performance.now());
+    } else if (type === 'jackpot') {
+      fx = fx.filter((f) => f.cell !== t.k); //   o dano do último golpe sairia por cima do valor
+      burst(t.x, t.y, 'coin', 44);
+      burst(t.x, t.y, 'spark', 16);
+      fx.push({ kind: 'ring', age: 0, life: 0.6, x: center(t.x), y: center(t.y) });
+      const total = ev.paid.reduce((s, p) => s + perSec(p.id) * p.elapsed, 0);
+      say(t.x, t.y - 0.55, root.I18N.t('h.gold'), '#FFEC9F', true);
+      say(t.x, t.y, '+' + fmt(total), '#F2CE7E', true);
     } else if (type === 'open') {
       burst(t.x, t.y, 'coin', 14);
       say(t.x, t.y, '+' + fmt(perSec(ev.a.id) * ev.elapsed), '#F2CE7E', true);
@@ -379,7 +421,7 @@
     }
   }
 
-  const COLORS = { chip: ['#92683E', '#B98A57', '#5E3F22'], coin: ['#EBBE46', '#FFEC9F', '#C99A2E'], spark: ['#FFF6D0', '#F2CE7E'] };
+  const COLORS = { chip: ['#92683E', '#B98A57', '#5E3F22'], gold: ['#EBBE46', '#C99A2E', '#8A6414'], coin: ['#EBBE46', '#FFEC9F', '#C99A2E'], spark: ['#FFF6D0', '#F2CE7E'] };
   function burst(x, y, kind, n) {
     for (let i = 0; i < n; i++) {
       fx.push({
@@ -391,7 +433,9 @@
     }
   }
   function say(x, y, text, color, big = false) {
-    fx.push({ kind: 'text', text, color, big, age: 0, life: big ? 1.6 : 0.9, x: center(x), y: y * CELL });
+    const f = { kind: 'text', text, color, big, age: 0, life: big ? 1.6 : 0.9, x: center(x), y: y * CELL };
+    fx.push(f);
+    return f;
   }
 
   function text(s, x, y, color, size = 8, align = 'left') {
@@ -402,6 +446,74 @@
     for (const [ox, oy] of [[-1, 0], [1, 0], [0, -1], [0, 1], [1, 1]]) ctx.fillText(s, x + ox, y + oy);
     ctx.fillStyle = color;
     ctx.fillText(s, x, y);
+  }
+
+  /**
+   * Cofre dourado da Coroa, 16×16, no traço do caixote: ouro com cantoneiras e
+   * cinta de ferro, coroa com rubi na tampa e fechadura. '.' deixa o chão aparecer.
+   */
+  const GOLD_ART = [
+    '................',
+    '.DDDDDDDDDDDDDD.',
+    '.DII44444444IID.',
+    '.DI33I3II3I33ID.',
+    '.D433IIIIII331D.',
+    '.D433IIRRII331D.',
+    '.D433333333331D.',
+    '.D111111111111D.',
+    '.DIiIIIiiIIIiID.',
+    '.D4222iiii2221D.',
+    '.D4222iKKi2221D.',
+    '.D4222iiii2221D.',
+    '.D422222222221D.',
+    '.DII11111111IID.',
+    '.DDDDDDDDDDDDDD.',
+    '................',
+  ];
+  const GOLD_INK = { //                          1–4: ouro da sombra ao brilho; I/i ferro; R rubi; K fechadura
+    D: [58, 36, 10], 1: [170, 120, 30], 2: [226, 176, 56], 3: [246, 206, 98], 4: [255, 242, 190],
+    I: [52, 50, 58], i: [128, 124, 136], R: [210, 44, 64], K: [22, 14, 6],
+  };
+  let goldTile = null;
+  const goldArt = () => goldTile || (goldTile = bitmap(T, T, (px) => {
+    for (let y = 0; y < T; y++)
+      for (let x = 0; x < T; x++) {
+        const c = GOLD_INK[GOLD_ART[y][x]];
+        if (!c) continue;
+        const i = (y * T + x) * 4;
+        [px[i], px[i + 1], px[i + 2]] = c;
+        px[i + 3] = 255;
+      }
+  }));
+
+  /** Brilho do cofre: halo que pulsa, um reflexo que atravessa a cada ~2 s e faísca em volta. */
+  function drawGold(x, y, ox, k, now) {
+    const cx = center(x) + ox, cy = center(y);
+    const pulse = 0.3 + 0.2 * Math.sin(now / 260 + k);
+    const halo = ctx.createRadialGradient(cx, cy, 4, cx, cy, CELL * 0.95);
+    halo.addColorStop(0, `rgba(255,214,102,${pulse})`);
+    halo.addColorStop(1, 'rgba(255,214,102,0)');
+    ctx.fillStyle = halo;
+    ctx.fillRect(cx - CELL, cy - CELL, CELL * 2, CELL * 2);
+    ctx.drawImage(goldArt(), x * CELL + ox, y * CELL, CELL, CELL);
+    const sweep = ((now / 1000 + k * 0.37) % 2.2) / 0.5; //  o reflexo leva meio segundo e volta a cada 2,2 s
+    if (sweep < 1) {
+      ctx.fillStyle = 'rgba(255,250,225,.75)';
+      const d = Math.round(-6 + sweep * 26);
+      for (let py = 3; py <= 13; py++) {
+        for (const w of [0, 1]) {
+          const px = d - (py - 3) + w;
+          if (px >= 2 && px <= 13 && '1234'.includes(GOLD_ART[py][px])) ctx.fillRect(x * CELL + ox + px * K, y * CELL + py * K, K, K);
+        }
+      }
+    }
+    const tw = Math.sin(now / 170 + k * 1.3);
+    if (tw > 0.8) { //                            faísca em cruz num canto
+      const [sx, sy] = [[3, 1], [14, 2], [15, 12], [0, 13]][(k + Math.floor(now / 900)) % 4];
+      ctx.fillStyle = '#FFF6D0';
+      ctx.fillRect(x * CELL + ox + sx * K, y * CELL + (sy - 1) * K, K, K * 3);
+      ctx.fillRect(x * CELL + ox + (sx - 1) * K, y * CELL + sy * K, K * 3, K);
+    }
   }
 
   /** Rachaduras que crescem com o dano. */
@@ -418,10 +530,19 @@
         const k = y * r.w + x;
         const ox = shake.has(k) ? Math.round(rand(-2, 2)) : 0;
         if (c === 'o') {
-          ctx.drawImage(a.crate, x * CELL + ox, y * CELL, CELL, CELL);
-          const n = Math.floor((1 - r.hp.get(k) / r.maxHp) * CRACK.length);
-          ctx.fillStyle = '#2A1A0C';
+          const gold = r.gold.has(k), full = gold ? r.maxHp * GOLD_HP : r.maxHp, left = r.hp.get(k) / full;
+          if (gold) drawGold(x, y, ox, k, now);
+          else ctx.drawImage(a.crate, x * CELL + ox, y * CELL, CELL, CELL);
+          const n = Math.floor((1 - left) * CRACK.length);
+          ctx.fillStyle = gold ? '#6B4E16' : '#2A1A0C';
           for (let i = 0; i < n; i++) ctx.fillRect(x * CELL + ox + CRACK[i][0] * K, y * CELL + CRACK[i][1] * K, K, K);
+          if (gold && left < 1) { //                 o cofre aguenta muito: mostra quanto falta
+            const bx = x * CELL + ox + 4, by = y * CELL - 2, bw = CELL - 8;
+            ctx.fillStyle = '#0B0F08';
+            ctx.fillRect(bx - 1, by - 1, bw + 2, 5);
+            ctx.fillStyle = '#F2CE7E';
+            ctx.fillRect(bx, by, Math.max(1, Math.round(bw * left)), 3);
+          }
         } else {
           const b = born.get(k);
           const p = b === undefined ? 1 : Math.min(1, (now - b) / 350);
@@ -476,7 +597,7 @@
 
   function drawFx(f) {
     const p = f.age / f.life;
-    if (f.kind === 'chip' || f.kind === 'coin' || f.kind === 'spark') {
+    if (f.kind === 'chip' || f.kind === 'gold' || f.kind === 'coin' || f.kind === 'spark') {
       ctx.globalAlpha = 1 - Math.max(0, p - 0.6) / 0.4;
       ctx.fillStyle = f.color;
       const s = f.kind === 'coin' ? 4 : 3;
@@ -499,6 +620,12 @@
       ctx.fillRect(-14, -2, 3, 1);
       ctx.fillRect(-14, 1, 3, 1);
       ctx.restore();
+    } else if (f.kind === 'ring') {
+      ctx.strokeStyle = `rgba(255,209,102,${1 - p})`;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(f.x, f.y, 8 + p * 44, 0, Math.PI * 2);
+      ctx.stroke();
     } else if (f.kind === 'slash') {
       ctx.strokeStyle = `rgba(255,250,235,${1 - p})`;
       ctx.lineWidth = 3;
