@@ -8,74 +8,96 @@
 <title data-i18n="p.title">OUTLAWS · Game</title>
 <link rel="icon" href="../assets/crest.png">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=IM+Fell+English&family=Archivo:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Holtwood+One+SC&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Archivo:wght@400;500;600;700&display=swap">
 <style>
+  /* HUD de jogo: parede de tábuas, painéis com moldura de madeira, barra de
+     recursos no topo e barra de abas embaixo — a mesma língua visual do mural
+     de cartazes da landpage. Cartazes dos bonecos continuam em pergaminho. */
   :root {
-    --ground: #0B0F08; --ground-2: #121810; --surface: #182013; --surface-2: #1F2819;
-    --line: #2C3724; --line-2: #3A4830;
-    --ink: #2B2115; --ink-soft: #5A4830;
-    --gold: #D9A441; --gold-hi: #F2CE7E; --gold-dim: #8C6A29;
-    --moss: #8FB35E; --danger: #D0654D; --violet: #A58BDB;
-    --text: #DCE0D2; --text-dim: #949D86;
-    --pixel: "Press Start 2P", ui-monospace, monospace;
-    --press: "IM Fell English", Georgia, serif;
-    --body: "Archivo", ui-sans-serif, system-ui, sans-serif;
+    --wall:    #22170D;
+    --wood:    #2E1E10; --wood-2: #241708; --wood-hi: #8A6134; --wood-lo: #120C06; --wood-mid: #6B4826;
+    --ink:     #2B2115; --ink-soft: #5A4830;
+    --gold:    #D9A441; --gold-hi: #F2CE7E; --gold-dim: #8C6A29;
+    --moss:    #8FB35E; --green: #55832F; --green-hi: #79B04A;
+    --danger:  #D0654D; --violet: #A58BDB;
+    --text:    #EDE2C8; --text-dim: #B09B77;
+    --pixel:   "Press Start 2P", ui-monospace, monospace;
+    --slab:    "Holtwood One SC", Georgia, serif;
+    --press:   "IM Fell English", Georgia, serif;
+    --fellsc:  "IM Fell English SC", "IM Fell English", Georgia, serif;
+    --body:    "Archivo", ui-sans-serif, system-ui, sans-serif;
+    --grain:   url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.07 .0035' numOctaves='3' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .05 0 0 0 0 .03 0 0 0 0 .01 0 0 0 1.4 -.45'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; }
   body {
-    background: var(--ground);
-    background-image: radial-gradient(1000px 380px at 50% -8%, #18220F 0%, transparent 70%);
     color: var(--text); font: 15px/1.5 var(--body); -webkit-font-smoothing: antialiased;
-    min-height: 100vh;
+    min-height: 100vh; padding-bottom: 86px; /* a barra de abas é fixa */
+    background-color: var(--wall);
+    background-image:
+      radial-gradient(1100px 500px at 50% 0, rgba(255,186,96,.10), transparent 70%),
+      var(--grain),
+      repeating-linear-gradient(90deg, rgba(0,0,0,.6) 0 3px, rgba(255,230,190,.045) 3px 4px, transparent 4px 212px),
+      linear-gradient(90deg, #2A1B0F, #231609 26%, #2E1E11 52%, #25170C 78%, #2B1C0F);
   }
   img { image-rendering: pixelated; }
   button { font: inherit; }
-  a { color: var(--moss); }
+  a { color: var(--gold-hi); }
   .muted { color: var(--text-dim); }
   .t-gold { color: var(--gold); }
   .t-danger { color: var(--danger); }
   [hidden] { display: none !important; }
+  :focus-visible { outline: 2px solid var(--gold-hi); outline-offset: 2px; }
 
-  /* ------------------------------------------------------------ topo */
-  header {
-    position: sticky; top: 0; z-index: 5;
-    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
-    padding: 10px 20px; background: rgba(11,15,8,.92); backdrop-filter: blur(6px);
-    border-bottom: 1px solid var(--line);
+  /* --------------------------------------------------- barra de recursos */
+  .hud-top {
+    position: sticky; top: 0; z-index: 20;
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    padding: 9px clamp(10px, 2vw, 18px);
+    background: linear-gradient(#1D130A, #150D06);
+    border-bottom: 3px solid var(--wood-lo);
+    box-shadow: inset 0 2px 0 rgba(242,206,126,.09), 0 8px 20px rgba(0,0,0,.5);
   }
-  .brand { display: flex; align-items: center; gap: 10px; color: inherit; text-decoration: none; }
-  .brand img { width: 36px; height: 36px; }
-  .brand b { font: 13px var(--pixel); letter-spacing: .02em; text-shadow: 2px 2px 0 var(--gold-dim); }
-  .brand small { font: 8px var(--pixel); color: var(--text-dim); letter-spacing: .1em; display: block; margin-top: 4px; }
-  .topnav { margin-right: auto; }
-  header .langs { margin-right: 4px; }
-  .topnav a { font: 8px var(--pixel); letter-spacing: .06em; color: var(--text-dim); text-decoration: none; padding: 6px 4px; }
-  .topnav a:hover { color: var(--gold-hi); }
+  .brand { display: flex; align-items: center; gap: 9px; color: inherit; text-decoration: none; }
+  .brand img { width: 34px; height: 34px; }
+  .brand b { font: 15px var(--slab); font-weight: 400; letter-spacing: .05em; color: var(--gold-hi); text-shadow: 0 2px 0 #000; }
+  .brand small { font: 7px var(--pixel); color: var(--text-dim); letter-spacing: .1em; display: block; margin-top: 3px; }
+  .pills { display: flex; gap: 8px; margin-right: auto; overflow-x: auto; scrollbar-width: none; }
+  .pills::-webkit-scrollbar { display: none; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 8px; white-space: nowrap;
+    padding: 6px 10px; background: #1A1108; border: 2px solid var(--wood-lo);
+    box-shadow: inset 0 0 0 1px var(--wood-mid), inset 0 2px 0 rgba(242,206,126,.08);
+  }
+  .pill img { width: 22px; height: 22px; }
+  .pill i { width: 12px; height: 12px; background: var(--gold); transform: rotate(45deg); flex: none; }
+  .pill .k { font: 6.5px var(--pixel); letter-spacing: .1em; color: var(--text-dim); text-transform: uppercase; display: block; }
+  .pill .v { font: 11px var(--pixel); color: var(--text); font-variant-numeric: tabular-nums; display: block; margin-top: 4px; }
+  .pill.hot .v { color: var(--gold-hi); }
+  #balances { display: contents; }
   #wallet { display: flex; align-items: center; gap: 8px; }
-  #wallet .btn { font-size: 8px; padding: 7px 9px; }
+  #wallet .btn { font-size: 8px; padding: 8px 10px; }
+  .banner { margin: 0; padding: 9px 18px; background: #2A2413; color: var(--gold-hi); font-size: 13px; border-bottom: 2px solid var(--gold-dim); }
   .banner a { color: var(--gold-hi); margin-left: 6px; }
-  #balances { display: flex; gap: 14px; font-size: 13px; color: var(--text-dim); }
-  #balances b { color: var(--text); font-variant-numeric: tabular-nums; }
-
-  .banner { margin: 0; padding: 9px 20px; background: #2A2413; color: var(--gold-hi); font-size: 13px; border-bottom: 1px solid var(--gold-dim); }
 
   /* --------------------------------------------------------- botões */
   .btn {
-    font: 9px var(--pixel); letter-spacing: .04em; line-height: 1.5;
-    padding: 9px 11px; border: 1px solid var(--line-2); background: var(--surface-2); color: var(--text);
-    cursor: pointer; border-radius: 0; box-shadow: 0 2px 0 #000;
+    font: 9px var(--pixel); letter-spacing: .04em; line-height: 1.5; cursor: pointer;
+    padding: 10px 12px; color: var(--text);
+    background: linear-gradient(#3A2614, #2A1B0D); border: 2px solid var(--wood-lo);
+    box-shadow: inset 0 0 0 1px var(--wood-mid), inset 0 2px 0 rgba(242,206,126,.14), 0 3px 0 rgba(0,0,0,.5);
   }
-  .btn:hover:not(:disabled) { border-color: var(--gold-dim); color: var(--gold-hi); }
-  .btn:active:not(:disabled) { transform: translateY(1px); box-shadow: 0 1px 0 #000; }
-  .btn:disabled { opacity: .4; cursor: not-allowed; }
-  .btn:focus-visible, input:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
-  .btn-gold { background: var(--gold); color: #1A1206; border-color: var(--gold-hi); }
-  .btn-gold:hover:not(:disabled) { background: var(--gold-hi); color: #1A1206; }
+  .btn:hover:not(:disabled) { background: linear-gradient(#4A3119, #362210); color: var(--gold-hi); }
+  .btn:active:not(:disabled) { transform: translateY(2px); box-shadow: inset 0 0 0 1px var(--wood-mid), 0 1px 0 rgba(0,0,0,.5); }
+  .btn:disabled { opacity: .45; cursor: not-allowed; }
+  .btn-gold { background: linear-gradient(#E8B858, #C68F2B); color: #1E1307; box-shadow: inset 0 0 0 1px #F2CE7E, inset 0 2px 0 rgba(255,255,255,.35), 0 3px 0 rgba(0,0,0,.5); }
+  .btn-gold:hover:not(:disabled) { background: linear-gradient(#F6CE77, #D89F36); color: #1E1307; }
+  .btn-green { background: linear-gradient(#69A03C, #3F6822); color: #F3F8EA; box-shadow: inset 0 0 0 1px var(--green-hi), inset 0 2px 0 rgba(255,255,255,.25), 0 3px 0 rgba(0,0,0,.5); }
+  .btn-green:hover:not(:disabled) { background: linear-gradient(#7CB84A, #4C7C29); color: #fff; }
+  .btn-big { font-size: 12px; padding: 14px 20px; }
   .btn-danger { border-color: #6B2A1E; color: #F2A493; }
-  /* rendendo: o contador que sobe a cada segundo (o botão fica aceso mesmo sem nada sacável ainda) */
-  .btn .accrue { font-size: .9em; opacity: .8; margin-left: 4px; }
-  #b-claim.is-live:disabled { opacity: 1; background: transparent; color: var(--gold); border-color: var(--gold-dim); cursor: default; }
+  .btn .accrue { font-size: .9em; opacity: .85; margin-left: 4px; }
+  #b-claim.is-live:disabled { opacity: 1; color: var(--gold-hi); cursor: default; }
   .accrue-chip { font: 8px var(--pixel); color: var(--gold); padding: 7px 6px; align-self: center; white-space: nowrap; }
 
   .chip { font: 8px var(--pixel); letter-spacing: .06em; padding: 5px 7px; border: 1px solid; display: inline-block; white-space: nowrap; }
@@ -84,60 +106,91 @@
   .chip-capturado { color: var(--danger); border-color: #6B2A1E; background: #22110D; }
   .chip-fusao { color: var(--violet); border-color: #4D3F6B; background: #17131F; }
 
-  /* ---------------------------------------------------------- caixa */
-  .stats {
-    display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px;
-    background: var(--line); border-bottom: 1px solid var(--line);
+  /* --------------------------------------------- painéis com moldura */
+  .panel {
+    background: linear-gradient(#2E1E10, #241708); background-blend-mode: normal;
+    border: 3px solid var(--wood-lo);
+    box-shadow: inset 0 0 0 2px var(--wood-mid), inset 0 3px 0 var(--wood-hi), inset 0 -3px 0 #1B1109,
+                0 6px 0 rgba(0,0,0,.35), 0 14px 26px rgba(0,0,0,.45);
   }
-  @media (max-width: 820px) {
-    .stats { grid-template-columns: repeat(2, 1fr); }
-    .stat:last-child { grid-column: span 2; }
+  .panel > h2 {
+    display: flex; align-items: center; gap: 9px; flex-wrap: wrap; margin: 0;
+    padding: 11px 13px; font: 10px var(--pixel); letter-spacing: .04em; color: var(--gold-hi);
+    background: linear-gradient(#3E2916, #2C1C0E); border-bottom: 2px solid var(--wood-lo);
+    box-shadow: inset 0 1px 0 rgba(242,206,126,.18);
   }
-  .stat { background: var(--ground-2); padding: 12px 20px; }
-  .stat dt { font: 7px var(--pixel); letter-spacing: .12em; color: var(--text-dim); text-transform: uppercase; }
-  .stat dd { margin: 7px 0 0; font: 15px var(--pixel); color: var(--text); font-variant-numeric: tabular-nums; }
-  .stat dd small { font: 11px var(--body); color: var(--text-dim); margin-left: 4px; }
-  .stat.hot dd { color: var(--gold); }
+  .panel > h2::before { content: ""; width: 9px; height: 9px; background: var(--gold); transform: rotate(45deg); flex: none; }
+  .panel > h2 small { font: 12px var(--press); color: var(--text-dim); letter-spacing: 0; }
+  .pbody { padding: 14px; }
+  .pbody > p:first-child { margin-top: 0; }
+  .panel p { font-size: 14px; }
 
-  /* ---------------------------------------------------------- corpo */
-  main { display: grid; grid-template-columns: 1fr 340px; gap: 20px; padding: 20px; max-width: 1400px; margin: 0 auto; }
-  @media (max-width: 980px) { main { grid-template-columns: 1fr; } }
-  h2 { font: 11px var(--pixel); color: var(--gold); margin: 0 0 12px; letter-spacing: .04em; }
-  h2 small { font: 12px var(--body); color: var(--text-dim); letter-spacing: 0; margin-left: 8px; }
+  /* ------------------------------------------------------------ layout */
+  .hud { display: grid; grid-template-columns: 330px minmax(0, 1fr); gap: 16px; padding: 16px; max-width: 1480px; margin: 0 auto; align-items: start; }
+  .col-side { display: flex; flex-direction: column; gap: 16px; }
+  .col-main { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+  @media (max-width: 1040px) {
+    .hud { grid-template-columns: 1fr; }
+    .col-side { order: 2; }
+  }
+
+  /* barra de abas, fixa embaixo: a navegação do jogo */
+  .hud-tabs {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 25;
+    display: flex; gap: 6px; padding: 8px clamp(8px, 2vw, 16px);
+    background: linear-gradient(#1D130A, #120B05); border-top: 3px solid var(--wood-lo);
+    box-shadow: inset 0 2px 0 rgba(242,206,126,.09), 0 -8px 20px rgba(0,0,0,.5);
+    overflow-x: auto; scrollbar-width: none;
+  }
+  .hud-tabs::-webkit-scrollbar { display: none; }
+  .hud-tabs .tab-btn {
+    flex: 1 1 0; min-width: 96px; display: flex; flex-direction: column; align-items: center; gap: 6px;
+    padding: 8px 6px; cursor: pointer; color: var(--text-dim);
+    background: linear-gradient(#32210F, #241608); border: 2px solid var(--wood-lo);
+    box-shadow: inset 0 0 0 1px var(--wood-mid), inset 0 2px 0 rgba(242,206,126,.1), 0 3px 0 rgba(0,0,0,.45);
+    font: 8px var(--pixel); letter-spacing: .04em;
+  }
+  .hud-tabs .tab-btn img { width: 30px; height: 30px; }
+  .hud-tabs .tab-btn:hover { color: var(--gold-hi); }
+  .hud-tabs .tab-btn[aria-selected="true"] {
+    color: #1E1307; background: linear-gradient(#E8B858, #C68F2B);
+    box-shadow: inset 0 0 0 1px #F2CE7E, inset 0 2px 0 rgba(255,255,255,.35), 0 3px 0 rgba(0,0,0,.45);
+  }
+  .tab-btn .dot { width: 8px; height: 8px; background: var(--danger); border-radius: 50%; position: absolute; }
+
+  /* ----------------------------------------------------------- a caixa */
+  .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 0; }
+  .stat { padding: 9px 10px; background: #1A1108; border: 2px solid var(--wood-lo); box-shadow: inset 0 0 0 1px var(--wood-mid); }
+  .stat:last-child { grid-column: span 2; }
+  .stat dt { font: 6.5px var(--pixel); letter-spacing: .1em; color: var(--text-dim); text-transform: uppercase; }
+  .stat dd { margin: 7px 0 0; font: 13px var(--pixel); color: var(--text); font-variant-numeric: tabular-nums; }
+  .stat dd small { font: 11px var(--body); color: var(--text-dim); margin-left: 4px; }
+  .stat.hot dd { color: var(--gold-hi); }
+
+  /* ---------------------------------------------------------- assalto */
+  .heist canvas {
+    display: block; max-width: 100%; margin: 0 auto; image-rendering: pixelated;
+    background: #000; border: 3px solid var(--wood-lo); box-shadow: inset 0 0 0 2px var(--wood-mid), 0 10px 24px rgba(0,0,0,.5);
+  }
+  .heist .note { margin: 12px auto 0; max-width: 680px; }
+
+  #band { display: grid; grid-template-columns: repeat(auto-fill, minmax(208px, 1fr)); gap: 14px; }
+  .empty { grid-column: 1 / -1; padding: 40px 20px; text-align: center; border: 2px dashed var(--wood-mid); color: var(--text-dim); }
+  .empty .btn { margin-top: 8px; }
 
   .bar {
     display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
-    padding: 10px 12px; margin-bottom: 14px; background: var(--surface); border: 1px solid var(--line);
+    padding: 10px 12px; margin-bottom: 14px; background: #1A1108;
+    border: 2px solid var(--wood-lo); box-shadow: inset 0 0 0 1px var(--wood-mid);
   }
   .bar #bar-count { font-size: 13px; color: var(--text-dim); margin-right: auto; }
-  .bar .duty { font: 10px var(--pixel); color: var(--text-dim); padding: 6px 8px; border: 1px solid var(--line-2); }
-  .bar .duty.is-full { color: var(--gold); border-color: var(--gold); }
+  .bar .duty { font: 10px var(--pixel); color: var(--text-dim); padding: 7px 9px; border: 2px solid var(--wood-lo); box-shadow: inset 0 0 0 1px var(--wood-mid); }
+  .bar .duty.is-full { color: var(--gold-hi); border-color: var(--gold-dim); }
   .bar label { font-size: 13px; color: var(--text-dim); display: flex; align-items: center; gap: 6px; }
   .bar input[type=number] {
-    width: 58px; padding: 7px; background: var(--ground); color: var(--text); border: 1px solid var(--line-2);
-    font: 11px var(--pixel);
+    width: 58px; padding: 7px; background: #120C06; color: var(--text); border: 2px solid var(--wood-lo);
+    box-shadow: inset 0 0 0 1px var(--wood-mid); font: 11px var(--pixel);
   }
-
-  /* ------------------------------------------------- escolha da carteira */
-  .wallets { background: var(--surface); color: var(--text); border: 1px solid var(--line); padding: 20px; min-width: 288px; }
-  .wallets::backdrop { background: rgba(0,0,0,.65); }
-  .wallets h3 { font: 11px var(--pixel); color: var(--gold); margin: 0 0 6px; line-height: 1.6; }
-  .wallets p { font-size: 13px; margin: 0; }
-  .wlist { list-style: none; padding: 0; margin: 14px 0; display: grid; gap: 8px; }
-  .wlist .btn { width: 100%; display: flex; align-items: center; gap: 10px; justify-content: flex-start; }
-  .wlist img { width: 28px; height: 28px; image-rendering: auto; }
-
-  /* -------------------------------------------------------- assalto */
-  .col { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
-  .heist canvas {
-    display: block; max-width: 100%; margin: 0 auto; image-rendering: pixelated;
-    background: #000; border: 1px solid var(--line-2); box-shadow: 0 10px 24px rgba(0,0,0,.45);
-  }
-  .heist .note { margin: 10px auto 0; max-width: 640px; }
-
-  #band { display: grid; grid-template-columns: repeat(auto-fill, minmax(208px, 1fr)); gap: 14px; }
-  .empty { grid-column: 1 / -1; padding: 40px 20px; text-align: center; border: 1px dashed var(--line-2); color: var(--text-dim); }
-  .empty .btn { margin-top: 8px; }
 
   /* --------------------------------------------------------- cartaz */
   .card {
@@ -177,42 +230,39 @@
   .c-acts { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 8px; }
   .c-acts .btn { font-size: 8px; padding: 7px 8px; }
 
-  /* ----------------------------------------------------- lateral */
-  aside { display: flex; flex-direction: column; gap: 16px; }
-  .panel { background: var(--surface); border: 1px solid var(--line); padding: 16px; }
-  .panel p { margin: 0 0 10px; font-size: 14px; }
+  /* ------------------------------------------------- taverna e fusão */
   .buyline { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
-  .stepper { display: flex; align-items: center; border: 1px solid var(--line-2); }
-  .stepper button { width: 34px; height: 34px; background: var(--surface-2); color: var(--text); border: 0; cursor: pointer; font: 12px var(--pixel); }
-  .stepper span { width: 38px; text-align: center; font: 12px var(--pixel); }
+  .stepper { display: flex; align-items: center; border: 2px solid var(--wood-lo); box-shadow: inset 0 0 0 1px var(--wood-mid); }
+  .stepper button { width: 36px; height: 36px; background: linear-gradient(#3A2614, #2A1B0D); color: var(--text); border: 0; cursor: pointer; font: 12px var(--pixel); }
+  .stepper span { width: 40px; text-align: center; font: 12px var(--pixel); }
   .total { font-size: 13px; color: var(--text-dim); }
   .total b { color: var(--text); font: 12px var(--pixel); }
-  .note { font-size: 12px; color: var(--text-dim); border-left: 2px solid var(--gold-dim); padding-left: 10px; margin: 10px 0 0; }
-  .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 0; border-top: 1px solid var(--line); font-size: 13px; }
+  .note { font-size: 12px; color: var(--text-dim); border-left: 3px solid var(--gold-dim); padding-left: 10px; margin: 10px 0 0; }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 0; border-top: 1px solid var(--wood-mid); font-size: 13px; }
   .row small { color: var(--text-dim); }
-  .sep { height: 1px; background: var(--line); margin: 14px 0 4px; }
+  .sep { height: 2px; background: var(--wood-mid); margin: 14px 0 4px; }
 
-  .odds { display: flex; height: 14px; margin: 6px 0 8px; border: 1px solid var(--line-2); }
+  .odds { display: flex; height: 14px; margin: 6px 0 8px; border: 2px solid var(--wood-lo); }
   .o-ok { background: #6E9A42; } .o-mid { background: #C99A2E; } .o-bad { background: #B4462F; }
   .odds-legend { margin: 0 0 10px; font-size: 13px; }
   .odds-legend div { display: flex; justify-content: space-between; padding: 2px 0; }
   .odds-legend dt { color: var(--text-dim); } .odds-legend dd { margin: 0; font-weight: 700; font-variant-numeric: tabular-nums; }
 
-  #log { list-style: none; margin: 0; padding: 0; font-size: 12px; max-height: 280px; overflow: auto; }
-  #log li { padding: 7px 0; border-top: 1px solid var(--line); }
+  #log { list-style: none; margin: 0; padding: 0; font-size: 12px; max-height: 260px; overflow: auto; }
+  #log li { padding: 7px 0; border-top: 1px solid var(--wood-mid); }
   #log time { color: var(--text-dim); font-variant-numeric: tabular-nums; margin-right: 4px; }
   #log .log-erro { color: #F2A493; } #log .log-aviso { color: var(--gold-hi); }
 
   /* ----------------------------------------------- primeiros passos */
-  .start { border-color: var(--gold-dim); }
+  .start > h2 { color: var(--gold-hi); }
   .steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
   .steps li { display: flex; gap: 10px; font-size: 13px; }
-  .steps .n { flex: none; width: 22px; height: 22px; display: grid; place-items: center; font: 9px var(--pixel);
-              border: 1px solid var(--gold-dim); color: var(--gold); }
+  .steps .n { flex: none; width: 24px; height: 24px; display: grid; place-items: center; font: 9px var(--pixel);
+              border: 2px solid var(--gold-dim); color: var(--gold); }
   .steps li.ok { color: var(--text-dim); }
   .steps li.ok .n { background: #16200F; border-color: #4B6332; color: var(--moss); }
   .steps .btn { margin-top: 6px; }
-  .safety { font-size: 12px; color: var(--text-dim); border-left: 2px solid var(--danger); padding-left: 8px; margin: 10px 0 12px; }
+  .safety { font-size: 12px; color: var(--text-dim); border-left: 3px solid var(--danger); padding-left: 8px; margin: 10px 0 12px; }
   .eth-ways { display: grid; gap: 10px; margin-top: 8px; }
   .eth-ways > div { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
   .eth-ways small { flex-basis: 100%; color: var(--text-dim); font-size: 12px; }
@@ -221,13 +271,24 @@
   .more-eth { margin-top: 12px; font-size: 13px; }
   .more-eth summary { cursor: pointer; color: var(--text-dim); }
 
+  /* ------------------------------------------------- escolha da carteira */
+  .wallets { background: linear-gradient(#2E1E10, #241708); color: var(--text); border: 3px solid var(--wood-lo);
+             box-shadow: inset 0 0 0 2px var(--wood-mid), 0 20px 50px rgba(0,0,0,.6); padding: 20px; min-width: 288px; }
+  .wallets::backdrop { background: rgba(0,0,0,.65); }
+  .wallets h3 { font: 11px var(--pixel); color: var(--gold-hi); margin: 0 0 6px; line-height: 1.6; }
+  .wallets p { font-size: 13px; margin: 0; }
+  .wlist { list-style: none; padding: 0; margin: 14px 0; display: grid; gap: 8px; }
+  .wlist .btn { width: 100%; display: flex; align-items: center; gap: 10px; justify-content: flex-start; }
+  .wlist img { width: 28px; height: 28px; image-rendering: auto; }
+
   /* ------------------------------------------------------ revelação */
   dialog.reveal {
-    border: 1px solid var(--gold-dim); background: var(--surface); color: var(--text);
-    padding: 22px 20px; width: min(680px, calc(100vw - 32px)); box-shadow: 0 24px 70px rgba(0,0,0,.7);
+    border: 3px solid var(--wood-lo); background: linear-gradient(#2E1E10, #241708); color: var(--text);
+    box-shadow: inset 0 0 0 2px var(--wood-mid), 0 24px 70px rgba(0,0,0,.7);
+    padding: 22px 20px; width: min(680px, calc(100vw - 32px));
   }
   dialog.reveal::backdrop { background: rgba(5,8,4,.78); }
-  .rv-title { font: 13px/1.5 var(--pixel); color: var(--gold); margin: 0 0 8px; text-align: center; }
+  .rv-title { font: 13px/1.5 var(--pixel); color: var(--gold-hi); margin: 0 0 8px; text-align: center; }
   .rv-title.bad { color: #F2A493; }
   .rv-lead { margin: 0 0 18px; text-align: center; font-size: 14px; }
   .rv-row { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; align-items: center; }
@@ -263,85 +324,114 @@
   @media (prefers-reduced-motion: reduce) { .rv-card.is-new, .rv-card.is-new.myth, .card.myth { animation: none; } }
   .rv-actions { text-align: center; margin: 18px 0 0; }
 
-  footer { padding: 20px; text-align: center; font-size: 12px; color: var(--text-dim); border-top: 1px solid var(--line); }
+  footer { padding: 18px 20px 26px; text-align: center; font-size: 12px; color: var(--text-dim); }
   footer a { margin: 0 6px; }
 </style>
 </head>
 <body>
-<header>
+
+<header class="hud-top">
   <a class="brand" href="../" title="Back to the OUTLAWS page" data-i18n-title="p.brand.title">
-    <img src="../assets/crest.png" alt="">
+    <img src="../assets/crest.png" alt="" width="34" height="34">
     <div><b>OUTLAWS</b><small data-i18n="p.brand.sub">GAME · ROBINHOOD TESTNET</small></div>
   </a>
-  <nav class="topnav" aria-label="Navigation" data-i18n-aria-label="p.nav">
-    <a href="../" data-i18n="p.nav.home">← Home</a>
-  </nav>
+  <div class="pills">
+    <div id="balances"></div>
+    <span class="pill"><img src="../assets/icon-chest.png" alt="" width="22" height="22"><span><span class="k" data-i18n="p.stat.pool">Free vault</span><span class="v" id="stat-pool">…</span></span></span>
+    <span class="pill hot"><img src="../assets/icon-hourglass.png" alt="" width="22" height="22"><span><span class="k" data-i18n="p.stat.next">Next epoch in</span><span class="v" id="stat-next">…</span></span></span>
+  </div>
   <div class="langs" data-flags aria-label="Language" data-i18n-aria-label="lang.label"></div>
-  <div id="balances"></div>
   <div id="wallet"></div>
 </header>
 <p id="banner" class="banner" hidden></p>
 
-<dl class="stats">
-  <div class="stat"><dt data-i18n="p.stat.pool">Free vault</dt><dd><span id="stat-pool">…</span><small>$BOUNTY</small></dd></div>
-  <div class="stat"><dt data-i18n="p.stat.emission">Paid per epoch</dt><dd><span id="stat-emission">…</span><small data-i18n="p.stat.emission.note">0.5% of the vault</small></dd></div>
-  <div class="stat"><dt data-i18n="p.stat.weight">Weight on duty</dt><dd id="stat-weight">…</dd></div>
-  <div class="stat"><dt data-i18n="p.stat.epoch">Current epoch</dt><dd id="stat-epoch">…</dd></div>
-  <div class="stat hot"><dt data-i18n="p.stat.next">Next epoch in</dt><dd id="stat-next">…</dd></div>
-</dl>
-
-<main>
-  <div class="col">
-  <section id="heist" class="heist" aria-labelledby="t-assalto" hidden>
-    <h2 id="t-assalto"><span data-i18n="p.heist.title">The heist</span> <small data-i18n="p.heist.sub">who is on duty, working live</small></h2>
-    <canvas id="heist-map" width="544" height="416" role="img" aria-label="Heist map: outlaws on duty breaking crates and opening chests" data-i18n-aria-label="p.heist.aria"></canvas>
-    <p class="note" data-i18n="p.heist.note">Stealth is speed, Strength is the hit (the number that pops off the crate), Aim is the arrow. Every cleared room moves on to the next terrain, from the road to the castle. The Crown's gold strongboxes (0 to 5 per room) take many more hits and are worth 10 chests. The map is a showcase: how much each one earns is decided by the contract (weight × vault), and the chests show that estimate. What counts is the "Claim" button on the card.</p>
-  </section>
-
-  <section aria-labelledby="t-bando">
-    <h2 id="t-bando"><span data-i18n="p.band.title">Your gang</span> <small data-i18n="p.band.sub">tick to act on several at once</small></h2>
-    <div id="bar" class="bar" hidden>
-      <span id="bar-count"></span>
-      <span id="bar-duty" class="duty" title="Up to 10 per wallet on duty at once" data-i18n-title="p.bar.duty.title" hidden></span>
-      <label for="shift"><span data-i18n="p.bar.shiftA">shift of</span> <input id="shift" type="number" min="1" max="30" value="10"> <span data-i18n="p.bar.shiftB">epochs</span></label>
-      <button id="b-work" class="btn" data-act="b-work" data-i18n="p.bar.work">Work</button>
-      <button id="b-stop" class="btn" data-act="b-stop" data-i18n="p.bar.stop">End shift</button>
-      <button class="btn" data-act="select-free" data-i18n="p.bar.selectFree">Select free</button>
-      <button class="btn" data-act="clear" data-i18n="p.bar.clear">Clear</button>
-      <button id="b-claim" class="btn btn-gold" data-act="b-claim">Claim all</button>
-    </div>
-    <div id="band"></div>
-  </section>
-  </div>
-
-  <aside>
+<div class="hud">
+  <aside class="col-side">
     <section id="start" class="panel start" aria-label="First steps" data-i18n-aria-label="p.start.aria" hidden></section>
 
-    <section class="panel" aria-labelledby="t-taverna">
-      <h2 id="t-taverna" data-i18n="p.tavern.title">Tavern</h2>
-      <p data-i18n="p.tavern.desc">Each bag is a random outlaw. The draw comes out about 40 seconds after you buy, and you have up to ~50 minutes to open it.</p>
-      <div class="buyline">
-        <div class="stepper">
-          <button data-act="qty-" aria-label="One bag less" data-i18n-aria-label="p.tavern.less">−</button><span id="qty">1</span><button data-act="qty+" aria-label="One bag more" data-i18n-aria-label="p.tavern.more">+</button>
-        </div>
-        <div class="total"><b id="price">…</b> $BOUNTY</div>
+    <section class="panel" aria-labelledby="t-caixa">
+      <h2 id="t-caixa" data-i18n="p.vault.title">The vault</h2>
+      <div class="pbody">
+        <dl class="stats">
+          <div class="stat"><dt data-i18n="p.stat.pool">Free vault</dt><dd><span id="stat-pool-2">…</span><small>$BOUNTY</small></dd></div>
+          <div class="stat"><dt data-i18n="p.stat.emission">Paid per epoch</dt><dd><span id="stat-emission">…</span><small data-i18n="p.stat.emission.note">0.5% of the vault</small></dd></div>
+          <div class="stat"><dt data-i18n="p.stat.weight">Weight on duty</dt><dd id="stat-weight">…</dd></div>
+          <div class="stat"><dt data-i18n="p.stat.epoch">Current epoch</dt><dd id="stat-epoch">…</dd></div>
+        </dl>
       </div>
-      <button id="buy" class="btn btn-gold" data-act="buy" data-i18n="p.tavern.buy">Buy</button>
-      <p id="approve-note" class="note" hidden data-i18n="p.tavern.approve">MetaMask asks for two confirmations: approving the exact amount of this purchase, and the purchase itself. Never approve "unlimited".</p>
-      <div id="sacks" style="margin-top:12px"></div>
-    </section>
-
-    <section class="panel" aria-labelledby="t-fusao">
-      <h2 id="t-fusao" data-i18n="p.fusion.title">Fusion</h2>
-      <div id="fusion"></div>
     </section>
 
     <section class="panel" aria-labelledby="t-registro">
       <h2 id="t-registro" data-i18n="p.log.title">Log</h2>
-      <ul id="log"></ul>
+      <div class="pbody"><ul id="log"></ul></div>
     </section>
   </aside>
-</main>
+
+  <main class="col-main">
+    <section id="tab-assalto" class="tab panel" aria-labelledby="t-assalto">
+      <h2 id="t-assalto"><span data-i18n="p.heist.title">The heist</span> <small data-i18n="p.heist.sub">who is on duty, working live</small></h2>
+      <div class="pbody">
+        <div id="heist" class="heist" hidden>
+          <canvas id="heist-map" width="544" height="416" role="img" aria-label="Heist map: outlaws on duty breaking crates and opening chests" data-i18n-aria-label="p.heist.aria"></canvas>
+          <p class="note" data-i18n="p.heist.note">Stealth is speed, Strength is the hit (the number that pops off the crate), Aim is the arrow. Every cleared room moves on to the next terrain, from the road to the castle. The Crown's gold strongboxes (0 to 5 per room) take many more hits and are worth 10 chests. The map is a showcase: how much each one earns is decided by the contract (weight × vault), and the chests show that estimate. What counts is the "Claim" button on the card.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-bando" class="tab panel" aria-labelledby="t-bando" hidden>
+      <h2 id="t-bando"><span data-i18n="p.band.title">Your gang</span> <small data-i18n="p.band.sub">tick to act on several at once</small></h2>
+      <div class="pbody">
+        <div id="bar" class="bar" hidden>
+          <span id="bar-count"></span>
+          <span id="bar-duty" class="duty" title="Up to 10 per wallet on duty at once" data-i18n-title="p.bar.duty.title" hidden></span>
+          <label for="shift"><span data-i18n="p.bar.shiftA">shift of</span> <input id="shift" type="number" min="1" max="30" value="10"> <span data-i18n="p.bar.shiftB">epochs</span></label>
+          <button id="b-work" class="btn btn-green btn-big" data-act="b-work" data-i18n="p.bar.work">Work</button>
+          <button id="b-stop" class="btn" data-act="b-stop" data-i18n="p.bar.stop">End shift</button>
+          <button class="btn" data-act="select-free" data-i18n="p.bar.selectFree">Select free</button>
+          <button class="btn" data-act="clear" data-i18n="p.bar.clear">Clear</button>
+          <button id="b-claim" class="btn btn-gold" data-act="b-claim">Claim all</button>
+        </div>
+        <div id="band"></div>
+      </div>
+    </section>
+
+    <section id="tab-taverna" class="tab panel" aria-labelledby="t-taverna" hidden>
+      <h2 id="t-taverna" data-i18n="p.tavern.title">Tavern</h2>
+      <div class="pbody">
+        <p data-i18n="p.tavern.desc">Each bag is a random outlaw. The draw comes out about 40 seconds after you buy, and you have up to ~50 minutes to open it.</p>
+        <div class="buyline">
+          <div class="stepper">
+            <button data-act="qty-" aria-label="One bag less" data-i18n-aria-label="p.tavern.less">−</button><span id="qty">1</span><button data-act="qty+" aria-label="One bag more" data-i18n-aria-label="p.tavern.more">+</button>
+          </div>
+          <div class="total"><b id="price">…</b> $BOUNTY</div>
+        </div>
+        <button id="buy" class="btn btn-gold btn-big" data-act="buy" data-i18n="p.tavern.buy">Buy</button>
+        <p id="approve-note" class="note" hidden data-i18n="p.tavern.approve">The wallet asks for two confirmations: approving the exact amount of this purchase, and the purchase itself. Never approve "unlimited".</p>
+        <div id="sacks" style="margin-top:12px"></div>
+      </div>
+    </section>
+
+    <section id="tab-fusao" class="tab panel" aria-labelledby="t-fusao" hidden>
+      <h2 id="t-fusao" data-i18n="p.fusion.title">Fusion</h2>
+      <div class="pbody"><div id="fusion"></div></div>
+    </section>
+  </main>
+</div>
+
+<nav class="hud-tabs" role="tablist" aria-label="Sections" data-i18n-aria-label="p.tabs">
+  <button class="tab-btn" role="tab" data-act="tab" data-tab="assalto" aria-selected="true" aria-controls="tab-assalto">
+    <img src="../assets/icon-arrows.png" alt="" width="30" height="30"><span data-i18n="p.tab.heist">Heist</span>
+  </button>
+  <button class="tab-btn" role="tab" data-act="tab" data-tab="bando" aria-selected="false" aria-controls="tab-bando">
+    <img src="../assets/icon-hood.png" alt="" width="30" height="30"><span data-i18n="p.tab.gang">Gang</span>
+  </button>
+  <button class="tab-btn" role="tab" data-act="tab" data-tab="taverna" aria-selected="false" aria-controls="tab-taverna">
+    <img src="../assets/icon-sack.png" alt="" width="30" height="30"><span data-i18n="p.tab.tavern">Tavern</span>
+  </button>
+  <button class="tab-btn" role="tab" data-act="tab" data-tab="fusao" aria-selected="false" aria-controls="tab-fusao">
+    <img src="../assets/icon-gem.png" alt="" width="30" height="30"><span data-i18n="p.tab.fusion">Fusion</span>
+  </button>
+</nav>
 
 <dialog id="reveal" class="reveal" aria-labelledby="reveal-title"></dialog>
 <dialog id="wallets" class="wallets"></dialog>

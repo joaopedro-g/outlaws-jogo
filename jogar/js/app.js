@@ -460,6 +460,14 @@
     dlg.showModal();
   }
 
+  /** Abas de baixo: trocam o que aparece no meio do HUD. */
+  function showTab(name) {
+    S.tab = name;
+    try { localStorage.setItem('outlaws:tab', name); } catch {}
+    for (const el of document.querySelectorAll('.col-main .tab')) el.hidden = el.id !== 'tab-' + name;
+    for (const el of document.querySelectorAll('.tab-btn')) el.setAttribute('aria-selected', String(el.dataset.tab === name));
+  }
+
   const byId = (id) => S.user.outlaws.find((o) => o.id === id);
   const selectedOutlaws = () => [...S.selected].map(byId).filter(Boolean);
 
@@ -665,18 +673,18 @@
       : `<button class="btn ${hasBounty ? '' : 'btn-gold'}" data-act="faucet" ${S.busy || dry || !hasEth ? 'disabled' : ''}>${tapLabel}</button>`;
 
     if (connected && hasEth && hasBounty) { //   tudo certo: só a torneira, pra quem quiser mais
-      box.innerHTML = `<div class="row" style="border:0;padding:0"><div><b>${esc(t('p.tap.title'))}</b><br><small>${
-        esc(dry ? t('p.tap.dry') : t('p.tap.every'))}</small></div>${tapBtn}</div>
+      box.innerHTML = `<h2>${esc(t('p.tap.title'))}</h2><div class="pbody">
+        <div class="row" style="border:0;padding:0"><small>${esc(dry ? t('p.tap.dry') : t('p.tap.every'))}</small>${tapBtn}</div>
         <details class="more-eth" ${open ? 'open' : ''}><summary>${esc(t('p.moreEth'))}</summary>${ethWays()}</details>
-        <p class="safety">${SAFETY()}</p>`;
+        <p class="safety">${SAFETY()}</p></div>`;
       return;
     }
     const step = (ok, n, html) => `<li class="${ok ? 'ok' : ''}"><span class="n">${ok ? '✓' : n}</span><div>${html}</div></li>`;
-    box.innerHTML = `<h2>${esc(t('p.start.title'))}</h2><p class="safety">${SAFETY()}</p><ol class="steps">
+    box.innerHTML = `<h2>${esc(t('p.start.title'))}</h2><div class="pbody"><p class="safety">${SAFETY()}</p><ol class="steps">
       ${step(connected, 1, connected ? esc(t('p.step1.done')) : `${esc(t('p.step1'))}<br><button class="btn btn-gold" data-act="connect">${esc(t('p.connect'))}</button>`)}
       ${step(hasEth, 2, `${esc(t('p.step2'))}${hasEth ? '' : ethWays()}`)}
       ${step(hasBounty, 3, `${esc(t('p.step3', { price: fmtB(price, 0) }))}<br>${hasEth ? tapBtn : `<small class="muted">${esc(t('p.step3.after'))}</small>`}`)}
-    </ol>`;
+    </ol></div>`;
   }
 
   /**
@@ -753,7 +761,8 @@
 
     const u = S.user;
     $('#balances').innerHTML = u
-      ? `<span><b>${fmtB(u.bounty)}</b> $BOUNTY</span><span><b>${fmtB(u.eth, 4)}</b> ETH</span>`
+      ? `<span class="pill"><img src="../site/assets/icon-coin.png" alt="" width="22" height="22"><span><span class="k">$BOUNTY</span><span class="v">${fmtB(u.bounty)}</span></span></span>
+         <span class="pill"><i></i><span><span class="k">ETH</span><span class="v">${fmtB(u.eth, 4)}</span></span></span>`
       : '';
   }
 
@@ -762,6 +771,7 @@
     if (!g || !c) return;
     const perEpoch = (g.free * 50n) / 10_000n;
     $('#stat-pool').textContent = fmtB(g.free, 0);
+    $('#stat-pool-2').textContent = fmtB(g.free, 0);
     $('#stat-emission').textContent = fmtB(perEpoch, 1);
     $('#stat-weight').textContent = (Number(g.weight) / 10_000).toLocaleString(loc(), { maximumFractionDigits: 2 }) + '×';
     $('#stat-epoch').textContent = g.epoch;
@@ -1010,6 +1020,7 @@
       renderFusion();
       return;
     }
+    if (act === 'tab') return showTab(b.dataset.tab);
     if (act === 'use-wallet') { $('#wallets').close(); return actions.connect(b.dataset.rdns); }
     if (act === 'close-wallets') return $('#wallets').close();
     if (act === 'b-work') return actions.work([...S.selected]);
@@ -1063,6 +1074,10 @@
       } catch {}
     }
     Heist.mount($('#heist-map'));
+    let tab = 'assalto';
+    try { tab = localStorage.getItem('outlaws:tab') || tab; } catch {}
+    tab = params.get('tab') || tab;
+    showTab(document.getElementById('tab-' + tab) ? tab : 'assalto');
     I18N.onChange(() => render());
     render();
     await refresh();
