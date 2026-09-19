@@ -7,455 +7,546 @@
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>OUTLAWS</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=IM+Fell+English:ital@0;1&family=Archivo:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Holtwood+One+SC&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Archivo:wght@400;500;600;700&family=Press+Start+2P&display=swap">
 <style>
-  /* Mundo único e assumido: mata à noite. Sem troca de tema — toda cor é
-     pintada explicitamente pra página se segurar em qualquer fundo do host.
-     Toda textura (pergaminho, madeira, mata, brasão, lacre, ornamento) é PNG
-     gerado pelo mesmo pipeline de pixel que desenha os bonecos. */
+  /* Um mural de cartazes de procurados pregado numa parede de tábuas.
+     Papel e madeira são ruído SVG, o rasgo é um recorte fixo e o desgaste da
+     tinta um filtro pequeno (nada de imagem pesada); bonecos, mapas e ícones são os PNGs do mesmo
+     gerador de pixel do jogo. Sem troca de tema: o mural é sempre o mesmo. */
   :root {
-    --ground:     #0B0F08;
-    --ground-2:   #131810;
-    --surface:    #1A2114;
-    --line:       #2C3724;
-    --ink:        #2B2115;
-    --ink-soft:   #5A4830;
-    --gold:       #D9A441;
-    --gold-hi:    #F2CE7E;
-    --gold-dim:   #8C6A29;
-    --moss:       #8FB35E;
-    --text:       #DCE0D2;
-    --text-dim:   #949D86;
-    --danger:     #C4614A;
+    --wall:      #22170D;
+    --ink:       #2A1A0E;
+    --ink-soft:  #5B4128;
+    --ink-faint: rgba(42,26,14,.62);
+    --paper:     #E6D3A8;
+    --red:       #9E2320;
+    --gold:      #D9A441;
+    --gold-hi:   #F2CE7E;
+    --gold-dim:  #8C6A29;
+    --text:      #EDE2C8;
+    --text-dim:  #B9A887;
 
-    --pixel: "Press Start 2P", ui-monospace, monospace;
-    --press: "IM Fell English", Georgia, "Times New Roman", serif;
+    --wood:  "Holtwood One SC", "Rye", Georgia, serif;
+    --fell:  "IM Fell English", Georgia, "Times New Roman", serif;
+    --fellsc:"IM Fell English SC", "IM Fell English", Georgia, serif;
     --body:  "Archivo", ui-sans-serif, system-ui, sans-serif;
+    --pixel: "Press Start 2P", ui-monospace, monospace;
+
+    /* borda rasgada do papel: recorte fixo gerado uma vez (filtro de deslocamento custava caro a cada pintura) */
+    --tear-a: polygon(0.00% 3.3px,2.27% 3.4px,4.55% 4px,6.82% 5.2px,9.09% 3.8px,11.36% 2.9px,13.64% 10.8px,15.91% 3px,18.18% 3.5px,20.45% 4.5px,22.73% 3.1px,25.00% 3.1px,27.27% 13.2px,29.55% 11.5px,31.82% 4px,34.09% 5px,36.36% 11.8px,38.64% 4.7px,40.91% 4.3px,43.18% 5.2px,45.45% 6.4px,47.73% 5.5px,50.00% 5.7px,52.27% 5px,54.55% 5.4px,56.82% 6.1px,59.09% 5.7px,61.36% 4.9px,63.64% 5.2px,65.91% 5.1px,68.18% 4.9px,70.45% 5.8px,72.73% 4.6px,75.00% 4.9px,77.27% 6.3px,79.55% 6.2px,81.82% 6.6px,84.09% 5.8px,86.36% 11.8px,88.64% 7px,90.91% 6.8px,93.18% 6.8px,95.45% 6.2px,97.73% 5.5px,calc(100% - 1.6px) 0.00%,calc(100% - 2.2px) 2.27%,calc(100% - 1.1px) 4.55%,calc(100% - 0.5px) 6.82%,calc(100% - 0.3px) 9.09%,calc(100% - 6.5px) 11.36%,calc(100% - 0px) 13.64%,calc(100% - 0px) 15.91%,calc(100% - 0.3px) 18.18%,calc(100% - 1px) 20.45%,calc(100% - 0.2px) 22.73%,calc(100% - 0.2px) 25.00%,calc(100% - 1.1px) 27.27%,calc(100% - 2.5px) 29.55%,calc(100% - 2.6px) 31.82%,calc(100% - 2.2px) 34.09%,calc(100% - 3.5px) 36.36%,calc(100% - 2.9px) 38.64%,calc(100% - 4.2px) 40.91%,calc(100% - 3.2px) 43.18%,calc(100% - 7.5px) 45.45%,calc(100% - 3.2px) 47.73%,calc(100% - 2.3px) 50.00%,calc(100% - 1.7px) 52.27%,calc(100% - 2px) 54.55%,calc(100% - 3.3px) 56.82%,calc(100% - 2.5px) 59.09%,calc(100% - 1.3px) 61.36%,calc(100% - 0.8px) 63.64%,calc(100% - 1.4px) 65.91%,calc(100% - 2.5px) 68.18%,calc(100% - 1.8px) 70.45%,calc(100% - 1.7px) 72.73%,calc(100% - 3.1px) 75.00%,calc(100% - 4.6px) 77.27%,calc(100% - 4.9px) 79.55%,calc(100% - 3.8px) 81.82%,calc(100% - 4.6px) 84.09%,calc(100% - 3.2px) 86.36%,calc(100% - 3.1px) 88.64%,calc(100% - 4.2px) 90.91%,calc(100% - 3.1px) 93.18%,calc(100% - 2.5px) 95.45%,calc(100% - 10.2px) 97.73%,100.00% calc(100% - 3.9px),97.73% calc(100% - 2.3px),95.45% calc(100% - 3.3px),93.18% calc(100% - 2.3px),90.91% calc(100% - 1.2px),88.64% calc(100% - 1.5px),86.36% calc(100% - 2px),84.09% calc(100% - 3.1px),81.82% calc(100% - 4.7px),79.55% calc(100% - 3.9px),77.27% calc(100% - 4.5px),75.00% calc(100% - 9.4px),72.73% calc(100% - 3.5px),70.45% calc(100% - 13.4px),68.18% calc(100% - 2.9px),65.91% calc(100% - 1.9px),63.64% calc(100% - 1.8px),61.36% calc(100% - 3.4px),59.09% calc(100% - 3.7px),56.82% calc(100% - 3px),54.55% calc(100% - 3.8px),52.27% calc(100% - 2.5px),50.00% calc(100% - 7.9px),47.73% calc(100% - 2.7px),45.45% calc(100% - 1.9px),43.18% calc(100% - 2.1px),40.91% calc(100% - 2.2px),38.64% calc(100% - 2.2px),36.36% calc(100% - 2.7px),34.09% calc(100% - 2.8px),31.82% calc(100% - 4.3px),29.55% calc(100% - 5px),27.27% calc(100% - 4.4px),25.00% calc(100% - 4.4px),22.73% calc(100% - 5.9px),20.45% calc(100% - 7px),18.18% calc(100% - 5.6px),15.91% calc(100% - 4.2px),13.64% calc(100% - 2.7px),11.36% calc(100% - 1.2px),9.09% calc(100% - 8.9px),6.82% calc(100% - 1px),4.55% calc(100% - 0px),2.27% calc(100% - 0px),3.9px 100.00%,5.3px 97.73%,6.3px 95.45%,6.3px 93.18%,6.6px 90.91%,5.3px 88.64%,3.7px 86.36%,3.1px 84.09%,3.2px 81.82%,3.3px 79.55%,4.6px 77.27%,6px 75.00%,6.8px 72.73%,5.7px 70.45%,7px 68.18%,5.5px 65.91%,6.3px 63.64%,7px 61.36%,12.1px 59.09%,7.3px 56.82%,7.1px 54.55%,6.3px 52.27%,4.7px 50.00%,6.1px 47.73%,5.8px 45.45%,6.6px 43.18%,5.4px 40.91%,4.1px 38.64%,3.6px 36.36%,5.1px 34.09%,5.7px 31.82%,7.2px 29.55%,7.8px 27.27%,8.8px 25.00%,9px 22.73%,9px 20.45%,8.3px 18.18%,9px 15.91%,9px 13.64%,9px 11.36%,9px 9.09%,8px 6.82%,8.1px 4.55%,13.2px 2.27%);
+    --tear-b: polygon(0.00% 6px,2.27% 3.3px,4.55% 2.2px,6.82% 2.4px,9.09% 3.3px,11.36% 2.8px,13.64% 2.8px,15.91% 7.5px,18.18% 2.8px,20.45% 3.4px,22.73% 2.4px,25.00% 8px,27.27% 2.9px,29.55% 1.7px,31.82% 3.1px,34.09% 3.4px,36.36% 4.2px,38.64% 4.9px,40.91% 5.7px,43.18% 4.8px,45.45% 5.1px,47.73% 4.6px,50.00% 3.3px,52.27% 2px,54.55% 2.2px,56.82% 3.7px,59.09% 2.5px,61.36% 3.3px,63.64% 4.3px,65.91% 4.8px,68.18% 4px,70.45% 4.7px,72.73% 5.9px,75.00% 7.3px,77.27% 7.4px,79.55% 6.9px,81.82% 8.2px,84.09% 8px,86.36% 6.6px,88.64% 6.6px,90.91% 6.5px,93.18% 6.3px,95.45% 5.6px,97.73% 6px,calc(100% - 2.6px) 0.00%,calc(100% - 1.9px) 2.27%,calc(100% - 0.4px) 4.55%,calc(100% - 0px) 6.82%,calc(100% - 1.5px) 9.09%,calc(100% - 1.7px) 11.36%,calc(100% - 1.1px) 13.64%,calc(100% - 0.1px) 15.91%,calc(100% - 7.3px) 18.18%,calc(100% - 1.2px) 20.45%,calc(100% - 1.2px) 22.73%,calc(100% - 1.2px) 25.00%,calc(100% - 1.2px) 27.27%,calc(100% - 0.6px) 29.55%,calc(100% - 0px) 31.82%,calc(100% - 0.5px) 34.09%,calc(100% - 0px) 36.36%,calc(100% - 0px) 38.64%,calc(100% - 0px) 40.91%,calc(100% - 0.2px) 43.18%,calc(100% - 0px) 45.45%,calc(100% - 0px) 47.73%,calc(100% - 1.5px) 50.00%,calc(100% - 7.7px) 52.27%,calc(100% - 2.2px) 54.55%,calc(100% - 3.3px) 56.82%,calc(100% - 4.4px) 59.09%,calc(100% - 3.7px) 61.36%,calc(100% - 2.4px) 63.64%,calc(100% - 2.9px) 65.91%,calc(100% - 2.1px) 68.18%,calc(100% - 3.1px) 70.45%,calc(100% - 4px) 72.73%,calc(100% - 5.4px) 75.00%,calc(100% - 5.5px) 77.27%,calc(100% - 13.8px) 79.55%,calc(100% - 5.5px) 81.82%,calc(100% - 4.5px) 84.09%,calc(100% - 5.9px) 86.36%,calc(100% - 4.8px) 88.64%,calc(100% - 3.8px) 90.91%,calc(100% - 5.2px) 93.18%,calc(100% - 4.5px) 95.45%,calc(100% - 9.2px) 97.73%,100.00% calc(100% - 2.5px),97.73% calc(100% - 2.7px),95.45% calc(100% - 1.6px),93.18% calc(100% - 3.1px),90.91% calc(100% - 4.6px),88.64% calc(100% - 12.8px),86.36% calc(100% - 5.1px),84.09% calc(100% - 5.1px),81.82% calc(100% - 5.3px),79.55% calc(100% - 3.8px),77.27% calc(100% - 2.5px),75.00% calc(100% - 2.2px),72.73% calc(100% - 2.3px),70.45% calc(100% - 2.2px),68.18% calc(100% - 3.2px),65.91% calc(100% - 4px),63.64% calc(100% - 4.2px),61.36% calc(100% - 3.8px),59.09% calc(100% - 3.9px),56.82% calc(100% - 3px),54.55% calc(100% - 4.3px),52.27% calc(100% - 3.9px),50.00% calc(100% - 5.4px),47.73% calc(100% - 5.8px),45.45% calc(100% - 6.9px),43.18% calc(100% - 5.4px),40.91% calc(100% - 6.7px),38.64% calc(100% - 6.1px),36.36% calc(100% - 7.4px),34.09% calc(100% - 7.6px),31.82% calc(100% - 8.2px),29.55% calc(100% - 9px),27.27% calc(100% - 9px),25.00% calc(100% - 11.8px),22.73% calc(100% - 6.5px),20.45% calc(100% - 8px),18.18% calc(100% - 7.1px),15.91% calc(100% - 8.6px),13.64% calc(100% - 13.8px),11.36% calc(100% - 7.9px),9.09% calc(100% - 9px),6.82% calc(100% - 8px),4.55% calc(100% - 8.6px),2.27% calc(100% - 8.7px),2.5px 100.00%,12.3px 97.73%,1.7px 95.45%,1.7px 93.18%,4.8px 90.91%,1.4px 88.64%,1.9px 86.36%,3.3px 84.09%,2.5px 81.82%,1.6px 79.55%,0.9px 77.27%,0.5px 75.00%,1.4px 72.73%,2.4px 70.45%,3.8px 68.18%,3.5px 65.91%,4.8px 63.64%,3.9px 61.36%,2.5px 59.09%,2.2px 56.82%,1.5px 54.55%,9px 52.27%,2.1px 50.00%,0.7px 47.73%,0.2px 45.45%,1.6px 43.18%,2.2px 40.91%,1.5px 38.64%,1px 36.36%,1.5px 34.09%,2px 31.82%,0.6px 29.55%,0px 27.27%,1.4px 25.00%,8.9px 22.73%,1.3px 20.45%,1.8px 18.18%,1.2px 15.91%,1.8px 13.64%,1.5px 11.36%,2.7px 9.09%,3.5px 6.82%,2.2px 4.55%,1.6px 2.27%);
+
+    /* fibra do papel e manchas, e o veio da madeira: ruído gerado, sem arquivo */
+    --fibers: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .33 0 0 0 0 .22 0 0 0 0 .1 0 0 0 .42 -.08'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
+    --stains: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='700' height='700'%3E%3Cfilter id='s'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.011' numOctaves='4' seed='9' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .3 0 0 0 0 .12 0 0 0 1.5 -.62'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23s)'/%3E%3C/svg%3E");
+    --grain:  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.07 .0035' numOctaves='3' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .05 0 0 0 0 .03 0 0 0 0 .01 0 0 0 1.4 -.45'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
   }
 
   * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 76px; }
 
   body {
     margin: 0;
-    background: var(--ground);
-    background-image:
-      radial-gradient(900px 420px at 50% 0%, #1A2413 0%, transparent 72%),
-      repeating-linear-gradient(0deg, rgba(255,255,255,.014) 0 1px, transparent 1px 3px);
     color: var(--text);
     font-family: var(--body);
     font-size: 16px;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
+    background-color: var(--wall);
+    background-image:
+      radial-gradient(1100px 620px at 50% 180px, rgba(255,186,96,.13), transparent 70%),
+      var(--grain),
+      repeating-linear-gradient(90deg, rgba(0,0,0,.6) 0 3px, rgba(255,230,190,.05) 3px 4px, transparent 4px 212px),
+      linear-gradient(90deg, #2A1B0F, #231609 26%, #2E1E11 52%, #25170C 78%, #2B1C0F);
   }
 
-  img { image-rendering: pixelated; max-width: 100%; }
-  a { color: var(--moss); }
+  img { image-rendering: pixelated; max-width: 100%; height: auto; }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--gold-hi); outline-offset: 3px; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-  .wrap { max-width: 980px; margin: 0 auto; padding-inline: 20px; }
-  section { padding-block: 60px; }
-
-  /* divisória: flechas cruzadas, não uma régua qualquer */
-  .rule { display: block; width: 288px; max-width: 70%; height: 48px; margin: 0 auto;
-          background: url("assets/ornament.png") center/contain no-repeat; opacity: .75; }
-
-  h2 { font-family: var(--pixel); font-size: 15px; line-height: 1.7; letter-spacing: .02em;
-       color: var(--gold); margin: 0 0 10px; text-wrap: balance; }
-  .lede { color: var(--text-dim); max-width: 62ch; margin: 0 0 32px; }
-  p { max-width: 68ch; }
-  .eyebrow { font-family: var(--pixel); font-size: 9px; letter-spacing: .14em;
-             color: var(--gold-dim); text-transform: uppercase; margin: 0; }
-
-  /* ------------------------------------------------------------ cena */
-  .scene { position: relative; overflow: hidden; }
-  .scene > * { position: relative; z-index: 2; }
-
-  .torch {
-    position: absolute; inset: -80px 0 auto 0; height: 460px; z-index: 0; pointer-events: none;
-    background: radial-gradient(520px 260px at 50% 30%, rgba(217,164,65,.16), transparent 70%);
+  /* ------------------------------------------------------------ header */
+  .topbar {
+    position: sticky; top: 0; z-index: 30;
+    display: flex; align-items: center; gap: 18px;
+    padding: 10px clamp(14px, 3vw, 28px);
+    background: linear-gradient(#1B1209, #140D07);
+    border-bottom: 2px solid #3B2714;
+    box-shadow: 0 1px 0 rgba(242,206,126,.08), 0 10px 26px rgba(0,0,0,.55);
   }
-  .fog {
-    position: absolute; left: -25%; width: 150%; height: 240px; z-index: 1; pointer-events: none;
-    background: radial-gradient(ellipse 50% 60% at 50% 50%, rgba(150,175,130,.085), transparent 70%);
+  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; margin-right: auto; }
+  .brand img { width: 38px; height: 38px; }
+  .brand span { font-family: var(--wood); font-size: 20px; letter-spacing: .06em; color: var(--gold-hi);
+                text-shadow: 0 2px 0 #000; }
+  .topbar nav { display: flex; gap: clamp(12px, 2.2vw, 26px); }
+  .topbar nav a { font-family: var(--fellsc); font-size: 18px; text-decoration: none; color: var(--text); opacity: .85; }
+  .topbar nav a:hover { opacity: 1; color: var(--gold-hi); }
+  .topbar .langbar { display: flex; }
+  .tb-play { font-family: var(--wood); font-size: 13px; letter-spacing: .06em; text-decoration: none;
+             color: #1E1307; background: var(--gold); padding: 9px 14px 8px;
+             box-shadow: inset 0 -3px 0 rgba(0,0,0,.25), 0 2px 0 #000; }
+  .tb-play:hover { background: var(--gold-hi); }
+  @media (max-width: 820px) { .topbar nav { display: none; } }
+  @media (max-width: 420px) { .brand span { display: none; } }
+
+  main { overflow-x: clip; } /* o selo e as fotos tortas não podem abrir rolagem de lado no celular */
+
+  /* ------------------------------------------------------ papel e prego */
+  .paper { position: relative; isolation: isolate; color: var(--ink);
+           filter: drop-shadow(0 20px 24px rgba(0,0,0,.55)) drop-shadow(0 2px 2px rgba(0,0,0,.45)); }
+  .paper::before {
+    content: ""; position: absolute; inset: 0; z-index: -1;
+    background:
+      radial-gradient(ellipse 58% 52% at 50% 46%, transparent 62%, rgba(128,82,30,.22) 100%),
+      radial-gradient(ellipse at 50% 50%, transparent 74%, rgba(86,52,18,.62) 100%),
+      var(--stains), var(--fibers),
+      linear-gradient(172deg, #EFDFB8, #E0C99A 52%, #D6BC8A);
+    clip-path: var(--tear-a);
   }
-  .fog-a { bottom: 40px; }
-  .fog-b { bottom: 120px; opacity: .6; }
+  .paper:nth-of-type(even)::before, .photo:nth-child(even)::before { clip-path: var(--tear-b); }
+  .nail { position: absolute; width: 15px; height: 15px; border-radius: 50%; z-index: 2;
+          background: radial-gradient(circle at 36% 30%, #E4DED2 0 10%, #8A847A 26%, #3C3833 62%, #1F1C19 100%);
+          box-shadow: 0 3px 3px rgba(0,0,0,.55); }
+  .nail.tl { top: 14px; left: 14px; } .nail.tr { top: 14px; right: 14px; }
+  .nail.bl { bottom: 14px; left: 14px; } .nail.br { bottom: 14px; right: 14px; }
 
-  .treeline {
-    position: absolute; left: 0; right: 0; bottom: 0; height: 96px; z-index: 3; pointer-events: none;
-    background: url("assets/treeline.png") repeat-x bottom center / auto 96px;
+  /* divisória de verdade: filete, losango, coroa, losango, filete */
+  .divider { display: flex; align-items: center; gap: 12px; margin: 22px auto; max-width: 680px; color: var(--ink); }
+  .divider::before, .divider::after { content: ""; flex: 1; height: 2px; background: currentColor; opacity: .8; }
+  .divider .dia { width: 8px; height: 8px; background: currentColor; transform: rotate(45deg); flex: none; }
+  .divider svg { width: 30px; height: 20px; flex: none; fill: currentColor; }
+  .divider.gold { color: var(--gold-dim); }
+
+  /* faixa escura de ponta recortada (o "OUTLAWS", os nomes, o botão) */
+  .ribbon { display: inline-block; background: var(--ink); color: #EFDFB8;
+            clip-path: polygon(0 0, 100% 0, calc(100% - .55em) 50%, 100% 100%, 0 100%, .55em 50%); }
+
+  /* ------------------------------------------------------------- cartaz */
+  .hero { padding: 44px 16px 26px; }
+  .poster { container-type: inline-size; max-width: 900px; margin: 0 auto; text-align: center;
+            padding: clamp(34px, 6vw, 58px) clamp(18px, 5vw, 56px) clamp(40px, 6vw, 60px); }
+  .poster > .divider:first-of-type { margin-top: 0; }
+
+  .wanted { font-family: var(--wood); font-weight: 400; margin: 6px 0 4px; line-height: .92;
+            font-size: min(18cqi, 136px); letter-spacing: .01em; color: var(--ink);
+            text-shadow: 0 1px 0 rgba(255,240,210,.35); filter: url(#worn); }
+
+  .banner { display: flex; align-items: center; justify-content: center; gap: 14px; margin: 6px 0 10px; }
+  .banner strong { font-family: var(--wood); font-weight: 400; font-size: min(8.2cqi, 56px); letter-spacing: .08em;
+                   padding: .12em 1.1em .08em; }
+  .banner .fl { width: min(9cqi, 64px); height: 16px; flex: none; fill: var(--ink); }
+  .banner .fl.r { transform: scaleX(-1); }
+
+  .alive { font-family: var(--fell); font-style: italic; font-size: min(6.4cqi, 38px); margin: 8px 0 22px;
+           display: flex; align-items: center; justify-content: center; gap: 16px; }
+  .alive::before, .alive::after { content: ""; width: min(10cqi, 72px); height: 2px; background: var(--ink); }
+
+  .mugs { list-style: none; padding: 0; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr);
+          gap: 26px clamp(14px, 3cqi, 30px); }
+  @container (max-width: 560px) { .mugs { grid-template-columns: repeat(2, 1fr); } }
+
+  .mug .frame { position: relative; aspect-ratio: 1; display: grid; place-items: center; margin: 0 auto 10px;
+                max-width: 190px; border: 3px solid var(--ink); border-radius: 12px;
+                background:
+                  radial-gradient(circle at 50% 42%, rgba(255,244,214,.55), transparent 62%),
+                  linear-gradient(#D9C08E, #C9AC76);
+                box-shadow: inset 0 0 0 3px #E9D6AB, inset 0 0 0 5px var(--rc, #A7ADB2), inset 0 0 22px rgba(90,56,20,.45); }
+  .mug .frame img { width: 82%; height: auto; }
+  .mug .tag { font-family: var(--fellsc); font-size: clamp(14px, 2.6cqi, 19px); line-height: 1.15;
+              padding: .32em 1.2em .26em; display: inline-flex; align-items: center; gap: .45em; }
+  .mug .gem { width: .55em; height: .55em; background: var(--rc); transform: rotate(45deg); flex: none;
+              box-shadow: 0 0 0 1.5px #EFDFB8; }
+  .mug .crime { font-family: var(--fell); font-style: italic; font-size: clamp(14px, 2.3cqi, 17px); line-height: 1.3;
+                margin: 8px auto 4px; max-width: 22ch; color: var(--ink-soft); }
+  .mug .price { font-family: var(--wood); font-size: clamp(12px, 2cqi, 15px); letter-spacing: .04em; margin: 0; }
+  .mug.legend .frame { box-shadow: inset 0 0 0 3px #E9D6AB, inset 0 0 0 5px #FF4F5E, inset 0 0 0 7px #FFD166,
+                                   inset 0 0 26px rgba(255,160,60,.45); }
+
+  .decree { font-family: var(--wood); font-size: min(6.2cqi, 40px); line-height: 1.15; margin: 4px auto 10px;
+            max-width: 18ch; text-wrap: balance; }
+  .decree-sub { font-family: var(--fell); font-style: italic; font-size: clamp(16px, 2.8cqi, 21px); line-height: 1.45;
+                max-width: 44ch; margin: 0 auto; color: var(--ink-soft); text-wrap: pretty; }
+
+  .ribbon-btn { font-family: var(--wood); font-size: clamp(14px, 3cqi, 21px); letter-spacing: .08em; text-decoration: none;
+                padding: .8em 2.2em .72em; display: inline-flex; gap: .9em; align-items: center; margin-top: 4px;
+                transition: transform .12s ease, background .12s ease; }
+  .ribbon-btn:hover { background: #3A2413; transform: translateY(-2px); }
+  .ribbon-btn .plus { color: var(--gold-hi); font-family: var(--fell); font-size: 1.1em; }
+  .fine { font-size: 14px; margin: 14px 0 0; color: var(--ink-soft); }
+  .fine a { color: var(--red); font-weight: 600; }
+
+  .seal { position: absolute; right: clamp(-18px, -1.5vw, -8px); bottom: clamp(-22px, -2vw, -10px);
+          width: clamp(92px, 16cqi, 138px); transform: rotate(-12deg);
+          filter: drop-shadow(0 6px 8px rgba(0,0,0,.5)); }
+
+  .tickets { list-style: none; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; padding: 0; margin: 34px 0 0; }
+  .tickets li { font-family: var(--pixel); font-size: 9px; letter-spacing: .06em; color: var(--gold-hi);
+                border: 1px solid rgba(217,164,65,.45); background: rgba(20,13,7,.7); padding: 8px 11px; }
+
+  /* ---------------------------------------------------------- seções */
+  .board { max-width: 1000px; margin: 0 auto; padding: 70px 16px 0; }
+  .board-head { text-align: center; margin: 0 auto 30px; max-width: 700px; }
+  .board-head h2 { font-family: var(--wood); font-weight: 400; font-size: clamp(26px, 4.4vw, 40px); line-height: 1.1;
+                   letter-spacing: .03em; color: var(--gold-hi); margin: 0; text-shadow: 0 3px 0 #000; }
+  .board-head .divider { margin: 14px auto; max-width: 340px; }
+  .board-head p { font-family: var(--fell); font-style: italic; font-size: 19px; line-height: 1.5; color: var(--text-dim);
+                  margin: 0 auto; max-width: 56ch; text-wrap: pretty; }
+
+  /* o ciclo, desenhado */
+  .loop { padding: clamp(30px, 5vw, 50px) clamp(16px, 4vw, 44px) 26px; }
+  .stations { display: grid; grid-template-columns: 1fr 44px 1fr 44px 1fr 44px 1fr; align-items: start; }
+  .station { text-align: center; }
+  .medal { position: relative; width: 132px; height: 132px; margin: 0 auto 12px; border-radius: 50%; display: grid; place-items: center;
+           background: radial-gradient(circle at 42% 36%, #F4E6C4, #D8BF8C 70%);
+           box-shadow: 0 0 0 3px var(--ink), 0 0 0 7px #E6D3A8, 0 0 0 9px var(--ink), 0 8px 14px rgba(60,36,12,.35); }
+  .medal img { width: 72px; height: 72px; }
+  .medal .num { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); font-family: var(--wood);
+                font-size: 15px; padding: .28em 1em .2em; }
+  .station h3 { font-family: var(--fellsc); font-size: 23px; font-weight: 400; margin: 6px 0 6px; }
+  .station p { font-size: 14px; line-height: 1.5; margin: 0 auto; max-width: 25ch; color: var(--ink-soft); }
+  .hop { align-self: start; margin-top: 50px; }
+  .hop svg { width: 44px; height: 30px; stroke: var(--ink); fill: none; stroke-width: 2.4; stroke-linecap: round; }
+  .again { margin: 14px auto 0; max-width: 820px; position: relative; }
+  .again svg { width: 100%; height: 58px; display: block; stroke: var(--ink); fill: none; stroke-width: 2.4;
+               stroke-linecap: round; stroke-dasharray: 2 7; }
+  .again span { position: absolute; left: 50%; bottom: 2px; transform: translateX(-50%); background: #E3CE9F;
+                padding: 0 12px; font-family: var(--fell); font-style: italic; font-size: 18px; white-space: nowrap; }
+  @media (max-width: 860px) {
+    .stations { grid-template-columns: 1fr 1fr; gap: 34px 14px; }
+    .hop, .again { display: none; }
   }
-  .treeline::after {
-    content: ""; position: absolute; inset: auto 0 0 0; height: 30px;
-    background: linear-gradient(to bottom, transparent, var(--ground));
-  }
 
-  /* ------------------------------------------------------------ hero */
-  .hero { display: grid; grid-template-columns: 302px 1fr; gap: 48px; align-items: center;
-          padding: 52px 20px 132px; max-width: 980px; margin: 0 auto; }
-  @media (max-width: 780px) { .hero { grid-template-columns: 1fr; gap: 34px; padding-bottom: 118px; } }
+  /* o livro do Xerife */
+  .ledger { padding: clamp(28px, 5vw, 46px) clamp(12px, 4vw, 40px); }
+  .ledger-scroll { overflow-x: auto; }
+  .ledger table { width: 100%; border-collapse: collapse; min-width: 600px; font-variant-numeric: tabular-nums; }
+  .ledger th { font-family: var(--fellsc); font-weight: 400; font-size: 17px; text-align: right; padding: 0 10px 10px;
+               border-bottom: 2px solid var(--ink); white-space: nowrap; }
+  .ledger th:first-child { text-align: left; }
+  .ledger td { padding: 9px 10px; text-align: right; border-bottom: 1px dashed rgba(42,26,14,.35); font-size: 15px; }
+  .ledger tr:last-child td { border-bottom: 0; }
+  .ledger td:first-child { text-align: left; }
+  .ledger .who { display: flex; align-items: center; gap: 10px; font-family: var(--fell); font-size: 19px; }
+  .ledger .who img { width: 44px; height: 44px; border: 2px solid var(--ink); border-radius: 6px;
+                     box-shadow: inset 0 0 0 2px var(--rc); background: #D8C08F; }
+  .ledger .gem { width: 9px; height: 9px; background: var(--rc); transform: rotate(45deg); box-shadow: 0 0 0 1.5px var(--ink); flex: none; }
+  .ledger .bounty { font-family: var(--wood); font-size: 14px; }
 
-  .crest { width: 78px; display: block; margin-bottom: 18px; }
-  .wordmark { font-family: var(--pixel); font-size: 44px; line-height: 1.12; margin: 0;
-              color: var(--text); letter-spacing: .01em;
-              text-shadow: 4px 4px 0 var(--gold-dim), 8px 8px 0 rgba(0,0,0,.45); }
-  @media (max-width: 780px) { .wordmark { font-size: 31px; } }
-  .tagline { font-family: var(--press); font-size: 25px; color: var(--gold); margin: 20px 0 12px; line-height: 1.35; }
+  /* nunca dois iguais */
+  .certificate { max-width: 760px; margin: 0 auto; text-align: center; padding: clamp(32px, 5vw, 50px) clamp(18px, 5vw, 50px); }
+  .certificate .bignum { font-family: var(--wood); font-size: clamp(34px, 7vw, 64px); line-height: 1.05; margin: 6px auto 14px;
+                         max-width: none; color: var(--ink); filter: url(#worn); }
+  .certificate p { font-size: 16px; line-height: 1.65; max-width: 60ch; margin: 0 auto 12px; color: var(--ink-soft); }
+  .certificate strong { color: var(--ink); }
 
-  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
-  .chip { font-family: var(--pixel); font-size: 9px; letter-spacing: .06em; padding: 8px 10px;
-          border: 1px solid var(--line); background: rgba(26,33,20,.8); color: var(--text-dim); }
-  .chip.live { border-color: var(--gold-dim); color: var(--gold); }
+  /* terrenos: fotos pregadas numa rota */
+  .route { position: relative; display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+  .route::before { content: ""; position: absolute; left: 6%; right: 6%; top: 50%; border-top: 3px dashed rgba(242,206,126,.35); }
+  .photo { padding: 12px 12px 14px; text-align: center; }
+  .photo:nth-child(odd) { transform: rotate(-2deg); } .photo:nth-child(even) { transform: rotate(1.6deg) translateY(10px); }
+  .photo img { display: block; width: 100%; border: 2px solid var(--ink); }
+  .photo .t-name { font-family: var(--fellsc); font-size: 20px; margin-top: 8px; line-height: 1.1; }
+  .photo .t-meta { font-size: 12.5px; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+  .photo .nail { top: 5px; left: 50%; margin-left: -7px; }
+  @media (max-width: 900px) { .route { grid-template-columns: repeat(3, 1fr); } .route::before { display: none; } }
+  @media (max-width: 560px) { .route { grid-template-columns: repeat(2, 1fr); } }
 
-  .play { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 18px; margin-top: 28px; }
-  .cta { font-family: var(--pixel); font-size: 12px; letter-spacing: .04em; text-decoration: none;
-         padding: 15px 18px; background: var(--gold); color: #1A1206; border: 1px solid var(--gold-hi);
-         box-shadow: 0 3px 0 #000, 0 0 0 4px rgba(217,164,65,.14); }
-  .cta:hover { background: var(--gold-hi); }
-  .cta:active { transform: translateY(2px); box-shadow: 0 1px 0 #000; }
-  .cta:focus-visible { outline: 2px solid var(--gold-hi); outline-offset: 4px; }
-  .play small { color: var(--text-dim); font-size: 13px; }
-  .langbar { position: fixed; top: 10px; right: 12px; z-index: 20; padding: 4px; background: rgba(11,15,8,.72); border: 1px solid var(--line); }
+  /* quadro de avisos */
+  .notices { display: grid; grid-template-columns: 1fr 1.25fr; gap: 26px; align-items: start; }
+  @media (max-width: 820px) { .notices { grid-template-columns: 1fr; } }
+  .notice { padding: 34px clamp(18px, 4vw, 34px) 28px; }
+  .notice:first-child { transform: rotate(-.8deg); } .notice:last-child { transform: rotate(.6deg); }
+  .notice h3 { font-family: var(--wood); font-weight: 400; font-size: 20px; line-height: 1.2; margin: 0 0 14px; text-align: center; }
+  .notice.alert h3 { color: var(--red); }
+  .status { margin: 0; }
+  .status div { display: flex; justify-content: space-between; gap: 14px; padding: 8px 0; border-bottom: 1px dashed rgba(42,26,14,.35); }
+  .status div:last-child { border-bottom: 0; }
+  .status dt { font-family: var(--fellsc); font-size: 16px; }
+  .status dd { margin: 0; text-align: right; font-size: 14.5px; color: var(--ink-soft); }
+  .notice ul { list-style: none; padding: 0; margin: 0; }
+  .notice li { font-size: 14.5px; line-height: 1.55; color: var(--ink-soft); padding-left: 22px; position: relative; margin-bottom: 10px; }
+  .notice li::before { content: ""; position: absolute; left: 2px; top: .55em; width: 7px; height: 7px; background: var(--red); transform: rotate(45deg); }
 
-  /* -------------------------------------------------------- pergaminho */
-  .paper {
-    background: #D8C8A2 url("assets/parchment.png") repeat center / 172px;
-    color: var(--ink);
-    box-shadow: 0 20px 44px rgba(0,0,0,.6), inset 0 0 0 1px rgba(43,33,21,.22),
-                inset 0 0 44px rgba(90,68,36,.28);
-  }
-
-  .poster { padding: 22px 18px 20px; position: relative; text-align: center; transform: rotate(-1.5deg);
-            clip-path: polygon(0 1%, 8% 0, 24% 1.2%, 46% 0, 70% 1.4%, 92% .3%, 100% 1.6%,
-                               99.2% 30%, 100% 62%, 99% 98.4%, 78% 100%, 54% 98.6%,
-                               30% 100%, 9% 98.8%, 0 99.6%, .8% 66%, 0 34%); }
-  .poster::before, .poster::after {
-    content: ""; position: absolute; top: 11px; width: 9px; height: 9px; border-radius: 50%;
-    background: #463827; box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 1px 2px rgba(0,0,0,.5);
-  }
-  .poster::before { left: 16px; } .poster::after { right: 16px; }
-
-  .poster .kicker { font-family: var(--press); font-size: 16px; letter-spacing: .4em;
-                    text-transform: uppercase; padding-left: .4em; }
-  .poster hr { border: 0; height: 1px; background: rgba(43,33,21,.38); margin: 11px 0; }
-  .poster img.mug { width: 158px; margin: 2px 0 4px; }
-  .poster .who { font-family: var(--press); font-size: 27px; line-height: 1.1; }
-  .poster .crime { font-family: var(--press); font-style: italic; font-size: 15px; color: var(--ink-soft); margin-top: 2px; }
-  .poster .reward { font-family: var(--pixel); font-size: 15px; color: #6B4E16; margin-top: 12px; }
-  .poster .reward small { display: block; font-family: var(--press); font-style: italic;
-                          font-size: 13.5px; letter-spacing: 0; color: var(--ink-soft); margin-top: 7px; }
-  .poster .seal { position: absolute; right: -16px; bottom: -14px; width: 74px; filter: drop-shadow(0 4px 8px rgba(0,0,0,.55)); }
-
-  /* ------------------------------------------------------------ bando */
-  .crew { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; padding-block: 8px 4px; }
-  .crew img { width: 76px; }
-
-  /* ------------------------------------------------------------ ranks */
-  .ranks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-  @media (max-width: 740px) { .ranks { grid-template-columns: repeat(2, 1fr); } }
-  @media (max-width: 430px) { .ranks { grid-template-columns: 1fr; } }
-
-  .rank { padding: 16px 12px 13px; text-align: center; display: flex; flex-direction: column; }
-  .rank:nth-child(odd)  { transform: rotate(-.7deg); }
-  .rank:nth-child(even) { transform: rotate(.6deg); }
-  .rank img { width: 90px; margin: 0 auto 4px; }
-  .rank .name { font-family: var(--press); font-size: 20px; line-height: 1.15; }
-  .rank .bounty { font-family: var(--pixel); font-size: 11px; color: #6B4E16; margin: 7px 0 9px; }
-  .rank dl { margin: 0; display: grid; grid-template-columns: 1fr auto; gap: 1px 8px; font-size: 12.5px;
-             border-top: 1px solid rgba(43,33,21,.3); padding-top: 9px; }
-  .rank dt { color: var(--ink-soft); text-align: left; }
-  .rank dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; }
-
-  /* ----------------------------------------------------------- número */
-  .bignum { font-family: var(--pixel); font-size: 40px; color: var(--gold); line-height: 1.2;
-            font-variant-numeric: tabular-nums; margin: 10px 0 6px;
-            text-shadow: 3px 3px 0 rgba(140,106,41,.35); }
-  @media (max-width: 640px) { .bignum { font-size: 21px; } }
-
-  /* ----------------------------------------------------------- passos */
-  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
-  @media (max-width: 780px) { .steps { grid-template-columns: repeat(2, 1fr); } }
-  @media (max-width: 430px) { .steps { grid-template-columns: 1fr; } }
-  .step { border-left: 2px solid var(--gold-dim); padding-left: 15px; }
-  .step .n { font-family: var(--press); font-size: 32px; color: var(--gold-dim); line-height: 1; display: block; }
-  .step h3 { font-family: var(--pixel); font-size: 10px; color: var(--text); margin: 6px 0 9px; letter-spacing: .04em; }
-  .step p { font-size: 14px; color: var(--text-dim); margin: 0; }
-
-  /* ------------------------------------------------------------ econ */
-  .row { display: grid; grid-template-columns: 216px 1fr; gap: 22px; padding: 18px 0;
-         border-bottom: 1px solid var(--line); }
-  .row:first-of-type { border-top: 1px solid var(--line); }
-  @media (max-width: 720px) { .row { grid-template-columns: 1fr; gap: 7px; } }
-  .row h3 { font-family: var(--pixel); font-size: 10px; color: var(--gold); margin: 0; line-height: 1.7; letter-spacing: .03em; }
-  .row p { margin: 0; font-size: 15px; }
-  .row p + p { margin-top: 9px; color: var(--text-dim); font-size: 14px; }
-
-  .formula { font-family: var(--pixel); font-size: 11px; color: var(--moss); background: var(--ground-2);
-             border: 1px solid var(--line); border-left: 3px solid var(--gold-dim);
-             padding: 18px; margin: 24px 0 0; overflow-x: auto; line-height: 2; }
-
-  /* -------------------------------------------------------- terrenos */
-  .terrains { display: grid; grid-template-columns: repeat(auto-fit, minmax(172px, 1fr)); gap: 12px; }
-  .terrain { background: var(--ground-2); border: 1px solid var(--line); padding: 8px; }
-  .terrain img { width: 100%; display: block; }
-  .terrain .t-name { font-family: var(--press); font-size: 19px; margin-top: 9px; }
-  .terrain .t-meta { font-size: 12px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
-
-  /* ---------------------------------------------------------- status */
-  .status { display: grid; grid-template-columns: repeat(auto-fit, minmax(196px, 1fr)); gap: 1px;
-            background: var(--line); border: 1px solid var(--line); margin: 0; }
-  .status div { background: var(--ground-2); padding: 17px; }
-  .status dt { font-family: var(--pixel); font-size: 8px; letter-spacing: .1em; color: var(--text-dim); text-transform: uppercase; }
-  .status dd { margin: 9px 0 0; font-size: 15px; font-variant-numeric: tabular-nums; }
-
-  .warn { border-left: 3px solid var(--danger); padding: 6px 0 6px 20px; margin-top: 30px; }
-  .warn h3 { font-family: var(--pixel); font-size: 10px; color: var(--danger); margin: 0 0 12px; line-height: 1.7; }
-  .warn ul { list-style: none; padding: 0; margin: 0; }
-  .warn li { font-size: 14px; color: var(--text-dim); margin-bottom: 10px; max-width: 66ch; padding-left: 20px; position: relative; }
-  .warn li::before { content: "»"; position: absolute; left: 0; color: var(--danger); font-family: var(--press); font-size: 17px; line-height: 1.3; }
+  .closing { text-align: center; padding: 56px 16px 0; }
+  .closing .ribbon-btn { font-size: clamp(15px, 2.4vw, 20px); background: var(--gold); color: #1E1307; }
+  .closing .ribbon-btn:hover { background: var(--gold-hi); }
+  .closing .ribbon-btn .plus { color: #1E1307; }
+  .closing small { display: block; margin-top: 12px; color: var(--text-dim); font-size: 14px; }
 
   /* ---------------------------------------------------------- rodapé */
-  footer { margin-top: 40px; }
-  .planks { height: 26px; background: url("assets/wood.png") repeat-x center / auto 26px;
-            box-shadow: 0 -6px 18px rgba(0,0,0,.5); }
-  .footnote { padding: 26px 20px 46px; color: var(--text-dim); font-size: 13px; text-align: center; }
-  .footnote img { width: 34px; vertical-align: -9px; margin-right: 8px; }
+  footer { margin-top: 70px; background: linear-gradient(#170F08, #0F0905); border-top: 2px solid #3B2714; }
+  .footnote { max-width: 760px; margin: 0 auto; padding: 26px 20px 40px; color: var(--text-dim); font-size: 13px;
+              text-align: center; display: flex; gap: 14px; align-items: center; justify-content: center; }
+  .footnote img { width: 42px; flex: none; }
 
   @media (prefers-reduced-motion: no-preference) {
-    .fog-a { animation: drift 34s linear infinite; }
-    .fog-b { animation: drift 52s linear infinite reverse; }
-    @keyframes drift { from { transform: translateX(-9%); } 50% { transform: translateX(9%); } to { transform: translateX(-9%); } }
-    .torch { animation: flicker 7s ease-in-out infinite; }
-    @keyframes flicker { 0%,100% { opacity: 1; } 45% { opacity: .82; } 70% { opacity: .93; } }
-    .crew img { transition: transform .18s ease; }
-    .crew img:hover { transform: translateY(-6px); }
+    .mug .frame img { transition: transform .18s ease; }
+    .mug:hover .frame img { transform: translateY(-5px) scale(1.03); }
   }
 </style>
 </head>
-<body>
+<body id="top">
 
-<div class="langbar" data-flags aria-label="Language" data-i18n-aria-label="lang.label"></div>
+<!-- filtro e símbolos da página: a tinta gasta, a coroa, o floreio -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <filter id="worn" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="4" result="t"/>
+    <feColorMatrix in="t" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -9 6.9" result="m"/>
+    <feComposite in="SourceGraphic" in2="m" operator="in"/>
+  </filter>
+  <symbol id="crown" viewBox="0 0 30 20">
+    <path d="M3 16 1.6 5.2 8.6 10.4 15 2.2 21.4 10.4 28.4 5.2 27 16Z M3 17.4h24V20H3Z"/>
+    <circle cx="1.8" cy="4.6" r="1.8"/><circle cx="15" cy="1.9" r="1.9"/><circle cx="28.2" cy="4.6" r="1.8"/>
+  </symbol>
+  <symbol id="flourish" viewBox="0 0 64 16">
+    <path d="M0 8h40M40 8l-8-6M40 8l-8 6M44 8l6-6 6 6-6 6Z M58 8h6" stroke="currentColor" stroke-width="2.4" fill="none"/>
+    <path d="M44 8l6-6 6 6-6 6Z"/>
+  </symbol>
+</svg>
 
-<div class="scene">
-  <div class="torch"></div>
-  <div class="fog fog-b"></div>
-  <div class="fog fog-a"></div>
+<header class="topbar">
+  <a class="brand" href="#top"><img src="assets/crest.png" alt="" width="38" height="38"><span>OUTLAWS</span></a>
+  <nav aria-label="Sections">
+    <a href="#how" data-i18n="s.nav.how">How it works</a>
+    <a href="#ranks" data-i18n="s.nav.ranks">Ranks</a>
+    <a href="#map" data-i18n="s.nav.map">The map</a>
+    <a href="#status" data-i18n="s.nav.status">Status</a>
+  </nav>
+  <div class="langbar" data-flags aria-label="Language" data-i18n-aria-label="lang.label"></div>
+  <a class="tb-play" href="jogar/" data-i18n="s.nav.play">Play</a>
+</header>
 
-  <header class="hero">
-    <div class="poster paper">
-      <div class="kicker" data-i18n="s.poster.kicker">Wanted</div>
-      <hr>
-      <img class="mug" src="assets/rank-5.png" alt="Legend-rank outlaw, hooded, with a bow" data-i18n-alt="s.poster.alt">
-      <div class="who" data-i18n="s.poster.who">The Legend</div>
-      <div class="crime" data-i18n="s.poster.crime">tax robbery · evasion · contempt of the Crown</div>
-      <hr>
-      <div class="reward"><span data-num="10000">10,000</span> $BOUNTY<small data-i18n="s.poster.paid">paid dead or alive by the Sheriff</small></div>
-      <img class="seal" src="assets/seal.png" alt="">
-    </div>
+<main>
+  <section class="hero">
+    <article class="poster paper" aria-labelledby="wanted">
+      <i class="nail tl"></i><i class="nail tr"></i><i class="nail bl"></i><i class="nail br"></i>
 
-    <div>
-      <img class="crest" src="assets/crest.png" alt="OUTLAWS crest: hood and crossed arrows" data-i18n-alt="s.crest.alt">
-      <p class="eyebrow">Robinhood Chain &middot; testnet</p>
-      <h1 class="wordmark">OUTLAWS</h1>
-      <p class="tagline" data-i18n="s.tagline">The pricier you are, the more you're worth.</p>
-      <p class="lede" data-i18n="s.lede">A gang of pixel outlaws. You send them to rob the road, the village and the castle; they come back with loot, with less life and with a slightly higher price on their heads. No two were ever alike, and that can be proven.</p>
-      <div class="chips">
-        <span class="chip live">Chain ID 46630</span>
-        <span class="chip" data-i18n="s.chip.contracts">Contracts on testnet</span>
-        <span class="chip" data-i18n="s.chip.art">Art 100% generated by code</span>
+      <div class="divider"><span class="dia"></span><svg><use href="#crown"/></svg><span class="dia"></span></div>
+      <h1 id="wanted" class="wanted">Wanted</h1>
+      <div class="banner">
+        <svg class="fl"><use href="#flourish"/></svg>
+        <strong class="ribbon">OUTLAWS</strong>
+        <svg class="fl r"><use href="#flourish"/></svg>
       </div>
-      <div class="play">
-        <a class="cta" href="jogar/" data-i18n="s.cta">Play on testnet</a>
-        <small><span data-i18n="s.cta.noteA">Test token, no value. Or</span> <a href="jogar/?demo" data-i18n="s.cta.demo">watch a demo</a> <span data-i18n="s.cta.noteB">without a wallet.</span></small>
+      <p class="alive" data-i18n="s.hero.alive">Dead or alive</p>
+
+      <ul class="mugs">
+        <li class="mug" style="--rc:#A7ADB2">
+          <div class="frame"><img src="assets/rank-0.png" alt="" width="256" height="256"></div>
+          <div class="tag ribbon"><i class="gem"></i><span data-i18n="rank.0">Nobody</span></div>
+          <p class="crime" data-i18n="s.crime.0">Stole a loaf of bread. Twice.</p>
+          <p class="price"><span data-num="5">5</span> $BOUNTY</p>
+        </li>
+        <li class="mug" style="--rc:#6CC24A">
+          <div class="frame"><img src="assets/rank-1.png" alt="" width="256" height="256"></div>
+          <div class="tag ribbon"><i class="gem"></i><span data-i18n="rank.1">Thief</span></div>
+          <p class="crime" data-i18n="s.crime.1">Purses, horses and the odd chicken.</p>
+          <p class="price"><span data-num="25">25</span> $BOUNTY</p>
+        </li>
+        <li class="mug" style="--rc:#4AA3F0">
+          <div class="frame"><img src="assets/rank-2.png" alt="" width="256" height="256"></div>
+          <div class="tag ribbon"><i class="gem"></i><span data-i18n="rank.2">Fugitive</span></div>
+          <p class="crime" data-i18n="s.crime.2">Escaped the Sheriff's jail at dawn.</p>
+          <p class="price"><span data-num="100">100</span> $BOUNTY</p>
+        </li>
+        <li class="mug" style="--rc:#B06CF0">
+          <div class="frame"><img src="assets/rank-3.png" alt="" width="256" height="256"></div>
+          <div class="tag ribbon"><i class="gem"></i><span data-i18n="rank.3">Wanted</span></div>
+          <p class="crime" data-i18n="s.crime.3">Robbed the tax caravans on the king's road.</p>
+          <p class="price"><span data-num="500">500</span> $BOUNTY</p>
+        </li>
+        <li class="mug" style="--rc:#F5A623">
+          <div class="frame"><img src="assets/rank-4.png" alt="" width="256" height="256"></div>
+          <div class="tag ribbon"><i class="gem"></i><span data-i18n="rank.4">Enemy of the Crown</span></div>
+          <p class="crime" data-i18n="s.crime.4">Treason, arson and a very public insult.</p>
+          <p class="price"><span data-num="2500">2,500</span> $BOUNTY</p>
+        </li>
+        <li class="mug legend" style="--rc:#FF4F5E">
+          <div class="frame"><img src="assets/rank-5.png" alt="" width="256" height="256"></div>
+          <div class="tag ribbon"><i class="gem"></i><span data-i18n="rank.5">Legend</span></div>
+          <p class="crime" data-i18n="s.crime.5">Emptied the royal treasury. Never caught.</p>
+          <p class="price"><span data-num="10000">10,000</span> $BOUNTY</p>
+        </li>
+      </ul>
+
+      <div class="divider"><span class="dia"></span><svg><use href="#crown"/></svg><span class="dia"></span></div>
+      <p class="decree" data-i18n="s.tagline">The pricier you are, the more you're worth.</p>
+      <p class="decree-sub" data-i18n="s.lede">A gang of pixel outlaws. You send them to rob the road, the village and the castle; they come back with loot, with less life and with a slightly higher price on their heads. No two were ever alike, and that can be proven.</p>
+      <div class="divider"><span class="dia"></span><svg><use href="#crown"/></svg><span class="dia"></span></div>
+
+      <a class="ribbon-btn ribbon" href="jogar/"><span class="plus" aria-hidden="true">✦</span><span data-i18n="s.cta">Play on testnet</span><span class="plus" aria-hidden="true">✦</span></a>
+      <p class="fine"><span data-i18n="s.cta.noteA">Test token, no value. Or</span> <a href="jogar/?demo" data-i18n="s.cta.demo">watch a demo</a> <span data-i18n="s.cta.noteB">without a wallet.</span></p>
+
+      <svg class="seal" viewBox="0 0 120 120" aria-hidden="true">
+        <defs>
+          <radialGradient id="wax" cx="38%" cy="32%" r="72%">
+            <stop offset="0" stop-color="#E0473D"/><stop offset=".5" stop-color="#A8211D"/><stop offset="1" stop-color="#5A0C0B"/>
+          </radialGradient>
+          <radialGradient id="press" cx="50%" cy="50%" r="50%">
+            <stop offset=".7" stop-color="#9A1D1A"/><stop offset="1" stop-color="#6E1210"/>
+          </radialGradient>
+        </defs>
+        <path fill="url(#wax)" d="M51.4 9.0 Q60.0 5.0 68.7 8.5 Q77.4 12.1 86.7 14.6 Q96.0 17.1 99.6 26.1 Q103.3 35.0 108.2 42.8 Q113.2 50.6 110.7 59.6 Q108.3 68.5 108.4 78.3 Q108.5 88.0 101.0 93.9 Q93.4 99.8 86.1 105.8 Q78.8 111.7 69.4 110.8 Q60.0 110.0 50.3 111.8 Q40.5 113.6 33.9 106.3 Q27.2 99.1 20.2 93.0 Q13.2 87.0 12.5 77.8 Q11.7 68.5 8.3 59.4 Q4.9 50.3 9.9 42.1 Q15.0 34.0 19.8 25.9 Q24.6 17.9 33.8 15.4 Q42.9 13.0 51.4 9.0Z"/>
+        <circle cx="60" cy="60" r="35" fill="url(#press)"/>
+        <circle cx="60" cy="60" r="35" fill="none" stroke="#4E0908" stroke-width="2.5" opacity=".7"/>
+        <circle cx="60" cy="60" r="29" fill="none" stroke="#C7382F" stroke-width="1.2" stroke-dasharray="2 3" opacity=".8"/>
+        <use href="#crown" x="41" y="47" width="38" height="25" fill="#5E0E0C"/>
+        <ellipse cx="44" cy="30" rx="14" ry="6" fill="#FF9C8A" opacity=".28" transform="rotate(-24 44 30)"/>
+      </svg>
+    </article>
+
+    <ul class="tickets">
+      <li>Chain ID 46630</li>
+      <li data-i18n="s.chip.contracts">Contracts on testnet</li>
+      <li data-i18n="s.chip.art">Art 100% generated by code</li>
+    </ul>
+  </section>
+
+  <section id="how" class="board">
+    <header class="board-head">
+      <h2 data-i18n="s.loop.h">The loop</h2>
+      <div class="divider gold"><span class="dia"></span><svg><use href="#crown"/></svg><span class="dia"></span></div>
+      <p data-i18n="s.loop.lede">Four steps, in this order. It is a cycle: step IV takes you back to I.</p>
+    </header>
+    <div class="loop paper">
+      <div class="stations">
+        <article class="station">
+          <div class="medal"><span class="num ribbon">I</span><img src="assets/icon-sack.png" alt="" width="96" height="96"></div>
+          <h3 data-i18n="s.loop.1.h">Recruit</h3>
+          <p data-i18n="s.loop.1.p">You open a bag at the tavern and an outlaw comes out. Paid in $BOUNTY: 90% goes to the vault that pays everyone, 10% to the treasury.</p>
+        </article>
+        <div class="hop" aria-hidden="true"><svg viewBox="0 0 44 30"><path d="M3 20 C14 6 28 6 38 16"/><path d="M30 16 38 16 37 8"/></svg></div>
+        <article class="station">
+          <div class="medal"><span class="num ribbon">II</span><img src="assets/icon-chest.png" alt="" width="96" height="96"></div>
+          <h3 data-i18n="s.loop.2.h">Rob</h3>
+          <p data-i18n="s.loop.2.p">Send them to work, up to 10 at once per wallet. On the map they break crates, find chests and dodge traps; the vault pays every epoch, split by weight.</p>
+        </article>
+        <div class="hop" aria-hidden="true"><svg viewBox="0 0 44 30"><path d="M3 20 C14 6 28 6 38 16"/><path d="M30 16 38 16 37 8"/></svg></div>
+        <article class="station">
+          <div class="medal"><span class="num ribbon">III</span><img src="assets/icon-hammer.png" alt="" width="96" height="96"></div>
+          <h3 data-i18n="s.loop.3.h">Repair</h3>
+          <p data-i18n="s.loop.3.p">Every epoch of work spends useful life. At zero the outlaw is captured, and low life also lowers the fusion odds. Repairing costs $BOUNTY, which goes back to the vault.</p>
+        </article>
+        <div class="hop" aria-hidden="true"><svg viewBox="0 0 44 30"><path d="M3 20 C14 6 28 6 38 16"/><path d="M30 16 38 16 37 8"/></svg></div>
+        <article class="station">
+          <div class="medal"><span class="num ribbon">IV</span><img src="assets/icon-gem.png" alt="" width="96" height="96"></div>
+          <h3 data-i18n="s.loop.4.h">Fuse</h3>
+          <p data-i18n="s.loop.4.p">Two become one of a higher rank — if the odds allow. The odds are shown before you confirm, always.</p>
+        </article>
       </div>
-    </div>
-  </header>
-
-  <div class="treeline"></div>
-</div>
-
-<div class="wrap">
-
-  <div class="crew">
-    <img src="assets/crew-0.png" alt=""><img src="assets/crew-1.png" alt="">
-    <img src="assets/crew-2.png" alt=""><img src="assets/crew-3.png" alt="">
-    <img src="assets/crew-4.png" alt=""><img src="assets/crew-5.png" alt="">
-    <img src="assets/crew-6.png" alt=""><img src="assets/crew-7.png" alt="">
-  </div>
-
-  <span class="rule"></span>
-
-  <section>
-    <h2 data-i18n="s.loop.h">The loop</h2>
-    <p class="lede" data-i18n="s.loop.lede">Four steps, in this order. It is a cycle: step IV takes you back to I.</p>
-    <div class="steps">
-      <div class="step">
-        <span class="n">I</span><h3 data-i18n="s.loop.1.h">Recruit</h3>
-        <p data-i18n="s.loop.1.p">You open a bag at the tavern and an outlaw comes out. Paid in $BOUNTY: 90% goes to the vault that pays everyone, 10% to the treasury.</p>
-      </div>
-      <div class="step">
-        <span class="n">II</span><h3 data-i18n="s.loop.2.h">Rob</h3>
-        <p data-i18n="s.loop.2.p">Send them to work, up to 10 at once per wallet. On the map they break crates, find chests and dodge traps; the vault pays every epoch, split by weight.</p>
-      </div>
-      <div class="step">
-        <span class="n">III</span><h3 data-i18n="s.loop.3.h">Repair</h3>
-        <p data-i18n="s.loop.3.p">Every epoch of work spends useful life. At zero the outlaw is captured, and low life also lowers the fusion odds. Repairing costs $BOUNTY, which goes back to the vault.</p>
-      </div>
-      <div class="step">
-        <span class="n">IV</span><h3 data-i18n="s.loop.4.h">Fuse</h3>
-        <p data-i18n="s.loop.4.p">Two become one of a higher rank — if the odds allow. The odds are shown before you confirm, always.</p>
+      <div class="again" aria-hidden="true">
+        <svg viewBox="0 0 820 58" preserveAspectRatio="none"><path d="M726 4 C726 48 700 50 410 50 C120 50 94 48 94 10"/><path d="M86 18 94 6 102 18" stroke-dasharray="none"/></svg>
+        <span data-i18n="s.loop.again">…and back to I</span>
       </div>
     </div>
   </section>
 
-  <span class="rule"></span>
-
-  <section>
-    <h2 data-i18n="s.ranks.h">The six ranks</h2>
-    <p class="lede" data-i18n="s.ranks.lede">Rarity is not a label: it is what the Sheriff pays for their head. Rank is measured in the game's own currency, so stating the rank is stating the price.</p>
-    <div class="ranks">
-      <div class="rank paper">
-        <img src="assets/rank-0.png" alt="">
-        <div class="name" data-i18n="rank.0">Nobody</div><div class="bounty"><span data-num="5">5</span> $BOUNTY</div>
-        <dl><dt data-i18n="s.rank.appears">Appears in</dt><dd>45%</dd><dt data-i18n="s.rank.weight">Weight</dt><dd data-num="1" data-dec="1" data-suffix="×">1.0×</dd><dt data-i18n="s.rank.repair">Repair</dt><dd>15%</dd><dt>Stats</dt><dd>20–45</dd></dl>
-      </div>
-      <div class="rank paper">
-        <img src="assets/rank-1.png" alt="">
-        <div class="name" data-i18n="rank.1">Thief</div><div class="bounty"><span data-num="25">25</span> $BOUNTY</div>
-        <dl><dt data-i18n="s.rank.appears">Appears in</dt><dd>27%</dd><dt data-i18n="s.rank.weight">Weight</dt><dd data-num="1.5" data-dec="1" data-suffix="×">1.5×</dd><dt data-i18n="s.rank.repair">Repair</dt><dd>18%</dd><dt>Stats</dt><dd>35–60</dd></dl>
-      </div>
-      <div class="rank paper">
-        <img src="assets/rank-2.png" alt="">
-        <div class="name" data-i18n="rank.2">Fugitive</div><div class="bounty"><span data-num="100">100</span> $BOUNTY</div>
-        <dl><dt data-i18n="s.rank.appears">Appears in</dt><dd>15%</dd><dt data-i18n="s.rank.weight">Weight</dt><dd data-num="2.2" data-dec="1" data-suffix="×">2.2×</dd><dt data-i18n="s.rank.repair">Repair</dt><dd>21%</dd><dt>Stats</dt><dd>48–72</dd></dl>
-      </div>
-      <div class="rank paper">
-        <img src="assets/rank-3.png" alt="">
-        <div class="name" data-i18n="rank.3">Wanted</div><div class="bounty"><span data-num="500">500</span> $BOUNTY</div>
-        <dl><dt data-i18n="s.rank.appears">Appears in</dt><dd>8%</dd><dt data-i18n="s.rank.weight">Weight</dt><dd data-num="3.2" data-dec="1" data-suffix="×">3.2×</dd><dt data-i18n="s.rank.repair">Repair</dt><dd>25%</dd><dt>Stats</dt><dd>60–82</dd></dl>
-      </div>
-      <div class="rank paper">
-        <img src="assets/rank-4.png" alt="">
-        <div class="name" data-i18n="rank.4">Enemy of the Crown</div><div class="bounty"><span data-num="2500">2,500</span> $BOUNTY</div>
-        <dl><dt data-i18n="s.rank.appears">Appears in</dt><dd>4%</dd><dt data-i18n="s.rank.weight">Weight</dt><dd data-num="5" data-dec="1" data-suffix="×">5.0×</dd><dt data-i18n="s.rank.repair">Repair</dt><dd>30%</dd><dt>Stats</dt><dd>72–92</dd></dl>
-      </div>
-      <div class="rank paper">
-        <img src="assets/rank-5.png" alt="">
-        <div class="name" data-i18n="rank.5">Legend</div><div class="bounty"><span data-num="10000">10,000</span> $BOUNTY</div>
-        <dl><dt data-i18n="s.rank.appears">Appears in</dt><dd>1%</dd><dt data-i18n="s.rank.weight">Weight</dt><dd data-num="8" data-dec="1" data-suffix="×">8.0×</dd><dt data-i18n="s.rank.repair">Repair</dt><dd>36%</dd><dt>Stats</dt><dd>84–99</dd></dl>
+  <section id="ranks" class="board">
+    <header class="board-head">
+      <h2 data-i18n="s.ranks.h">The six ranks</h2>
+      <div class="divider gold"><span class="dia"></span><svg><use href="#crown"/></svg><span class="dia"></span></div>
+      <p data-i18n="s.ranks.lede">Rarity is not a label: it is what the Sheriff pays for their head. Rank is measured in the game's own currency, so stating the rank is stating the price.</p>
+    </header>
+    <div class="ledger paper">
+      <div class="ledger-scroll">
+        <table>
+          <caption class="sr" data-i18n="s.ledger.h">The Sheriff's ledger</caption>
+          <thead><tr>
+            <th scope="col" data-i18n="s.ledger.rank">Rank</th>
+            <th scope="col" data-i18n="s.ledger.bounty">Bounty</th>
+            <th scope="col" data-i18n="s.rank.appears">Appears in</th>
+            <th scope="col" data-i18n="s.rank.weight">Weight</th>
+            <th scope="col" data-i18n="s.rank.repair">Repair</th>
+            <th scope="col">Stats</th>
+          </tr></thead>
+          <tbody>
+            <tr style="--rc:#A7ADB2"><td><span class="who"><img src="assets/rank-0.png" alt="" width="256" height="256"><i class="gem"></i><span data-i18n="rank.0">Nobody</span></span></td><td class="bounty" data-num="5">5</td><td>45%</td><td data-num="1" data-dec="1" data-suffix="×">1.0×</td><td>15%</td><td>20–45</td></tr>
+            <tr style="--rc:#6CC24A"><td><span class="who"><img src="assets/rank-1.png" alt="" width="256" height="256"><i class="gem"></i><span data-i18n="rank.1">Thief</span></span></td><td class="bounty" data-num="25">25</td><td>27%</td><td data-num="1.5" data-dec="1" data-suffix="×">1.5×</td><td>18%</td><td>35–60</td></tr>
+            <tr style="--rc:#4AA3F0"><td><span class="who"><img src="assets/rank-2.png" alt="" width="256" height="256"><i class="gem"></i><span data-i18n="rank.2">Fugitive</span></span></td><td class="bounty" data-num="100">100</td><td>15%</td><td data-num="2.2" data-dec="1" data-suffix="×">2.2×</td><td>21%</td><td>48–72</td></tr>
+            <tr style="--rc:#B06CF0"><td><span class="who"><img src="assets/rank-3.png" alt="" width="256" height="256"><i class="gem"></i><span data-i18n="rank.3">Wanted</span></span></td><td class="bounty" data-num="500">500</td><td>8%</td><td data-num="3.2" data-dec="1" data-suffix="×">3.2×</td><td>25%</td><td>60–82</td></tr>
+            <tr style="--rc:#F5A623"><td><span class="who"><img src="assets/rank-4.png" alt="" width="256" height="256"><i class="gem"></i><span data-i18n="rank.4">Enemy of the Crown</span></span></td><td class="bounty" data-num="2500">2,500</td><td>4%</td><td data-num="5" data-dec="1" data-suffix="×">5.0×</td><td>30%</td><td>72–92</td></tr>
+            <tr style="--rc:#FF4F5E"><td><span class="who"><img src="assets/rank-5.png" alt="" width="256" height="256"><i class="gem"></i><span data-i18n="rank.5">Legend</span></span></td><td class="bounty" data-num="10000">10,000</td><td>1%</td><td data-num="8" data-dec="1" data-suffix="×">8.0×</td><td>36%</td><td>84–99</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </section>
 
-  <span class="rule"></span>
-
-  <section>
-    <h2 data-i18n="s.unique.h">Never two alike</h2>
-    <p class="lede" data-i18n="s.unique.lede">This is not a slogan. It is a sum you can check.</p>
-    <p class="bignum" data-num="561254400">561,254,400</p>
-    <p data-i18n-html="s.unique.p1">visually distinct looks — combining rank, body build, five head types, four eye shapes, four tunics, seven pieces of gear, beard, scarf, skin, hair and the cloth's hue shift. Adding the three stats, which roll with two decimal places, the space passes <strong>6.2 quintillion</strong> combinations.</p>
-    <p data-i18n-html="s.unique.p2">With 10,000 recruits, the chance of two identical ones stays below <strong>0.000001%</strong>. Every outlaw is born from a 32-byte seed: the same seed always returns the same outlaw, with the same stats and the same pixels. The traits are derived with <strong>sha256</strong> on purpose — it runs exactly the same in Node and inside a Solidity contract, so the chain can prove what the generator produced.</p>
-  </section>
-
-  <span class="rule"></span>
-
-  <section>
-    <h2 data-i18n="s.econ.h">The economy</h2>
-    <p class="lede" data-i18n="s.econ.lede">P2E games usually die the same way: fixed emission drains the vault, the vault hits zero, the game ends in a single day. These four decisions exist so that doesn't happen — and none of them is a kindness, they are all math.</p>
-
-    <div class="row">
-      <h3 data-i18n="s.econ.1.h">Variable emission</h3>
-      <div>
-        <p data-i18n="s.econ.1.p1">The vault never pays a fixed amount per head. Every epoch it pays a fraction of itself (0.5%), split by weight.</p>
-        <p data-i18n-html="s.econ.1.p2">Consequence: the vault decays asymptotically and <strong>never reaches zero</strong>. If inflow dries up, the reward shrinks smoothly — the game gets smaller instead of dying.</p>
-      </div>
-    </div>
-    <div class="row">
-      <h3 data-i18n="s.econ.2.h">Rarity competes for a share, it doesn't drain the vault</h3>
-      <div>
-        <p data-i18n="s.econ.2.p1">A Legend earns 8× what a Nobody earns. But the total paid per epoch is the same, whether the gang has one Legend or a hundred.</p>
-        <p data-i18n="s.econ.2.p2">Rarity redistributes between players; it doesn't increase the drain. That keeps the fun of hunting ranks without the top emptying the common vault.</p>
-      </div>
-    </div>
-    <div class="row">
-      <h3 data-i18n="s.econ.3.h">Useful life measured in work</h3>
-      <div>
-        <p data-i18n="s.econ.3.p1">Life is spent per epoch worked, not per calendar day. Whoever stops playing is not punished: gone for three months, you come back and find everything as you left it.</p>
-        <p data-i18n="s.econ.3.p2">And the bot farm that runs 24 hours a day spends life twice as fast as someone who plays half the time — so it pays twice the repairs. The bot becomes a customer instead of a leak.</p>
-      </div>
-    </div>
-    <div class="row">
-      <h3 data-i18n="s.econ.4.h">Captured, not burned</h3>
-      <div>
-        <p data-i18n="s.econ.4.p1">Zero useful life does not destroy the NFT. The outlaw is captured: stops working, leaves the split, but stays in your wallet, with its art, and transferable. It comes out by paying a ransom.</p>
-        <p data-i18n="s.econ.4.p2">For the math it is the same — whoever is locked up doesn't share the vault. The difference is that nobody wakes up to an NFT erased by the contract.</p>
-      </div>
-    </div>
-
-    <pre class="formula" data-i18n="s.econ.formula">per_head = (r x Vault) x weight / sum(weights)
-
-sum of all   = r x Vault        always, whatever the gang
-steady state: Vault* = inflow / r</pre>
-
-    <p style="margin-top:30px" data-i18n-html="s.econ.example">An example with real-money numbers, so nobody fools themselves: with <strong>r = 0.5% per epoch</strong>, a vault worth $100k and a thousand active outlaws, each one earns <strong>$0.50 per epoch</strong>. A bag at $50 pays for itself in <strong>100 epochs</strong> — and only if the vault stays at $100k, which requires selling, in bags, as much as it pays out: 0.5% of the vault every epoch, forever.</p>
-  </section>
-
-  <span class="rule"></span>
-
-  <section>
-    <h2 data-i18n="s.terr.h">The five terrains</h2>
-    <p class="lede" data-i18n="s.terr.lede">From the road to the castle: more crates, more chests, more traps. Every cleared room moves on to the next terrain, and more Strength clears it faster. The map comes from a seed and is a showcase — what each outlaw earns is decided by the contract. Below, the chests are revealed; in play they stay hidden inside the crates.</p>
-    <div class="terrains">
-      <div class="terrain"><img src="assets/terrain-1.png" alt="">
-        <div class="t-name" data-i18n="terrain.1">The Road</div><div class="t-meta" data-i18n="s.terr.1">42% crates · no traps</div></div>
-      <div class="terrain"><img src="assets/terrain-2.png" alt="">
-        <div class="t-name" data-i18n="terrain.2">The Woods</div><div class="t-meta" data-i18n="s.terr.2">50% crates · 3% traps</div></div>
-      <div class="terrain"><img src="assets/terrain-3.png" alt="">
-        <div class="t-name" data-i18n="terrain.3">The Bridge</div><div class="t-meta" data-i18n="s.terr.3">56% crates · 7% traps</div></div>
-      <div class="terrain"><img src="assets/terrain-4.png" alt="">
-        <div class="t-name" data-i18n="terrain.4">The Village</div><div class="t-meta" data-i18n="s.terr.4">62% crates · 12% traps</div></div>
-      <div class="terrain"><img src="assets/terrain-5.png" alt="">
-        <div class="t-name" data-i18n="terrain.5">The Castle</div><div class="t-meta" data-i18n="s.terr.5">68% crates · 18% traps</div></div>
+  <section class="board">
+    <div class="certificate paper">
+      <i class="nail tl"></i><i class="nail tr"></i>
+      <h2 class="sr" data-i18n="s.unique.h">Never two alike</h2>
+      <div class="divider"><span class="dia"></span><svg><use href="#crown"/></svg><span class="dia"></span></div>
+      <p class="decree" style="font-size:clamp(22px,3.6vw,32px);max-width:none" data-i18n="s.unique.h">Never two alike</p>
+      <p class="bignum" data-num="561254400">561,254,400</p>
+      <p data-i18n-html="s.unique.p1">visually distinct looks — combining rank, body build, five head types, four eye shapes, four tunics, seven pieces of gear, beard, scarf, skin, hair and the cloth's hue shift. Adding the three stats, which roll with two decimal places, the space passes <strong>6.2 quintillion</strong> combinations.</p>
+      <p data-i18n-html="s.unique.p2">With 10,000 recruits, the chance of two identical ones stays below <strong>0.000001%</strong>. Every outlaw is born from a 32-byte seed: the same seed always returns the same outlaw, with the same stats and the same pixels. The traits are derived with <strong>sha256</strong> on purpose — it runs exactly the same in Node and inside a Solidity contract, so the chain can prove what the generator produced.</p>
     </div>
   </section>
 
-  <span class="rule"></span>
+  <section id="map" class="board">
+    <header class="board-head">
+      <h2 data-i18n="s.terr.h">The five terrains</h2>
+      <div class="divider gold"><span class="dia"></span><svg><use href="#crown"/></svg><span class="dia"></span></div>
+      <p data-i18n="s.terr.lede">From the road to the castle: more crates, more chests, more traps. Every cleared room moves on to the next terrain, and more Strength clears it faster. The map comes from a seed and is a showcase — what each outlaw earns is decided by the contract. Below, the chests are revealed; in play they stay hidden inside the crates.</p>
+    </header>
+    <div class="route">
+      <figure class="photo paper" style="margin:0"><i class="nail"></i><img src="assets/terrain-1.png" alt="" width="480" height="416">
+        <figcaption><div class="t-name" data-i18n="terrain.1">The Road</div><div class="t-meta" data-i18n="s.terr.1">42% crates · no traps</div></figcaption></figure>
+      <figure class="photo paper" style="margin:0"><i class="nail"></i><img src="assets/terrain-2.png" alt="" width="480" height="416">
+        <figcaption><div class="t-name" data-i18n="terrain.2">The Woods</div><div class="t-meta" data-i18n="s.terr.2">50% crates · 3% traps</div></figcaption></figure>
+      <figure class="photo paper" style="margin:0"><i class="nail"></i><img src="assets/terrain-3.png" alt="" width="480" height="416">
+        <figcaption><div class="t-name" data-i18n="terrain.3">The Bridge</div><div class="t-meta" data-i18n="s.terr.3">56% crates · 7% traps</div></figcaption></figure>
+      <figure class="photo paper" style="margin:0"><i class="nail"></i><img src="assets/terrain-4.png" alt="" width="480" height="416">
+        <figcaption><div class="t-name" data-i18n="terrain.4">The Village</div><div class="t-meta" data-i18n="s.terr.4">62% crates · 12% traps</div></figcaption></figure>
+      <figure class="photo paper" style="margin:0"><i class="nail"></i><img src="assets/terrain-5.png" alt="" width="480" height="416">
+        <figcaption><div class="t-name" data-i18n="terrain.5">The Castle</div><div class="t-meta" data-i18n="s.terr.5">68% crates · 18% traps</div></figcaption></figure>
+    </div>
+  </section>
 
-  <section>
-    <h2 data-i18n="s.status.h">Where this stands today</h2>
-    <p class="lede" data-i18n="s.status.lede">The real state of the project, no makeup.</p>
-    <dl class="status">
-      <div><dt data-i18n="s.status.net">Network</dt><dd>Robinhood Chain testnet</dd></div>
-      <div><dt>Chain ID</dt><dd>46630</dd></div>
-      <div><dt data-i18n="s.status.contracts">Contracts</dt><dd data-i18n="s.status.contractsV">Published and verified</dd></div>
-      <div><dt data-i18n="s.status.gas">Mainnet gas</dt><dd><span data-num="0.061" data-dec="3">0.061</span> gwei</dd></div>
-      <div><dt data-i18n="s.status.art">Art</dt><dd data-i18n="s.status.artV">Generated by code, no AI</dd></div>
-      <div><dt data-i18n="s.status.server">Game server</dt><dd data-i18n="s.status.serverV">Not needed: the contract pays directly</dd></div>
-    </dl>
+  <section id="status" class="board">
+    <header class="board-head">
+      <h2 data-i18n="s.status.h">Where this stands today</h2>
+      <div class="divider gold"><span class="dia"></span><svg><use href="#crown"/></svg><span class="dia"></span></div>
+      <p data-i18n="s.status.lede">The real state of the project, no makeup.</p>
+    </header>
+    <div class="notices">
+      <div class="notice paper">
+        <i class="nail tl"></i><i class="nail tr"></i>
+        <h3 data-i18n="s.notice.h">Notice</h3>
+        <dl class="status">
+          <div><dt data-i18n="s.status.net">Network</dt><dd>Robinhood Chain testnet</dd></div>
+          <div><dt>Chain ID</dt><dd>46630</dd></div>
+          <div><dt data-i18n="s.status.contracts">Contracts</dt><dd data-i18n="s.status.contractsV">Published and verified</dd></div>
+          <div><dt data-i18n="s.status.gas">Mainnet gas</dt><dd><span data-num="0.061" data-dec="3">0.061</span> gwei</dd></div>
+          <div><dt data-i18n="s.status.art">Art</dt><dd data-i18n="s.status.artV">Generated by code, no AI</dd></div>
+          <div><dt data-i18n="s.status.server">Game server</dt><dd data-i18n="s.status.serverV">Not needed: the contract pays directly</dd></div>
+        </dl>
+      </div>
+      <div class="notice alert paper">
+        <i class="nail tl"></i><i class="nail tr"></i>
+        <h3 data-i18n="s.warn.h">What doesn't exist yet, and what can go wrong</h3>
+        <ul>
+          <li data-i18n="s.warn.1">The contracts are on testnet only, with open code on the explorer and 70 automated tests, but no external audit. The token here is worth nothing.</li>
+          <li data-i18n="s.warn.2">It is not a skill game: the map shows the gang working, but how much each one earns is decided by the contract (the outlaw's weight × the vault).</li>
+          <li data-i18n="s.warn.3">The economy is sustainable in tokens, but real-money value depends on the average player spending more than they cash out. That is game-design work, not tokenomics, and it is where most P2E games fail.</li>
+          <li data-i18n="s.warn.4">A paid bag with a random result is a loot box. The odds are shown before every confirmation by design — but the topic is under regulatory discussion in several countries, including Brazil.</li>
+          <li data-i18n="s.warn.5">Nothing here is a promise of financial return.</li>
+          <li data-i18n="s.warn.6">Play with a test-only wallet. OUTLAWS never asks for your secret phrase, never messages you offering support, and never asks for an "unlimited" token approval. The official address is the one on this page.</li>
+        </ul>
+      </div>
+    </div>
 
-    <div class="play" style="margin: -8px 0 36px">
-      <a class="cta" href="jogar/" data-i18n="s.cta">Play on testnet</a>
+    <div class="closing">
+      <a class="ribbon-btn ribbon" href="jogar/"><span class="plus" aria-hidden="true">✦</span><span data-i18n="s.cta">Play on testnet</span><span class="plus" aria-hidden="true">✦</span></a>
       <small data-i18n="s.cta.note2">Needs MetaMask. The game guides you to get test ETH and $BOUNTY.</small>
     </div>
-
-    <div class="warn">
-      <h3 data-i18n="s.warn.h">What doesn't exist yet, and what can go wrong</h3>
-      <ul>
-        <li data-i18n="s.warn.1">The contracts are on testnet only, with open code on the explorer and 63 automated tests, but no external audit. The token here is worth nothing.</li>
-        <li data-i18n="s.warn.2">It is not a skill game: the map shows the gang working, but how much each one earns is decided by the contract (the outlaw's weight × the vault).</li>
-        <li data-i18n="s.warn.3">The economy is sustainable in tokens, but real-money value depends on the average player spending more than they cash out. That is game-design work, not tokenomics, and it is where most P2E games fail.</li>
-        <li data-i18n="s.warn.4">A paid bag with a random result is a loot box. The odds are shown before every confirmation by design — but the topic is under regulatory discussion in several countries, including Brazil.</li>
-        <li data-i18n="s.warn.5">Nothing here is a promise of financial return.</li>
-        <li data-i18n="s.warn.6">Play with a test-only wallet. OUTLAWS never asks for your secret phrase, never messages you offering support, and never asks for an "unlimited" token approval. The official address is the one on this page.</li>
-      </ul>
-    </div>
   </section>
-
-</div>
+</main>
 
 <footer>
-  <div class="planks"></div>
   <p class="footnote">
-    <img src="assets/crest.png" alt="">
+    <img src="assets/crest.png" alt="" width="42" height="42">
     <span data-i18n="s.footer">OUTLAWS · testnet prototype. Outlaws, maps, parchment, wood and this crest are PNGs generated by the same deterministic code — same seed, same outlaw, always.</span>
   </p>
 </footer>
