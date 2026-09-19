@@ -673,15 +673,41 @@
    * relógio, quem trabalha em cada época) e o que o contrato deve pagar a cada
    * um por época.
    */
-  function renderHeist() {
-    const u = S.user, g = S.glob, c = S.cfg, box = $('#heist');
-    box.hidden = !u || !g || !c;
-    if (box.hidden) return;
+  /** Quanto cada um em serviço rende por época, em BOUNTY: 0,5% do caixa livre × peso ÷ peso em serviço. */
+  function shares() {
+    const u = S.user, g = S.glob;
     const perEpoch = Number((g.free * 50n) / 10_000n / 10n ** 14n) / 10_000; // BOUNTY da época inteira
     const working = u.outlaws.filter((o) => o.status === 1);
     // o peso total nunca é menor que o do próprio bando: a fatia não passa de 100%
     const mine = working.filter((o) => g.epoch >= o.shiftStart).reduce((s, o) => s + o.weight, 0);
     const total = Math.max(Number(g.weight), mine);
+    return new Map(working.map((o) => [o.id, total > 0 ? (perEpoch * o.weight) / total : 0]));
+  }
+
+  /**
+   * O que a época corrente já rendeu, contado a cada segundo (de um boneco, ou
+   * do bando). O contrato só paga época fechada: isto entra no saque na virada.
+   */
+  function accruing(only) {
+    const u = S.user, c = S.cfg;
+    if (!u || !c || !S.glob) return 0;
+    const now = Date.now() / 1000, e = Math.floor((now - c.genesis) / c.epochLength);
+    const into = (now - (c.genesis + e * c.epochLength)) / c.epochLength;
+    const sh = shares();
+    let sum = 0;
+    for (const o of u.outlaws) {
+      if (only !== undefined && o.id !== only) continue;
+      if (o.shiftStart && o.shiftStart <= e && e < o.shiftEnd) sum += (sh.get(o.id) || 0) * into;
+    }
+    return sum;
+  }
+
+  function renderHeist() {
+    const u = S.user, g = S.glob, c = S.cfg, box = $('#heist');
+    box.hidden = !u || !g || !c;
+    if (box.hidden) return;
+    const working = u.outlaws.filter((o) => o.status === 1);
+    const share = shares();
     Heist.update({
       key: S.view.toLowerCase(),
       genesis: c.genesis,
@@ -693,7 +719,7 @@
         shiftStart: o.shiftStart,
         shiftEnd: o.shiftEnd,
         lifeUsed: o.lifeUsed,
-        perEpoch: total > 0 ? (perEpoch * o.weight) / total : 0,
+        perEpoch: share.get(o.id) || 0,
       })),
     });
   }
@@ -744,6 +770,17 @@
     $('#stat-next').textContent = left;
     for (const el of document.querySelectorAll('[data-next]')) el.textContent = left;
     for (const el of document.querySelectorAll('[data-until]')) el.textContent = dur(Number(el.dataset.until) - Date.now() / 1000);
+    for (const el of document.querySelectorAll('[data-accrue]')) {
+      const id = el.dataset.accrue ? Number(el.dataset.accrue) : undefined;
+      const v = dec(accruing(id));
+      el.textContent = id === undefined ? '+' + v : t('p.card.accrue', { amount: v });
+    }
+    // a época virou: o que ela rendeu já é sacável — relê agora em vez de esperar os 20 s
+    const e = Math.floor((Date.now() / 1000 - c.genesis) / c.epochLength);
+    if (S.glob && !S.demo && !S.busy && e > S.glob.epoch && S.turned !== e && nextEpochIn() < c.epochLength - 4) {
+      S.turned = e;
+      refresh();
+    }
 
     const u = S.user;
     if (S.demo || S.busy || !u) return;
@@ -819,6 +856,7 @@
       acts.push(`<button class="btn" data-act="work" data-id="${o.id}"${full ? ` disabled title="${esc(t('p.card.capFull', { max: c.maxActive }))}"` : ''}>${esc(t('p.card.work'))}</button>`);
     }
     if (o.status === 0 && o.repair !== undefined) acts.push(`<button class="btn" data-act="repair" data-id="${o.id}" title="${esc(t('p.card.repair.title'))}">${esc(t('p.card.repair', { cost: fmtB(o.repair) }))}</button>`);
+    if (o.status === 1 && S.glob.epoch >= o.shiftStart) acts.push(`<span class="accrue-chip" data-accrue="${o.id}" title="${esc(t('p.bar.accrue.title'))}">${esc(t('p.card.accrue', { amount: dec(accruing(o.id)) }))}</span>`);
     if (o.status === 1) acts.push(`<button class="btn" data-act="stop" data-id="${o.id}">${esc(t('p.card.stop'))}</button>`);
     if (o.status === 2 && o.ransom !== undefined) acts.push(`<button class="btn btn-danger" data-act="ransom" data-id="${o.id}">${esc(t('p.card.ransom', { cost: fmtB(o.ransom) }))}</button>`);
 
@@ -879,10 +917,14 @@
     $('#b-stop').disabled = S.busy || !working.length;
     $('#b-claim').disabled = S.busy || pending === 0n;
     // sem nada a sacar ainda: diz quando cai o próximo (o rendimento de cada época entra quando ela fecha)
+    // sem contagem regressiva: o que a época corrente rende sobe na hora, a cada segundo
     const earning = u.outlaws.some((o) => o.status === 1 && S.glob.epoch >= o.shiftStart);
+    const live = earning ? ` <span class="accrue" data-accrue>+${dec(accruing())}</span>` : '';
     $('#b-claim').innerHTML = pending > 0n
-      ? esc(t('p.bar.claimAllN', { amount: fmtB(pending) }))
-      : earning ? `${esc(t('p.bar.earnsIn'))} <span data-next>${dur(nextEpochIn())}</span>` : esc(t('p.bar.claimAll'));
+      ? esc(t('p.bar.claimAllN', { amount: fmtB(pending) })) + live
+      : earning ? esc(t('p.bar.accruing')) + live : esc(t('p.bar.claimAll'));
+    $('#b-claim').classList.toggle('is-live', earning);
+    $('#b-claim').title = earning ? t('p.bar.accrue.title') : '';
   }
 
   function renderFusion() {

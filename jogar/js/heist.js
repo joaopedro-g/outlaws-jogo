@@ -20,10 +20,11 @@
  * mesmo do Node, conferido pixel a pixel no build.
  *
  * Cofres dourados da Coroa: de 0 a 5 por sala, sorteados pela seed dela, com 8x
- * a vida do caixote. O rendimento estimado corre em dois potes: 30% vai pros
- * baús de cada boneco, 70% pro pote do bando, que só um cofre solta — por
- * isso o cofre dropa muito mais que o baú. É o mesmo dinheiro da estimativa,
- * só que agrupado: somando baús e cofres, a época bate com o contrato.
+ * a vida do caixote, e cada um vale 10 baús do boneco mais pesado — sempre. Como a simulação é
+ * função do relógio, dá pra rodar a época inteira em silêncio antes: conta
+ * quantos baús cada um abre e quantos cofres caem, e reparte a estimativa da
+ * época nessas unidades (baú = peso de quem abre; cofre = 10x o maior). Somando
+ * baús e cofres, a época dá exatamente o que o contrato estima.
  *
  *   Heist.mount(canvas)
  *   Heist.update({ key, genesis, epochLength, maxLife,
@@ -42,7 +43,7 @@
   const HIT_EVERY = 0.6, ARROW_TIME = 0.2, TRAP_STUN = 0.9, CLEAR_PAUSE = 1.6;
   const GOLD_HP = 8; //                         o cofre dourado aguenta 8 caixotes
   const GOLD_ODDS = [30, 26, 20, 12, 8, 4]; //   % de sair 0, 1, 2, 3, 4 ou 5 numa sala
-  const GOLD_SHARE = 0.7; //                     parte do rendimento que vai pro pote dos cofres
+  const GOLD_UNITS = 10; //                      um cofre vale 10 baús do mais pesado
   const PIXEL = '"Press Start 2P", monospace';
   const t = (k, v) => root.I18N.t(k, v);
   const roomName = (sim) => t('h.room', { terrain: t('terrain.' + sim.room.m.terrain.id).toUpperCase(), n: sim.roomNo + 1 });
@@ -57,7 +58,7 @@
 
   function createSim(key, epoch, crew) {
     const sim = {
-      key, epoch, t: 0, roomNo: -1, room: null, emit: null, goldSince: 0,
+      key, epoch, t: 0, roomNo: -1, room: null, emit: null,
       rnd: RNG.stream(seedOf(`assalto:${key}:${epoch}`), 'acao'),
       actors: crew.map((o) => {
         const s = o.iso.stats;
@@ -68,7 +69,7 @@
           power: s.forca / 20, //                 dano por golpe: Ninguém ~1–2, Lenda ~4–5
           miss: (100 - s.pontaria) / 250, //     chance da flecha errar
           x: 0, y: 0, cx: 0, cy: 0, face: 1, path: [], target: null, state: 'idle',
-          cool: 0, stun: 0, shot: null, since: 0,
+          cool: 0, stun: 0, shot: null,
         };
       }),
     };
@@ -231,8 +232,7 @@
     if (r.grid[t.y][t.x] === '$') { //          abrir o baú
       r.grid[t.y][t.x] = '.';
       r.left--;
-      fire(sim, 'open', { a, t, elapsed: (sim.t - a.since) * (1 - GOLD_SHARE) });
-      a.since = sim.t;
+      fire(sim, 'open', { a, t });
       a.state = 'idle';
       return release(sim, a);
     }
@@ -241,13 +241,11 @@
     fire(sim, 'chip', { t, dmg: a.power, gold });
     if (hp > 0) return void r.hp.set(t.k, hp);
     r.hp.delete(t.k);
-    if (gold) { //                               o cofre solta o pote do bando, acumulado desde o último cofre
+    if (gold) { //                               o cofre quebra direto em moedas
       r.gold.delete(t.k);
       r.grid[t.y][t.x] = '.';
       r.left--;
-      const paid = sim.actors.map((b) => ({ id: b.id, elapsed: (sim.t - sim.goldSince) * GOLD_SHARE }));
-      sim.goldSince = sim.t;
-      fire(sim, 'jackpot', { a, t, paid });
+      fire(sim, 'jackpot', { a, t });
     } else if (r.hidden.has(t.k)) {
       r.grid[t.y][t.x] = '$'; //                 o baú salta de dentro; alguém vem abrir
       fire(sim, 'reveal', { t });
@@ -283,6 +281,36 @@
     if (r.left <= 0 && (r.cleared += DT) >= CLEAR_PAUSE) nextRoom(sim);
   }
 
+  /** A época inteira, em silêncio: quantos baús cada um abre e quantos cofres caem. */
+  function tally(key, epoch, crew, length) {
+    const sim = createSim(key, epoch, crew), chests = new Map();
+    let gold = 0;
+    sim.emit = (type, ev) => {
+      if (type === 'open') chests.set(ev.a.id, (chests.get(ev.a.id) || 0) + 1);
+      else if (type === 'jackpot') gold++;
+    };
+    advance(sim, length);
+    return { chests, gold };
+  }
+
+  /**
+   * Quanto vale cada baú e cada cofre: a estimativa da época (Σ perEpoch do
+   * bando) repartida em unidades — o baú de quem pesa a média vale 1, o de quem
+   * pesa o dobro vale 2; o cofre vale GOLD_UNITS baús do mais pesado do bando,
+   * então nunca fica perto de baú nenhum. Sem cofre na época, os baús levam tudo.
+   */
+  function worth(split, crew) {
+    const total = crew.reduce((s, o) => s + o.perEpoch, 0);
+    if (!split || !total) return { chest: () => 0, gold: 0 };
+    const mean = total / crew.length;
+    const top = Math.max(...crew.map((o) => o.perEpoch)) / mean;
+    let units = GOLD_UNITS * top * split.gold;
+    for (const o of crew) units += (split.chests.get(o.id) || 0) * (o.perEpoch / mean);
+    const unit = units ? total / units : 0;
+    const per = new Map(crew.map((o) => [o.id, (o.perEpoch / mean) * unit]));
+    return { chest: (id) => per.get(id) || 0, gold: GOLD_UNITS * top * unit };
+  }
+
   /** Anda até `seconds` desde o início da época, em passos fixos. */
   function advance(sim, seconds) {
     while (sim.t + DT <= seconds) tick(sim);
@@ -290,7 +318,7 @@
 
   /* ====================================================== o desenho */
   let cv = null, ctx = null, running = false, last = 0;
-  let data = null, sim = null, simSig = '';
+  let data = null, sim = null, simSig = '', split = null, crewNow = [];
   const looks = new Map(); //                    id -> sprite (normal e espelhado)
   let art = null; //                             ladrilhos da sala em curso
   const vis = new Map(); //                      id -> { t, swing } (só animação)
@@ -372,7 +400,8 @@
   }
 
   const byId = (id) => data.outlaws.find((o) => o.id === id);
-  const perSec = (id) => (byId(id)?.perEpoch || 0) / data.epochLength;
+  /** O bando da época com o perEpoch mais novo (o painel relê o caixa a cada 20 s). */
+  const value = () => worth(split, crewNow.map((o) => byId(o.id) || o));
   const center = (c) => (c + 0.5) * CELL;
 
   /** Eventos da simulação viram efeito na tela (e só quando é ao vivo, não no avanço rápido). */
@@ -408,12 +437,11 @@
       burst(t.x, t.y, 'coin', 44);
       burst(t.x, t.y, 'spark', 16);
       fx.push({ kind: 'ring', age: 0, life: 0.6, x: center(t.x), y: center(t.y) });
-      const total = ev.paid.reduce((s, p) => s + perSec(p.id) * p.elapsed, 0);
       say(t.x, t.y - 0.55, root.I18N.t('h.gold'), '#FFEC9F', true);
-      say(t.x, t.y, '+' + fmt(total), '#F2CE7E', true);
+      say(t.x, t.y, '+' + fmt(value().gold), '#F2CE7E', true);
     } else if (type === 'open') {
       burst(t.x, t.y, 'coin', 14);
-      say(t.x, t.y, '+' + fmt(perSec(ev.a.id) * ev.elapsed), '#F2CE7E', true);
+      say(t.x, t.y, '+' + fmt(value().chest(ev.a.id)), '#F2CE7E', true);
     } else if (type === 'miss') {
       say(t.x, t.y, root.I18N.t('h.miss'), '#949D86');
     } else if (type === 'trap') {
@@ -694,6 +722,8 @@
     const sig = `${data.key}:${epoch}:${crew.map((o) => o.id).join(',')}`;
     if (sig !== simSig) {
       sim = createSim(data.key, epoch, crew);
+      split = tally(data.key, epoch, crew, data.epochLength);
+      crewNow = crew;
       simSig = sig;
       fx = [];
       shake = new Map();
@@ -750,5 +780,5 @@
     }
   }
 
-  root.Heist = { mount, update, _sim: { createSim, advance } }; // _sim: pra conferir o determinismo
+  root.Heist = { mount, update, _sim: { createSim, advance, tally, worth } }; // _sim: pra conferir o determinismo
 })(window);
