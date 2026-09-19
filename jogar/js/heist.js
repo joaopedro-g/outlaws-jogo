@@ -31,7 +31,6 @@
   const K = 2; //                               na tela, 1 casa = 32 px: o tamanho do boneco
   const CELL = T * K;
   const DT = 0.05; //                           passo fixo da simulação, igual em qualquer máquina
-  const TERRAIN_BY_RANK = [1, 1, 2, 3, 4, 5]; // o melhor do bando escolhe o terreno
   const DIRS = [[1, 0], [-1, 0], [0, 1], [0, -1]];
   const RANGED = new Set(['bow', 'crossbow', 'both']);
   const HIT_EVERY = 0.6, ARROW_TIME = 0.2, TRAP_STUN = 0.9, CLEAR_PAUSE = 1.6;
@@ -51,14 +50,13 @@
     const sim = {
       key, epoch, t: 0, roomNo: -1, room: null, emit: null,
       rnd: RNG.stream(seedOf(`assalto:${key}:${epoch}`), 'acao'),
-      best: Math.max(0, ...crew.map((o) => o.iso.rank.id)),
       actors: crew.map((o) => {
         const s = o.iso.stats;
         return {
           id: o.id,
           ranged: RANGED.has(o.iso.cosmetic.gear),
           speed: 2.2 + s.furtividade / 40, //   casas por segundo
-          power: 0.8 + s.forca / 100, //         dano por golpe
+          power: s.forca / 20, //                 dano por golpe: Ninguém ~1–2, Lenda ~4–5
           miss: (100 - s.pontaria) / 250, //     chance da flecha errar
           x: 0, y: 0, cx: 0, cy: 0, face: 1, path: [], target: null, state: 'idle',
           cool: 0, stun: 0, shot: null, since: 0,
@@ -74,8 +72,9 @@
   function nextRoom(sim) {
     sim.roomNo++;
     const seed = seedOf(`assalto:${sim.key}:${sim.epoch}:${sim.roomNo}`);
-    const m = MAP.generate(seed, TERRAIN_BY_RANK[sim.best] || 1);
-    const maxHp = 3 + (m.terrain.id - 1) * 0.5; // caixote do castelo aguenta mais
+    // o assalto viaja: cada sala limpa leva ao terreno seguinte (Estrada → … → Castelo) e recomeça
+    const m = MAP.generate(seed, (sim.roomNo % 5) + 1);
+    const maxHp = 4 + (m.terrain.id - 1) * 2; // 4 na Estrada … 12 no Castelo: a Força faz diferença
     const hp = new Map(); //                      chaves das casas: y * largura + x
     for (let y = 0; y < m.h; y++) for (let x = 0; x < m.w; x++) if (m.grid[y][x] === 'o') hp.set(y * m.w + x, maxHp);
     sim.room = {
@@ -212,7 +211,7 @@
       return release(sim, a);
     }
     const hp = r.hp.get(t.k) - a.power;
-    fire(sim, 'chip', { t });
+    fire(sim, 'chip', { t, dmg: a.power });
     if (hp > 0) return void r.hp.set(t.k, hp);
     r.hp.delete(t.k);
     if (r.hidden.has(t.k)) {
@@ -362,6 +361,8 @@
     } else if (type === 'chip') {
       shake.set(t.k, 0.18);
       burst(t.x, t.y, 'chip', 3);
+      // o dano do golpe sobe do caixote: dá pra ver quem bate forte
+      say(t.x, t.y + 0.35, '-' + ev.dmg.toLocaleString(root.I18N.locale(), { maximumFractionDigits: 1 }), '#E8E0CC');
     } else if (type === 'break') {
       burst(t.x, t.y, 'chip', 12);
     } else if (type === 'reveal') {

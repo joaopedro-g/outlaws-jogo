@@ -118,13 +118,15 @@
 
   /* ---------------------------------------------------------- leitura */
   async function loadConfig() {
-    const [[price], [len], [life], [gen]] = await Chain.calls([
+    const [[price], [len], [life], [gen], cap] = await Chain.calls([
       [C.game, 'sackPrice()'],
       [C.game, 'epochLength()'],
       [C.game, 'maxLife()'],
       [C.game, 'genesis()'],
-    ]);
-    S.cfg = { price, epochLength: Number(len), maxLife: Number(life), genesis: Number(gen) };
+      [C.game, 'MAX_ACTIVE()'],
+    ], { partial: true });
+    // contrato sem limite (os antigos): cap fica 0 e o painel não conta
+    S.cfg = { price, epochLength: Number(len), maxLife: Number(life), genesis: Number(gen), maxActive: cap ? Number(cap[0]) : 0 };
   }
 
   /*
@@ -272,14 +274,14 @@
     const ranks = [1, 3, 1, 0, 2, 3, 4, 1, 5];
     const st = [0, 1, 1, 2, 0, 1, 3, 0, 1];
     const seeds = ranks.map((r, i) => seedFor(r, i));
-    S.cfg = { price: 1000n * WEI, epochLength: 3600, maxLife: 30, genesis: Math.floor(Date.now() / 1000) - 5 * 3600 - 1200 };
+    S.cfg = { price: 1000n * WEI, epochLength: 3600, maxLife: 30, maxActive: 10, genesis: Math.floor(Date.now() / 1000) - 5 * 3600 - 1200 };
     S.glob = { epoch: 5, weight: 88_000n, owed: 1n, avg: 0n, pool: 101_675n * WEI, free: 101_675n * WEI, block: 1000, at: Date.now() };
     const outlaws = seeds.map((seed, i) => {
       const rank = ranks[i];
       const lifeLeft = st[i] === 2 ? 0 : 30 - ((i * 7) % 24);
       return {
         id: i + 1, seed, rank, flags: 0, weight: T.derive(seed).raw.weightBps, lifeUsed: 30 - lifeLeft, ransoms: 0,
-        shiftStart: 4, shiftEnd: 4 + 6 + i, fusion: st[i] === 3 ? 1 : 0, lifeLeft, status: st[i],
+        shiftStart: st[i] === 1 ? 4 : 0, shiftEnd: st[i] === 1 ? 4 + 6 + i : 0, fusion: st[i] === 3 ? 1 : 0, lifeLeft, status: st[i],
         pending: st[i] === 1 ? BigInt(40 + i * 17) * WEI : 0n,
         repair: st[i] === 0 && lifeLeft < 30 ? BigInt(15 + i * 3) * WEI : undefined,
         ransom: st[i] === 2 ? 900n * WEI : undefined,
@@ -509,6 +511,8 @@
       return run(t('p.act.work'), async () => {
         const list = ids.map(byId).filter((o) => o && o.status === 0 && o.lifeLeft > 0);
         if (!list.length) throw new Error(t('p.err.noFree'));
+        // o contrato recusaria a chamada inteira; melhor dizer antes, com a conta
+        if (list.length > room()) throw new Error(t('p.err.cap', { max: S.cfg.maxActive, n: onDuty(), room: room() }));
         const minLeft = Math.min(...list.map((o) => o.lifeLeft));
         const epochs = Math.min(S.shiftLen, minLeft);
         const zera = list.filter((o) => o.lifeLeft === epochs);
@@ -778,6 +782,13 @@
     }).join('');
   }
 
+  /** Quantos contam pro limite de um turno que comece agora (a conta de activeCount no contrato). */
+  function onDuty() {
+    return S.user ? S.user.outlaws.filter((o) => o.shiftStart !== 0 && o.shiftEnd > S.glob.epoch + 1).length : 0;
+  }
+  /** Vagas pra mandar trabalhar; Infinity num contrato sem limite. */
+  const room = () => (S.cfg.maxActive ? Math.max(0, S.cfg.maxActive - onDuty()) : Infinity);
+
   function lifeClass(o, max) {
     const r = o.lifeLeft / max;
     return r > 0.5 ? 'ok' : r > 0.2 ? 'mid' : 'low';
@@ -803,7 +814,10 @@
 
     const acts = [];
     if (o.pending > 0n) acts.push(`<button class="btn btn-gold" data-act="claim" data-id="${o.id}">${esc(t('p.card.claim', { amount: fmtB(o.pending) }))}</button>`);
-    if (o.status === 0 && o.lifeLeft > 0) acts.push(`<button class="btn" data-act="work" data-id="${o.id}">${esc(t('p.card.work'))}</button>`);
+    if (o.status === 0 && o.lifeLeft > 0) {
+      const full = room() === 0;
+      acts.push(`<button class="btn" data-act="work" data-id="${o.id}"${full ? ` disabled title="${esc(t('p.card.capFull', { max: c.maxActive }))}"` : ''}>${esc(t('p.card.work'))}</button>`);
+    }
     if (o.status === 0 && o.repair !== undefined) acts.push(`<button class="btn" data-act="repair" data-id="${o.id}" title="${esc(t('p.card.repair.title'))}">${esc(t('p.card.repair', { cost: fmtB(o.repair) }))}</button>`);
     if (o.status === 1) acts.push(`<button class="btn" data-act="stop" data-id="${o.id}">${esc(t('p.card.stop'))}</button>`);
     if (o.status === 2 && o.ransom !== undefined) acts.push(`<button class="btn btn-danger" data-act="ransom" data-id="${o.id}">${esc(t('p.card.ransom', { cost: fmtB(o.ransom) }))}</button>`);
@@ -854,8 +868,14 @@
     const pending = u.outlaws.reduce((s, o) => s + o.pending, 0n);
     $('#bar').hidden = S.readOnly;
     $('#bar-count').textContent = sel.length ? t('p.bar.count', { n: sel.length }) : t('p.bar.none');
+    const duty = $('#bar-duty'), max = S.cfg.maxActive;
+    duty.hidden = !max;
+    if (max) {
+      duty.textContent = t('p.bar.duty', { n: onDuty(), max });
+      duty.classList.toggle('is-full', room() === 0);
+    }
     $('#shift').value = S.shiftLen;
-    $('#b-work').disabled = S.busy || !free.length;
+    $('#b-work').disabled = S.busy || !free.length || room() === 0;
     $('#b-stop').disabled = S.busy || !working.length;
     $('#b-claim').disabled = S.busy || pending === 0n;
     // sem nada a sacar ainda: diz quando cai o próximo (o rendimento de cada época entra quando ela fecha)
