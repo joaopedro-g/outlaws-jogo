@@ -26,7 +26,7 @@
     rpcs: ['https://rpc.testnet.chain.robinhood.com/rpc', 'https://robinhood-sepolia-rpc.publicnode.com', 'https://46630.rpc.thirdweb.com'],
     explorer: 'https://explorer.testnet.chain.robinhood.com',
     bounty: '0xb714EfEa333C292Fd79faaD77eaf8AC64Ca35428',
-    game: '0x45E384F93bd1CeD2CE9EC2F244DBc0447F68F92a',
+    game: '0x771875f3AcdA1216350Fa6112787d7700297DeBA',
     multicall: '0xcA11bde05977b3631167028862bE2a173976CA11',
     faucet: '0x21a10A8bCD4Dee550437B756AA5D27bd8550C07C', //  torneira de $BOUNTY (só testnet)
     ethFaucet: 'https://faucet.testnet.chain.robinhood.com', // ETH de teste pro gás, da Robinhood

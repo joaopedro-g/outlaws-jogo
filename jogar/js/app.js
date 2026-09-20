@@ -569,6 +569,27 @@
 
   /** O registro fica salvo: sacar, recarregar ou trocar de aba não apaga nada. */
   const LOG_KEY = 'outlaws:log';
+  const GAME_KEY = 'outlaws:game'; //          qual contrato este navegador viu por último
+
+  /**
+   * Toda vez que o jogo muda de contrato, o guardado aqui deixa de fazer
+   * sentido (o registro fala de bonecos que não existem mais). Então limpa,
+   * uma vez só, e anota o contrato novo. A carteira escolhida fica: essa é da
+   * pessoa, não do jogo.
+   */
+  function resetOnNewGame() {
+    try {
+      const seen = localStorage.getItem(GAME_KEY);
+      const now = C.game.toLowerCase();
+      if (seen === now) return false;
+      localStorage.removeItem(LOG_KEY);
+      localStorage.removeItem('outlaws:tab');
+      localStorage.setItem(GAME_KEY, now);
+      return !!seen; //                        primeira visita não é "mudou de jogo"
+    } catch {
+      return false;
+    }
+  }
   function saveLog() {
     try {
       localStorage.setItem(LOG_KEY, JSON.stringify(S.log.map((l) => ({ ...l, at: +l.at }))));
@@ -774,6 +795,22 @@
           [list.map((o) => o.id), list.map((o) => S.cfg.maxLife - o.lifeLeft)]);
       });
     },
+    /**
+     * Escala sozinho os melhores que estão livres, até encher o bando: peso
+     * primeiro (é ele que decide a paga), vida como desempate.
+     */
+    'work-best'() {
+      const vagas = room();
+      if (!vagas) return toast(t('p.err.cap', { max: S.cfg.maxActive, n: onDuty(), room: 0 }), 'aviso');
+      const livres = (S.user?.outlaws || [])
+        .filter((o) => o.status === 0 && o.lifeLeft > 0)
+        .sort((a, b) => b.weight - a.weight || b.lifeLeft - a.lifeLeft);
+      if (!livres.length) return toast(t('p.err.noFree'), 'aviso');
+      const escalados = livres.slice(0, Math.min(vagas, livres.length));
+      S.selected = new Set(escalados.map((o) => o.id));
+      return actions.work(escalados.map((o) => o.id));
+    },
+
     /** Escolhe sozinho um par pronto (o rank mais alto, com mais vida). */
     'fuse-auto'() {
       const pairs = fusePairs();
@@ -876,6 +913,71 @@
     S.odds = { key: `${p.a.id}-${p.b.id}`, success, fail: 10_000 - success - critical, critical };
   }
 
+  /* ------------------------------------------------------- próximo passo */
+
+  /** Em que aba mora cada ação, pra acender também a aba quando ela está fechada. */
+  const TAB_DA_ACAO = { buy: 'taverna', 'fuse-auto': 'fusao', 'fuse-all': 'fusao' };
+
+  /**
+   * O que fazer agora. A ordem é a do ciclo do jogo — ligar, abastecer, abrir
+   * o saco, sacar, trabalhar, comprar, consertar — e o primeiro item que
+   * estiver faltando vira a dica. Quem já sabe jogar ignora; quem chegou
+   * agora tem sempre um botão óbvio.
+   */
+  function nextStep() {
+    const u = S.user, c = S.cfg;
+    if (S.demo || S.readOnly) return null;
+    if (!S.me) return { act: 'connect', msg: t('p.next.connect') };
+    if (!u || !c || !S.glob) return null;
+    if (u.eth === 0n) return { act: 'faucet-vault', msg: t('p.next.eth') };
+
+    const pronto = u.sacks.find((k) => S.glob.block > k.target && S.glob.block <= k.target + drawWindow());
+    if (pronto) return { act: 'open', id: pronto.id, msg: t('p.next.open', { id: pronto.id }) };
+
+    const parado = u.outlaws.reduce((s, o) => s + o.pending, 0n);
+    if (parado > 0n) return { act: 'b-claim', msg: t('p.next.claim', { amount: fmtB(parado) }) };
+
+    const livres = u.outlaws.filter((o) => o.status === 0 && o.lifeLeft > 0);
+    if (livres.length && room() > 0) {
+      return { act: 'work-best', msg: t('p.next.work', { n: Math.min(livres.length, room()) }) };
+    }
+    if (u.bounty >= c.price) return { act: 'buy', msg: t('p.next.buy') };
+    if (!u.outlaws.length) return { act: 'faucet-vault', msg: t('p.next.tap') };
+
+    const surrados = u.outlaws.filter((o) => o.status === 0 && o.lifeLeft > 0 && o.lifeLeft < c.maxLife);
+    if (surrados.length && S.glob.v3) return { act: 'repair-all', msg: t('p.next.repair', { n: surrados.length }) };
+    return null;
+  }
+
+  /** Escreve a dica no caixa e acende o botão (e a aba) a que ela leva. */
+  function renderNextStep() {
+    const btn = $('#next-step');
+    if (!btn) return;
+    for (const el of document.querySelectorAll('.is-next')) el.classList.remove('is-next');
+    const passo = nextStep();
+    //                                          o saque já tem botão grande logo abaixo: só acende
+    btn.hidden = !passo || passo.act === 'b-claim';
+    if (!passo) return;
+
+    btn.textContent = passo.msg;
+    btn.dataset.act = passo.act;
+    if (passo.id === undefined) delete btn.dataset.id;
+    else btn.dataset.id = passo.id;
+    btn.disabled = !!S.busy;
+    btn.classList.add('is-next');
+
+    const alvo = passo.id === undefined
+      ? `[data-act="${passo.act}"]`
+      : `[data-act="${passo.act}"][data-id="${passo.id}"]`;
+    for (const el of document.querySelectorAll(alvo)) el.classList.add('is-next');
+
+    const aba = TAB_DA_ACAO[passo.act];
+    if (aba && aba !== S.tab) {
+      const chave = document.querySelector(`[data-act="tab"][data-tab="${aba}"]`);
+      if (chave) chave.classList.add('is-next');
+    }
+  }
+
   /* ----------------------------------------------------------- render */
   function render() {
     renderHeader();
@@ -887,6 +989,7 @@
     renderBand();
     renderFusion();
     renderLog();
+    renderNextStep();
   }
 
   /**
@@ -1088,11 +1191,13 @@
     $('#buy').disabled = S.busy || S.readOnly || !u;
     $('#approve-note').hidden = !(u && !S.readOnly && u.allowance < total);
 
-    const list = $('#sacks');
-    if (!u || !u.sacks.length) {
-      list.innerHTML = `<p class="muted">${esc(t('p.sacks.none'))}</p>`;
+    const list = $('#sacks'), quadro = $('#sacks-panel');
+    if (!u || !u.sacks.length) { //             sem saco por abrir, o quadro nem aparece
+      list.innerHTML = '';
+      if (quadro) quadro.hidden = true;
       return;
     }
+    if (quadro) quadro.hidden = false;
     const block = S.glob.block;
     list.innerHTML = u.sacks.map((k) => {
       const ready = block > k.target;
@@ -1443,12 +1548,14 @@
         }
       } catch {}
     }
+    const trocou = resetOnNewGame();
     loadLog();
     Heist.mount($('#heist-map'));
     let tab = 'bando';
     try { tab = localStorage.getItem('outlaws:tab') || tab; } catch {}
     tab = params.get('tab') || tab;
     showTab(document.getElementById('tab-' + tab) ? tab : 'bando');
+    if (trocou) toast(t('p.newGame'), 'aviso'); //  o jogo recomeçou noutro contrato
     I18N.onChange(() => render());
     render();
     await refresh();

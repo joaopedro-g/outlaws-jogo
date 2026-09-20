@@ -281,6 +281,17 @@
   .more-eth { margin-top: 12px; font-size: 13px; }
   .more-eth summary { cursor: pointer; color: var(--text-dim); }
 
+  /* o painel diz o que fazer agora, e o botão certo pisca de leve */
+  .next-step { width: 100%; margin-top: 14px; text-align: center; }
+  .is-next { animation: nudge 1.8s ease-in-out infinite; }
+  @keyframes nudge {
+    0%, 100% { box-shadow: inset 0 0 0 1px rgba(0,0,0,.45), 0 3px 0 rgba(0,0,0,.5); }
+    50% { box-shadow: inset 0 0 0 1px #F7E2A8, 0 0 0 4px rgba(242,206,126,.35), 0 3px 0 rgba(0,0,0,.5); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .is-next { animation: none; box-shadow: 0 0 0 4px rgba(242,206,126,.45); }
+  }
+
   .vault-claim { margin-top: 14px; display: grid; gap: 8px; }
   .vault-claim .btn { width: 100%; }
   .vault-claim .live { font: 10px var(--pixel); color: var(--gold-hi); }
@@ -426,12 +437,18 @@
           <div class="stat"><dt data-i18n="p.stat.weight">Weight on duty</dt><dd id="stat-weight">…</dd></div>
           <div class="stat"><dt data-i18n="p.stat.epoch">Current epoch</dt><dd id="stat-epoch">…</dd></div>
         </dl>
+        <button id="next-step" class="btn btn-gold next-step" hidden></button>
         <div id="vault-claim" class="vault-claim"></div>
         <div class="vault-tools">
           <button class="btn" data-act="faucet-vault" data-i18n="p.tap.getPlain">Get test $BOUNTY</button>
           <button class="btn" data-act="fix-rpc" title="Re-offer the network with our RPCs" data-i18n-title="p.rpc.fix.title" data-i18n="p.rpc.fix">Fix network</button>
         </div>
       </div>
+    </section>
+
+    <section id="sacks-panel" class="panel" aria-labelledby="t-sacos" hidden>
+      <h2 id="t-sacos" data-i18n="p.sacks.title">Bags to open</h2>
+      <div class="pbody"><div id="sacks"></div></div>
     </section>
 
     <section class="panel" aria-labelledby="t-registro">
@@ -458,7 +475,8 @@
           <span id="bar-count"></span>
           <span id="bar-duty" class="duty" title="Up to 10 per wallet on duty at once" data-i18n-title="p.bar.duty.title" hidden></span>
           <label for="shift"><span data-i18n="p.bar.shiftA">shift of</span> <input id="shift" type="number" min="1" max="30" value="10"> <span data-i18n="p.bar.shiftB">epochs</span></label>
-          <button id="b-work" class="btn btn-green btn-big" data-act="b-work" data-i18n="p.bar.work">Work</button>
+          <button id="b-best" class="btn btn-green btn-big" data-act="work-best" data-i18n="p.bar.best">Send the best</button>
+          <button id="b-work" class="btn btn-green" data-act="b-work" data-i18n="p.bar.work">Work</button>
           <button id="b-stop" class="btn" data-act="b-stop" data-i18n="p.bar.stop">End shift</button>
           <button class="btn" data-act="select-free" data-i18n="p.bar.selectFree">Select free</button>
           <button class="btn" data-act="clear" data-i18n="p.bar.clear">Clear</button>
@@ -484,7 +502,6 @@
         <p id="approve-note" class="note" hidden data-i18n="p.tavern.approve">The wallet asks for two confirmations: approving the exact amount of this purchase, and the purchase itself. Never approve "unlimited".</p>
         <label class="auto-work"><input type="checkbox" id="auto-work" checked>
           <span data-i18n="p.tavern.autoWork">Send them straight to work when I open the bag</span></label>
-        <div id="sacks" style="margin-top:12px"></div>
       </div>
     </section>
 
@@ -529,7 +546,7 @@
 
 <footer>
   <span data-i18n="p.footer">Contracts with verified code:</span>
-  <a href="https://explorer.testnet.chain.robinhood.com/address/0x45E384F93bd1CeD2CE9EC2F244DBc0447F68F92a" target="_blank" rel="noopener">OUTLAWS</a>
+  <a href="https://explorer.testnet.chain.robinhood.com/address/0x771875f3AcdA1216350Fa6112787d7700297DeBA" target="_blank" rel="noopener">OUTLAWS</a>
   <a href="https://explorer.testnet.chain.robinhood.com/address/0xb714EfEa333C292Fd79faaD77eaf8AC64Ca35428" target="_blank" rel="noopener">$BOUNTY</a>
 </footer>
 
