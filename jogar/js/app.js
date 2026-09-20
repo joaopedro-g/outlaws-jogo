@@ -483,7 +483,7 @@
     const ultima = Chain.current()?.info.rdns; //  a do último acesso vai marcada
     dlg.innerHTML = `<h3>${esc(t('p.wallet.pick'))}</h3><p class="muted">${esc(t('p.wallet.pick.sub'))}</p>
       <ul class="wlist">${Chain.wallets().map((w) => `<li><button class="btn" data-act="use-wallet" data-rdns="${esc(w.info.rdns)}">
-        ${w.info.icon ? `<img src="${esc(w.info.icon)}" alt="" width="28" height="28">` : ''}<span>${esc(w.info.name)}</span>${
+        ${w.info.icon ? `<img src="${esc(w.info.icon)}" alt="" width="28" height="28">` : ''}<span>${esc(w.info.name)}<small class="wrdns">${esc(w.info.rdns)}</small></span>${
           w.info.rdns === ultima ? `<small class="wlast">${esc(t('p.wallet.last'))}</small>` : ''}</button></li>`).join('')}</ul>
       <button class="btn" data-act="close-wallets">${esc(t('p.wallet.cancel'))}</button>`;
     dlg.showModal();
@@ -647,7 +647,12 @@
      * de ficar morto até o F5.
      */
     async connect(rdns) {
-      if (S.connecting) return toast(t('p.conn.waiting'), 'aviso');
+      if (S.connecting) {
+        //                                       a extensão às vezes engole o pedido e nunca responde
+        if (Date.now() - (S.connectAt || 0) < 4000) return toast(t('p.conn.waiting'), 'aviso');
+        S.connecting = false;
+      }
+      S.connectAt = Date.now();
       Chain.rediscover(); //                     extensão que entrou depois
       if (!Chain.hasWallet()) return toast(t('p.noWallet'), 'erro');
       // clicar em conectar sempre abre a lista: quem escolhe a carteira é o jogador
@@ -666,7 +671,12 @@
         useAccount(a);
         leftOn(false);
         history.replaceState(null, '', location.pathname);
-        toast(t('p.connected', { a: short(S.me) }));
+        const nome = Chain.walletName(), real = Chain.realName();
+        toast(nome ? t('p.connected.by', { a: short(S.me), w: nome }) : t('p.connected', { a: short(S.me) }));
+        //                                     extensão que se passa por outra: a pessoa tem que saber
+        if (nome && real && !nome.toLowerCase().includes(real.toLowerCase())) {
+          toast(t('p.wallet.mismatch', { picked: nome, real }), 'aviso');
+        }
         render();
         await refresh();
       } catch (e) {
@@ -677,6 +687,14 @@
         S.connecting = false;
         render();
       }
+    },
+    /** Esquece a atual e abre a lista de novo. */
+    async 'switch-wallet'() {
+      leftOn(true); //                           não reconectar sozinho enquanto ele escolhe
+      useAccount(null);
+      render();
+      await Chain.forget();
+      pickWallet();
     },
     async disconnect() {
       leftOn(true);
@@ -1147,8 +1165,12 @@
   function renderHeader() {
     const w = $('#wallet');
     if (S.demo) w.innerHTML = `<span class="chip chip-fusao">${esc(t('p.demoChip'))}</span>`;
-    else if (S.me) w.innerHTML = `<span class="chip chip-livre" title="${esc(S.me)}">${esc(short(S.me))}</span>
+    else if (S.me) {
+      const nome = Chain.walletName();
+      w.innerHTML = `<span class="chip chip-livre" title="${esc(S.me)}">${nome ? esc(nome) + ' · ' : ''}${esc(short(S.me))}</span>
+      <button class="btn" data-act="switch-wallet">${esc(t('p.wallet.switch'))}</button>
       <button class="btn" data-act="disconnect" title="${esc(t('p.disconnect.title'))}">${esc(t('p.disconnect'))}</button>`;
+    }
     else if (S.connecting) w.innerHTML = `<button class="btn" disabled>${esc(t('p.conn.opening'))}</button>`;
     else w.innerHTML = `<button class="btn btn-gold" data-act="connect">${esc(t('p.connect'))}</button>`;
 

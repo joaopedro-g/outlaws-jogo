@@ -226,12 +226,42 @@
     return list;
   }
 
-  /** Escolhe pelo rdns (ou a única que existir); devolve a escolhida. */
+  /**
+   * Escolhe pelo rdns (ou a única que existir). Se a pedida não estiver mais
+   * anunciada, reclama em vez de usar a anterior: cair calado noutra carteira
+   * é como o painel abria a Phantom de quem tinha pedido outra.
+   */
   function use(rdns) {
     const list = wallets();
-    chosen = list.find((w) => w.info.rdns === rdns) || (list.length === 1 ? list[0] : chosen);
+    if (rdns) {
+      const achada = list.find((w) => w.info.rdns === rdns);
+      if (!achada) throw new Error(tr('p.wallet.gone'));
+      chosen = achada;
+    } else if (list.length === 1) {
+      chosen = list[0];
+    }
     if (chosen) { try { localStorage.setItem(PICKED, chosen.info.rdns); } catch {} }
     return chosen;
+  }
+
+  /** O nome da carteira em uso, como ela se anuncia. */
+  const walletName = () => current()?.info.name || '';
+
+  /**
+   * Quem de fato respondeu, pelas marcas que a própria extensão põe no
+   * provedor. Serve pra flagrar extensão que se passa por outra — a Phantom
+   * assume o window.ethereum e ainda diz isMetaMask.
+   */
+  function realName() {
+    const p = current()?.provider;
+    if (!p) return '';
+    if (p.isPhantom) return 'Phantom';
+    if (p.isRabby) return 'Rabby';
+    if (p.isBraveWallet) return 'Brave';
+    if (p.isCoinbaseWallet) return 'Coinbase Wallet';
+    if (p.isTrust) return 'Trust';
+    if (p.isMetaMask) return 'MetaMask';
+    return '';
   }
 
   /** A carteira em uso: a escolhida, a lembrada do último acesso, ou a única. */
@@ -406,7 +436,7 @@
 
   root.Chain = {
     CFG, MAX_UINT, rpc, encode, words, asAddr, asHex32, call, calls, contractBlock, ethBalance,
-    hasWallet, wallets, use, current, onWallet, accounts, forget, rediscover,
+    hasWallet, wallets, use, current, walletName, realName, onWallet, accounts, forget, rediscover,
     connect, ensureChain, fixChain, signPermit, send, waitReceipt, logsOf, humanError,
   };
 })(window);
