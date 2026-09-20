@@ -271,23 +271,35 @@
     try { await w.provider.request({ method: 'wallet_revokePermissions', params: [{ eth_accounts: {} }] }); } catch {}
   }
 
+  /**
+   * Põe a carteira na Robinhood. "Rede desconhecida" devia vir com o código
+   * 4902, mas nem toda carteira usa esse código — a Rabby devolve erro genérico
+   * com o texto "Unrecognized chain ID", e aí a rede nunca era adicionada e o
+   * jogador ficava preso. Agora qualquer erro que não seja recusa da pessoa
+   * vira tentativa de adicionar a rede, e depois troca de novo.
+   */
   async function ensureChain() {
-    const id = await wallet().request({ method: 'eth_chainId' });
-    if (id === CFG.chainHex) return;
+    if (await wallet().request({ method: 'eth_chainId' }) === CFG.chainHex) return;
+    try {
+      await wallet().request({ method: 'wallet_switchEthereumChain', params: [{ chainId: CFG.chainHex }] });
+      if (await wallet().request({ method: 'eth_chainId' }) === CFG.chainHex) return;
+    } catch (e) {
+      if (e.code === 4001) throw e;
+    }
+    try {
+      await fixChain(); //                      adiciona (ou reoferece) a rede
+    } catch (e) {
+      if (e.code === 4001) throw e;
+      throw new Error(tr('e.chain', { name: CFG.chainName, id: CFG.chainId }));
+    }
+    if (await wallet().request({ method: 'eth_chainId' }) === CFG.chainHex) return;
     try {
       await wallet().request({ method: 'wallet_switchEthereumChain', params: [{ chainId: CFG.chainHex }] });
     } catch (e) {
-      if (e.code !== 4902) throw e;
-      await wallet().request({
-        method: 'wallet_addEthereumChain',
-        params: [{
-          chainId: CFG.chainHex,
-          chainName: CFG.chainName,
-          nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
-          rpcUrls: CFG.rpcs.slice(0, 2), // os dois do registro oficial de redes (chainid.network)
-          blockExplorerUrls: [CFG.explorer],
-        }],
-      });
+      if (e.code === 4001) throw e;
+    }
+    if (await wallet().request({ method: 'eth_chainId' }) !== CFG.chainHex) {
+      throw new Error(tr('e.chain', { name: CFG.chainName, id: CFG.chainId }));
     }
   }
 

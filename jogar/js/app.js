@@ -795,7 +795,8 @@
 
     const tapBtn = !connected || S.demo ? '' : waitTap
       ? `<small class="muted">${esc(t('p.tap.againIn'))} <span data-until="${tap.next}">${dur(tap.next - now)}</span></small>`
-      : `<button class="btn ${hasBounty ? '' : 'btn-gold'}" data-act="faucet" ${S.busy || dry || !hasEth ? 'disabled' : ''}>${tapLabel}</button>`;
+      : `<button class="btn ${hasBounty ? '' : 'btn-gold'}" data-act="faucet" ${S.busy || dry || !hasEth ? 'disabled' : ''}
+           title="${esc(dry ? t('p.tap.dry') : !hasEth ? t('p.tap.needEth') : t('p.tap.every'))}">${tapLabel}</button>`;
 
     if (connected && hasEth && hasBounty) { //   tudo certo: só a torneira, pra quem quiser mais
       box.innerHTML = `<h2>${esc(t('p.tap.title'))}</h2><div class="pbody">
