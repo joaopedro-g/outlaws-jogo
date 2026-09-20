@@ -129,6 +129,7 @@
     if (!e) return tr('e.unknown');
     if (e.code === 4001 || /user (rejected|denied)/i.test(e.message || '')) return tr('e.rejected');
     if (e.code === -32002) return tr('e.pending'); //  já tem pedido aberto na extensão
+    if (e.code === -32005 || /rate.?limit/i.test(e.message || '')) return tr('e.rateLimit');
     const data = e.data?.data || e.data?.originalError?.data || e.data;
     return explain(typeof data === 'string' ? data : null) || e.message || String(e);
   }
@@ -290,6 +291,20 @@
     }
   }
 
+  /** Reoferece a rede com as nossas RPCs (a carteira pode estar numa que limita). */
+  async function fixChain() {
+    await wallet().request({
+      method: 'wallet_addEthereumChain',
+      params: [{
+        chainId: CFG.chainHex,
+        chainName: CFG.chainName,
+        nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+        rpcUrls: CFG.rpcs.slice(0, 2),
+        blockExplorerUrls: [CFG.explorer],
+      }],
+    });
+  }
+
   async function connect(rdns) {
     if (rdns) use(rdns);
     else if (!current()) use(); //                 uma só instalada: essa mesmo
@@ -346,6 +361,6 @@
   root.Chain = {
     CFG, MAX_UINT, rpc, encode, words, asAddr, asHex32, call, calls, contractBlock, ethBalance,
     hasWallet, wallets, use, current, onWallet, accounts, forget, rediscover,
-    connect, ensureChain, send, waitReceipt, logsOf, humanError,
+    connect, ensureChain, fixChain, send, waitReceipt, logsOf, humanError,
   };
 })(window);

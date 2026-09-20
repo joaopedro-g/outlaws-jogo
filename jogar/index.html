@@ -71,7 +71,7 @@
   }
   .pill img { width: 22px; height: 22px; }
   .pill i { width: 12px; height: 12px; background: var(--gold); transform: rotate(45deg); flex: none; }
-  .pill .k { font: 6.5px var(--pixel); letter-spacing: .1em; color: var(--text-dim); text-transform: uppercase; display: block; }
+  .pill .k { font: 13px var(--fellsc); letter-spacing: .05em; color: var(--text-dim); display: block; }
   .pill .v { font: 11px var(--pixel); color: var(--text); font-variant-numeric: tabular-nums; display: block; margin-top: 4px; }
   .pill.hot .v { color: var(--gold-hi); }
   #balances { display: contents; }
@@ -162,7 +162,7 @@
   .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 0; }
   .stat { padding: 9px 10px; background: #1A1108; border: 2px solid var(--wood-lo); box-shadow: inset 0 0 0 1px var(--wood-mid); }
   .stat:last-child { grid-column: span 2; }
-  .stat dt { font: 6.5px var(--pixel); letter-spacing: .1em; color: var(--text-dim); text-transform: uppercase; }
+  .stat dt { font: 14px var(--fellsc); letter-spacing: .04em; color: var(--text-dim); }
   .stat dd { margin: 7px 0 0; font: 13px var(--pixel); color: var(--text); font-variant-numeric: tabular-nums; }
   .stat dd small { font: 11px var(--body); color: var(--text-dim); margin-left: 4px; }
   .stat.hot dd { color: var(--gold-hi); }
@@ -271,12 +271,37 @@
   .more-eth { margin-top: 12px; font-size: 13px; }
   .more-eth summary { cursor: pointer; color: var(--text-dim); }
 
+  /* ---------------------------------------------- filtros e fusão */
+  .filters { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .filters button {
+    display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
+    font: 13px var(--fellsc); letter-spacing: .03em; color: var(--text-dim);
+    padding: 6px 9px; background: #1A1108; border: 2px solid var(--wood-lo);
+    box-shadow: inset 0 0 0 1px var(--wood-mid);
+  }
+  .filters button:hover { color: var(--gold-hi); }
+  .filters button[aria-pressed="true"] { color: #1E1307; background: linear-gradient(#E8B858, #C68F2B); box-shadow: inset 0 0 0 1px #F2CE7E; }
+  .filters .gem { margin: 0; }
+  .filters .n { font: 9px var(--pixel); }
+
+  .fuse-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 10px; margin-bottom: 16px; }
+  .fuse-pick {
+    display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; padding: 8px 6px;
+    color: var(--ink); background: #D8C8A2 url("../assets/parchment.png") repeat center / 172px;
+    border: 0; box-shadow: 0 0 0 2px var(--rc), 0 6px 14px rgba(0,0,0,.45);
+    outline: 3px solid transparent; outline-offset: 3px;
+  }
+  .fuse-pick[aria-pressed="true"] { outline-color: var(--gold); }
+  .fuse-pick img { width: 64px; height: 64px; }
+  .fuse-pick b { font: 15px var(--press); font-weight: 400; line-height: 1.1; }
+  .fuse-pick small { font: 8px var(--pixel); color: var(--ink-soft); }
+
   /* --------------------------------------------------------- ranking */
   .board-sub { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 0 0 12px; font-size: 13px; }
   .board-scroll { overflow-x: auto; }
   table.board { width: 100%; border-collapse: collapse; min-width: 520px; font-variant-numeric: tabular-nums; }
   table.board th {
-    font: 7px var(--pixel); letter-spacing: .1em; text-transform: uppercase; color: var(--text-dim);
+    font: 15px var(--fellsc); letter-spacing: .06em; color: var(--text-dim);
     text-align: right; padding: 0 10px 10px; white-space: nowrap;
   }
   table.board th:nth-child(-n+2), table.board td:nth-child(-n+2) { text-align: left; }
@@ -286,7 +311,7 @@
   table.board .best { color: var(--text); white-space: nowrap; }
   table.board .best .gem { width: 9px; height: 9px; margin-right: 7px; box-shadow: 0 0 0 1px #0004, 0 0 6px var(--rc); }
   table.board tr.is-me td { background: rgba(217,164,65,.12); }
-  table.board .tag { font: 7px var(--pixel); color: var(--gold-hi); border: 1px solid var(--gold-dim); padding: 3px 5px; margin-left: 6px; }
+  table.board .tag { font: 13px var(--fellsc); color: var(--gold-hi); border: 1px solid var(--gold-dim); padding: 1px 6px; margin-left: 6px; }
 
   /* ------------------------------------------------- escolha da carteira */
   .wallets { background: linear-gradient(#2E1E10, #241708); color: var(--text); border: 3px solid var(--wood-lo);
@@ -375,6 +400,7 @@
           <div class="stat"><dt data-i18n="p.stat.weight">Weight on duty</dt><dd id="stat-weight">…</dd></div>
           <div class="stat"><dt data-i18n="p.stat.epoch">Current epoch</dt><dd id="stat-epoch">…</dd></div>
         </dl>
+        <button class="btn" data-act="fix-rpc" style="margin-top:12px" title="Re-offer the network with our RPCs" data-i18n-title="p.rpc.fix.title" data-i18n="p.rpc.fix">Fix network</button>
       </div>
     </section>
 
@@ -408,6 +434,7 @@
           <button class="btn" data-act="clear" data-i18n="p.bar.clear">Clear</button>
           <button id="b-claim" class="btn btn-gold" data-act="b-claim">Claim all</button>
         </div>
+        <div id="band-filter" class="filters"></div>
         <div id="band"></div>
       </div>
     </section>
@@ -430,7 +457,11 @@
 
     <section id="tab-fusao" class="tab panel" aria-labelledby="t-fusao" hidden>
       <h2 id="t-fusao" data-i18n="p.fusion.title">Fusion</h2>
-      <div class="pbody"><div id="fusion"></div></div>
+      <div class="pbody">
+        <div id="fuse-filter" class="filters"></div>
+        <div id="fuse-list" class="fuse-list"></div>
+        <div id="fusion"></div>
+      </div>
     </section>
 
     <section id="tab-ranking" class="tab panel" aria-labelledby="t-ranking" hidden>

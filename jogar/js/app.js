@@ -21,6 +21,7 @@
   const L1_SECONDS = 12; // o contrato conta blocos da L1 (Sepolia): ~12 s cada
 
   const S = {
+    filter: null, fuseFilter: null, //           filtros por raridade (bando e fusão)
     me: null,
     view: null,
     readOnly: false,
@@ -404,7 +405,8 @@
   /* -------------------------------------------------------------- ações */
   function toast(msg, kind = 'ok', hash) {
     S.log.unshift({ msg, kind, hash, at: new Date() });
-    S.log = S.log.slice(0, 12);
+    S.log = S.log.slice(0, 60);
+    saveLog();
     renderLog();
   }
 
@@ -541,6 +543,20 @@
     if (name === 'ranking') wantBoard();
   }
 
+  /** O registro fica salvo: sacar, recarregar ou trocar de aba não apaga nada. */
+  const LOG_KEY = 'outlaws:log';
+  function saveLog() {
+    try {
+      localStorage.setItem(LOG_KEY, JSON.stringify(S.log.map((l) => ({ ...l, at: +l.at }))));
+    } catch {}
+  }
+  function loadLog() {
+    try {
+      const raw = JSON.parse(localStorage.getItem(LOG_KEY) || '[]');
+      S.log = raw.slice(0, 60).map((l) => ({ ...l, at: new Date(l.at) }));
+    } catch {}
+  }
+
   const byId = (id) => S.user.outlaws.find((o) => o.id === id);
   const selectedOutlaws = () => [...S.selected].map(byId).filter(Boolean);
 
@@ -590,6 +606,15 @@
       render();
       await Chain.forget(); //                    a carteira também esquece a permissão deste site
       await refresh();
+    },
+    /** A carteira está usando uma RPC que limita o envio: reoferece as nossas. */
+    async 'fix-rpc'() {
+      try {
+        await Chain.fixChain();
+        toast(t('p.rpc.fixed'));
+      } catch (e) {
+        toast(t('p.rpc.fixErr', { e: Chain.humanError(e) }), 'erro');
+      }
     },
     async 'copy-address'() {
       try {
@@ -645,8 +670,12 @@
     },
     claim(ids) {
       return run(t('p.act.claim'), async () => {
-        const list = ids.map(byId).filter((o) => o && o.pending > 0n);
-        if (!list.length) throw new Error(t('p.err.nothing'));
+        let list = ids.map(byId).filter((o) => o && o.pending > 0n);
+        if (!list.length) { //                   talvez a época tenha virado agorinha: relê antes de desistir
+          await refresh();
+          list = ids.map(byId).filter((o) => o && o.pending > 0n);
+        }
+        if (!list.length) throw new Error(t('p.claim.notYet', { t: dur(nextEpochIn()) }));
         const total = list.reduce((s, o) => s + o.pending, 0n);
         await tx(t('p.act.claimTx', { amount: fmtB(total) }), C.game, 'claim(uint256[])', [list.map((o) => o.id)]);
       });
@@ -1016,7 +1045,10 @@
       $('#bar').hidden = true;
       return;
     }
-    box.innerHTML = u.outlaws.map(card).join('');
+    renderFilters($('#band-filter'), u.outlaws, S.filter, (r) => { S.filter = r; renderBand(); });
+    const shown = S.filter === null ? u.outlaws : u.outlaws.filter((o) => o.rank === S.filter);
+    box.innerHTML = shown.length ? shown.map(card).join('')
+      : `<div class="empty"><p>${esc(t('p.filter.none'))}</p></div>`;
 
     const sel = selectedOutlaws();
     const free = sel.filter((o) => o.status === 0 && o.lifeLeft > 0);
@@ -1033,7 +1065,7 @@
     $('#shift').value = S.shiftLen;
     $('#b-work').disabled = S.busy || !free.length || room() === 0;
     $('#b-stop').disabled = S.busy || !working.length;
-    $('#b-claim').disabled = S.busy || pending === 0n;
+    $('#b-claim').disabled = S.busy; //        sem trava: o saque é livre
     // sem nada a sacar ainda: diz quando cai o próximo (o rendimento de cada época entra quando ela fecha)
     // sem contagem regressiva: o que a época corrente rende sobe na hora, a cada segundo
     const earning = u.outlaws.some((o) => o.status === 1 && S.glob.epoch >= o.shiftStart);
@@ -1045,7 +1077,51 @@
     $('#b-claim').title = earning ? t('p.bar.accrue.title') : '';
   }
 
+  /**
+   * Fileira de filtros por raridade: "todos" e um por rank que a pessoa tem,
+   * com a contagem. Serve pro bando e pra fusão.
+   */
+  function renderFilters(box, list, active, onPick) {
+    if (!box) return;
+    const counts = new Map();
+    for (const o of list) counts.set(o.rank, (counts.get(o.rank) || 0) + 1);
+    const ranks = [...counts.keys()].sort((a, b) => a - b);
+    box.innerHTML = `<button data-filter="" aria-pressed="${active === null}">${esc(t('p.filter.all'))} <span class="n">${list.length}</span></button>`
+      + ranks.map((r) => `<button data-filter="${r}" aria-pressed="${active === r}" style="${rarityStyle(r)}">
+          <i class="gem"></i>${esc(RANK[r])} <span class="n">${counts.get(r)}</span></button>`).join('');
+    box.onclick = (e) => {
+      const b = e.target.closest('[data-filter]');
+      if (!b) return;
+      onPick(b.dataset.filter === '' ? null : Number(b.dataset.filter));
+    };
+  }
+
+  /** Quem pode entrar numa fusão: livre, com vida e abaixo de Lenda. */
+  const fusable = (o) => o.status === 0 && o.lifeLeft > 0 && o.rank < 5;
+
+  /** A lista de candidatos da aba Fusão: clicar escolhe (no máximo dois). */
+  function renderFuseList() {
+    const box = $('#fuse-list'), u = S.user;
+    if (!box) return;
+    if (!u) return void (box.innerHTML = '');
+    const free = u.outlaws.filter(fusable);
+    renderFilters($('#fuse-filter'), free, S.fuseFilter, (r) => { S.fuseFilter = r; renderFuseList(); });
+    const shown = S.fuseFilter === null ? free : free.filter((o) => o.rank === S.fuseFilter);
+    // mesma lista na tela: só remarca quem está escolhido (redesenhar tirava o clique do lugar)
+    const sig = shown.map((o) => o.id).join(",");
+    if (box.dataset.sig === sig && shown.length) {
+      for (const b of box.querySelectorAll(".fuse-pick")) b.setAttribute("aria-pressed", String(S.selected.has(Number(b.dataset.id))));
+      return;
+    }
+    box.dataset.sig = sig;
+    box.innerHTML = shown.length
+      ? shown.map((o) => `<button class="fuse-pick" data-act="pick-fuse" data-id="${o.id}" aria-pressed="${S.selected.has(o.id)}" style="${rarityStyle(o.rank)}">
+          <img src="${art(o).url}" alt="" width="64" height="64"><b>${esc(RANK[o.rank])}</b><small>#${o.id}</small></button>`).join('')
+      : `<p class="muted">${esc(t(free.length ? 'p.filter.none' : 'p.fuse.none'))}</p>`;
+  }
+
   function renderFusion() {
+    renderFuseList();
     const box = $('#fusion');
     const p = S.user ? fusionPair() : null;
     let html = '';
@@ -1119,6 +1195,20 @@
     }
     if (act === 'tab') return showTab(b.dataset.tab);
     if (act === 'board-refresh') return wantBoard(true);
+    if (act === 'pick-fuse') { //                no máximo dois escolhidos: o terceiro empurra o mais antigo
+      if (S.selected.has(id)) S.selected.delete(id);
+      else {
+        const keep = [...S.selected].filter((x) => byId(x) && fusable(byId(x)));
+        while (keep.length >= 2) S.selected.delete(keep.shift());
+        S.selected.add(id);
+      }
+      renderFuseList();
+      renderBand();
+      renderFusion();
+      loadOdds().then(renderFusion).catch(() => {});
+      return;
+    }
+    if (act === 'fix-rpc') return actions['fix-rpc']();
     if (act === 'use-wallet') { $('#wallets').close(); return actions.connect(b.dataset.rdns); }
     if (act === 'close-wallets') return $('#wallets').close();
     if (act === 'b-work') return actions.work([...S.selected]);
@@ -1185,6 +1275,7 @@
         }
       } catch {}
     }
+    loadLog();
     Heist.mount($('#heist-map'));
     let tab = 'assalto';
     try { tab = localStorage.getItem('outlaws:tab') || tab; } catch {}
