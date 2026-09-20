@@ -172,9 +172,15 @@
         weight += d >= 1n << 255n ? d - (1n << 256n) : d; // int256
       }
     }
+    /* Uma RPC atrás de um balanceador às vezes responde de um nó atrasado, e
+       o bloco volta no tempo — a espera do sorteio aparecia como dezenas de
+       segundos quando já tinha passado. O relógio do sorteio só anda pra
+       frente: guardo o maior que já vi na mesma referência. */
+    let blocoAgora = Number(fastDraw && own ? own[0] : block);
+    if (S.glob && S.glob.fast === fastDraw) blocoAgora = Math.max(blocoAgora, S.glob.block);
     S.glob = {
       epoch: Number(epoch), weight, owed, avg, pool, free: pool - owed,
-      block: Number(fastDraw && own ? own[0] : block), fast: fastDraw, v3, at: Date.now(),
+      block: blocoAgora, fast: fastDraw, v3, at: Date.now(),
     };
   }
 
@@ -1245,6 +1251,7 @@
     const waiting = [...u.sacks, ...u.fusions].some((k) => S.glob.block <= k.target);
     if (!waiting) return;
     for (const el of document.querySelectorAll('[data-draw]')) el.textContent = drawText(Number(el.dataset.draw));
+    andaNaEstrada();
     if (Date.now() - S.glob.at > 6000) refresh();
   }
 
@@ -1272,18 +1279,42 @@
     }
     if (quadro) quadro.hidden = false;
     const block = S.glob.block;
-    list.innerHTML = u.sacks.map((k) => {
-      const ready = block > k.target;
-      const expired = block > k.target + 256;
-      let state;
-      if (!ready) state = `<span data-draw="${k.target}">${drawText(k.target)}</span>`;
-      else if (expired) state = t('p.sack.expired');
-      else state = t('p.sack.ready', { t: dur((k.target + drawWindow() - block) * blockSecs()) });
-      return `<div class="row">
-        <div><b>${esc(t('p.sack.row', { id: k.id }))}</b> · ${esc(t('p.sack.count', { n: k.count }))}<br><small>${state}</small></div>
-        <button class="btn ${ready ? 'btn-gold' : ''}" data-act="open" data-id="${k.id}" ${!ready || S.busy ? 'disabled' : ''}>${esc(t('p.open'))}</button>
-      </div>`;
-    }).join('');
+    const sig = u.sacks.map((k) => `${k.id}:${block > k.target}`).join(',');
+    if (list.dataset.sig !== sig) { //            só redesenha quando muda de verdade: a cena é animada
+      list.dataset.sig = sig;
+      list.innerHTML = u.sacks.map((k) => {
+        const ready = block > k.target;
+        const expired = block > k.target + drawWindow();
+        let state;
+        if (!ready) state = `<span data-draw="${k.target}">${drawText(k.target)}</span>`;
+        else if (expired) state = t('p.sack.expired');
+        else state = t('p.sack.ready', { t: dur((k.target + drawWindow() - block) * blockSecs()) });
+        return `<div class="sack ${ready ? 'is-ready' : ''}">
+          <canvas data-road="${k.id}" role="img" aria-label="${esc(t('p.road.aria'))}"></canvas>
+          <div class="sack-foot">
+            <div><b>${esc(t('p.sack.row', { id: k.id }))} · ${esc(t('p.sack.count', { n: k.count }))}</b><small>${state}</small></div>
+            <button class="btn ${ready ? 'btn-gold' : ''}" data-act="open" data-id="${k.id}" ${!ready || S.busy ? 'disabled' : ''}>${esc(t('p.open'))}</button>
+          </div>
+        </div>`;
+      }).join('');
+      for (const cv of list.querySelectorAll('[data-road]')) window.Road.mount(cv, Number(cv.dataset.road));
+    }
+    andaNaEstrada();
+  }
+
+  /**
+   * Onde cada vulto está na estrada: o quanto já andou da espera do sorteio.
+   * Espera curta (o contrato novo sorteia em ~1 s) vira uma corrida rápida;
+   * quando o sorteio cai, ele fica parado no portão até alguém abrir o saco.
+   */
+  function andaNaEstrada() {
+    if (!window.Road || !S.user || !S.glob) return;
+    window.Road.sync(S.user.sacks.map((k) => {
+      const ready = S.glob.block > k.target;
+      const total = 3 * blockSecs(); //        a espera inteira: o sorteio sai 2 blocos depois da compra
+      const falta = Math.max(0, drawIn(k.target));
+      return { id: k.id, ready, progress: ready ? 1 : Math.max(0, Math.min(1, 1 - falta / total)) };
+    }));
   }
 
   /** Quantos contam pro limite de um turno que comece agora (a conta de activeCount no contrato). */
