@@ -42,7 +42,7 @@
   const RANGED = new Set(['bow', 'crossbow', 'both']);
   const HIT_EVERY = 0.6, ARROW_TIME = 0.2, TRAP_STUN = 0.9, CLEAR_PAUSE = 1.6;
   const GOLD_HP = 8; //                         o cofre dourado aguenta 8 caixotes
-  const GOLD_ODDS = [30, 26, 20, 12, 8, 4]; //   % de sair 0, 1, 2, 3, 4 ou 5 numa sala
+  const GOLD_ODDS = [50, 28, 14, 5, 2, 1]; //    % de sair 0, 1, 2, 3, 4 ou 5 numa sala
   const GOLD_UNITS = 10; //                      um cofre vale 10 baús do mais pesado
   const PIXEL = '"Press Start 2P", monospace';
   const t = (k, v) => root.I18N.t(k, v);

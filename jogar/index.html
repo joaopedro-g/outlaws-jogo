@@ -126,12 +126,19 @@
   .panel p { font-size: 14px; }
 
   /* ------------------------------------------------------------ layout */
-  .hud { display: grid; grid-template-columns: 330px minmax(0, 1fr); gap: 16px; padding: 16px; max-width: 1480px; margin: 0 auto; align-items: start; }
+  .hud {
+    display: grid; gap: 16px; padding: 16px; max-width: 1700px; margin: 0 auto; align-items: start;
+    grid-template-columns: 330px minmax(0, 620px) minmax(0, 1fr);
+  }
+  @media (min-width: 1500px) { #assalto { position: sticky; top: 76px; } } /* o mapa acompanha a rolagem */
   .col-side { display: flex; flex-direction: column; gap: 16px; }
   .col-main { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+  @media (max-width: 1499px) { .hud { grid-template-columns: 330px minmax(0, 1fr); } }
   @media (max-width: 1040px) {
     .hud { grid-template-columns: 1fr; }
-    .col-side { order: 2; }
+    #assalto { order: 1; }
+    .col-main { order: 2; }
+    .col-side { order: 3; }
   }
 
   /* barra de abas, fixa embaixo: a navegação do jogo */
@@ -216,6 +223,7 @@
   .card img { width: 96px; height: 96px; }
   .c-id { font: 8px var(--pixel); color: var(--ink-soft); position: absolute; top: 12px; right: 10px; }
   .c-rank { font: 20px/1.1 var(--press); margin-top: 2px; }
+  .c-title { font: 13px var(--fellsc); color: var(--ink-soft); line-height: 1.1; }
   .c-bounty { font: 8px var(--pixel); color: #6B4E16; margin: 5px 0 8px; }
   .c-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; margin: 0; width: 100%; font-size: 11px;
              border-top: 1px solid rgba(43,33,21,.25); padding-top: 7px; }
@@ -231,6 +239,8 @@
   .c-acts .btn { font-size: 8px; padding: 7px 8px; }
 
   /* ------------------------------------------------- taverna e fusão */
+  .auto-work { display: flex; align-items: center; gap: 8px; margin-top: 12px; font-size: 13px; color: var(--text-dim); cursor: pointer; }
+  .auto-work input { width: 18px; height: 18px; accent-color: var(--green); }
   .buyline { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
   .stepper { display: flex; align-items: center; border: 2px solid var(--wood-lo); box-shadow: inset 0 0 0 1px var(--wood-mid); }
   .stepper button { width: 36px; height: 36px; background: linear-gradient(#3A2614, #2A1B0D); color: var(--text); border: 0; cursor: pointer; font: 12px var(--pixel); }
@@ -270,6 +280,21 @@
   .eth-ways > .btn { justify-self: start; }
   .more-eth { margin-top: 12px; font-size: 13px; }
   .more-eth summary { cursor: pointer; color: var(--text-dim); }
+
+  .vault-claim { margin-top: 14px; display: grid; gap: 8px; }
+  .vault-claim .btn { width: 100%; }
+  .vault-claim .live { font: 10px var(--pixel); color: var(--gold-hi); }
+  .vault-tools { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .fuse-tools { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  dialog.note {
+    border: 3px solid var(--wood-lo); background: linear-gradient(#2E1E10, #241708); color: var(--text);
+    box-shadow: inset 0 0 0 2px var(--wood-mid), 0 20px 50px rgba(0,0,0,.6);
+    padding: 22px; width: min(420px, calc(100vw - 32px)); text-align: center;
+  }
+  dialog.note::backdrop { background: rgba(0,0,0,.65); }
+  dialog.note h3 { font: 12px var(--pixel); color: var(--gold-hi); margin: 0 0 10px; line-height: 1.6; }
+  dialog.note .big { font: 18px var(--pixel); color: var(--gold); margin: 10px 0; }
+  dialog.note p { font-size: 14px; margin: 0 0 8px; }
 
   /* ---------------------------------------------- filtros e fusão */
   .filters { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
@@ -342,6 +367,7 @@
   }
   .rv-card img { width: 128px; height: 128px; display: block; margin: 0 auto 4px; }
   .rv-card figcaption b { display: block; font: 18px/1.15 var(--press); }
+  .rv-card figcaption i { display: block; font: 13px var(--fellsc); font-style: normal; color: var(--ink-soft); }
   .rv-card small { display: block; font-size: 11px; color: var(--ink-soft); margin-top: 4px; }
   .rv-id { position: absolute; top: 8px; right: 9px; font: 8px var(--pixel); color: var(--ink-soft); }
   .rv-card.small { width: 112px; padding: 8px 6px; }
@@ -400,7 +426,11 @@
           <div class="stat"><dt data-i18n="p.stat.weight">Weight on duty</dt><dd id="stat-weight">…</dd></div>
           <div class="stat"><dt data-i18n="p.stat.epoch">Current epoch</dt><dd id="stat-epoch">…</dd></div>
         </dl>
-        <button class="btn" data-act="fix-rpc" style="margin-top:12px" title="Re-offer the network with our RPCs" data-i18n-title="p.rpc.fix.title" data-i18n="p.rpc.fix">Fix network</button>
+        <div id="vault-claim" class="vault-claim"></div>
+        <div class="vault-tools">
+          <button class="btn" data-act="faucet-vault" data-i18n="p.tap.getPlain">Get test $BOUNTY</button>
+          <button class="btn" data-act="fix-rpc" title="Re-offer the network with our RPCs" data-i18n-title="p.rpc.fix.title" data-i18n="p.rpc.fix">Fix network</button>
+        </div>
       </div>
     </section>
 
@@ -410,8 +440,7 @@
     </section>
   </aside>
 
-  <main class="col-main">
-    <section id="tab-assalto" class="tab panel" aria-labelledby="t-assalto">
+  <section id="assalto" class="panel" aria-labelledby="t-assalto">
       <h2 id="t-assalto"><span data-i18n="p.heist.title">The heist</span> <small data-i18n="p.heist.sub">who is on duty, working live</small></h2>
       <div class="pbody">
         <div id="heist" class="heist" hidden>
@@ -419,8 +448,9 @@
           <p class="note" data-i18n="p.heist.note">Stealth is speed, Strength is the hit (the number that pops off the crate), Aim is the arrow. Every cleared room moves on to the next terrain, from the road to the castle. The Crown's gold strongboxes (0 to 5 per room) take many more hits and are worth 10 chests. The map is a showcase: how much each one earns is decided by the contract (weight × vault), and the chests show that estimate. What counts is the "Claim" button on the card.</p>
         </div>
       </div>
-    </section>
+  </section>
 
+  <main class="col-main">
     <section id="tab-bando" class="tab panel" aria-labelledby="t-bando" hidden>
       <h2 id="t-bando"><span data-i18n="p.band.title">Your gang</span> <small data-i18n="p.band.sub">tick to act on several at once</small></h2>
       <div class="pbody">
@@ -432,6 +462,7 @@
           <button id="b-stop" class="btn" data-act="b-stop" data-i18n="p.bar.stop">End shift</button>
           <button class="btn" data-act="select-free" data-i18n="p.bar.selectFree">Select free</button>
           <button class="btn" data-act="clear" data-i18n="p.bar.clear">Clear</button>
+          <button id="b-repair" class="btn" data-act="repair-all" data-i18n="p.bar.repairAll">Repair team</button>
           <button id="b-claim" class="btn btn-gold" data-act="b-claim">Claim all</button>
         </div>
         <div id="band-filter" class="filters"></div>
@@ -442,7 +473,7 @@
     <section id="tab-taverna" class="tab panel" aria-labelledby="t-taverna" hidden>
       <h2 id="t-taverna" data-i18n="p.tavern.title">Tavern</h2>
       <div class="pbody">
-        <p data-i18n="p.tavern.desc">Each bag is a random outlaw. The draw comes out about 40 seconds after you buy, and you have up to ~50 minutes to open it.</p>
+        <p data-i18n="p.tavern.desc">Each bag is a random outlaw. The draw lands about a second after you buy, and you have ~25 minutes to open it.</p>
         <div class="buyline">
           <div class="stepper">
             <button data-act="qty-" aria-label="One bag less" data-i18n-aria-label="p.tavern.less">−</button><span id="qty">1</span><button data-act="qty+" aria-label="One bag more" data-i18n-aria-label="p.tavern.more">+</button>
@@ -451,6 +482,8 @@
         </div>
         <button id="buy" class="btn btn-gold btn-big" data-act="buy" data-i18n="p.tavern.buy">Buy</button>
         <p id="approve-note" class="note" hidden data-i18n="p.tavern.approve">The wallet asks for two confirmations: approving the exact amount of this purchase, and the purchase itself. Never approve "unlimited".</p>
+        <label class="auto-work"><input type="checkbox" id="auto-work" checked>
+          <span data-i18n="p.tavern.autoWork">Send them straight to work when I open the bag</span></label>
         <div id="sacks" style="margin-top:12px"></div>
       </div>
     </section>
@@ -458,6 +491,10 @@
     <section id="tab-fusao" class="tab panel" aria-labelledby="t-fusao" hidden>
       <h2 id="t-fusao" data-i18n="p.fusion.title">Fusion</h2>
       <div class="pbody">
+        <div class="fuse-tools">
+          <button class="btn" data-act="fuse-auto" data-i18n="p.fuse.auto">Pick a pair</button>
+          <button class="btn btn-gold" data-act="fuse-all" data-i18n="p.fuse.all">Fuse every pair</button>
+        </div>
         <div id="fuse-filter" class="filters"></div>
         <div id="fuse-list" class="fuse-list"></div>
         <div id="fusion"></div>
@@ -472,10 +509,7 @@
 </div>
 
 <nav class="hud-tabs" role="tablist" aria-label="Sections" data-i18n-aria-label="p.tabs">
-  <button class="tab-btn" role="tab" data-act="tab" data-tab="assalto" aria-selected="true" aria-controls="tab-assalto">
-    <img src="../assets/icon-arrows.png" alt="" width="30" height="30"><span data-i18n="p.tab.heist">Heist</span>
-  </button>
-  <button class="tab-btn" role="tab" data-act="tab" data-tab="bando" aria-selected="false" aria-controls="tab-bando">
+  <button class="tab-btn" role="tab" data-act="tab" data-tab="bando" aria-selected="true" aria-controls="tab-bando">
     <img src="../assets/icon-hood.png" alt="" width="30" height="30"><span data-i18n="p.tab.gang">Gang</span>
   </button>
   <button class="tab-btn" role="tab" data-act="tab" data-tab="taverna" aria-selected="false" aria-controls="tab-taverna">
@@ -491,6 +525,7 @@
 
 <dialog id="reveal" class="reveal" aria-labelledby="reveal-title"></dialog>
 <dialog id="wallets" class="wallets"></dialog>
+<dialog id="note" class="note"></dialog>
 
 <footer>
   <span data-i18n="p.footer">Contracts with verified code:</span>

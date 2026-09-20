@@ -15,10 +15,17 @@
   const $ = (s, el = document) => el.querySelector(s);
   const params = new URLSearchParams(location.search);
 
-  const RANK = new Proxy([], { get: (_, i) => t('rank.' + String(i)) }); //   RANK[n] no idioma atual
+  const BOUNTY_NAME = 'Outlaws Bounty'; //                                  nome no permit (EIP-712)
+  const RANK = new Proxy([], { get: (_, i) => t('rank.' + String(i)) }); //   raridade: Common… Mythic
+  const TITLE = new Proxy([], { get: (_, i) => t('title.' + String(i)) }); // o nome de fora-da-lei do posto
   const STATUS = new Proxy([], { get: (_, i) => t('status.' + String(i)) });
   const STATUS_KEY = ['livre', 'servico', 'capturado', 'fusao'];
-  const L1_SECONDS = 12; // o contrato conta blocos da L1 (Sepolia): ~12 s cada
+  const L1_SECONDS = 12; //   contrato antigo: contava blocos da L1 (Sepolia), ~12 s cada
+  const FAST_SECONDS = 0.25; // contrato novo: bloco da própria Robinhood, ~4 por segundo
+  const FAST_WINDOW = 8191; //  quantos blocos o histórico da rede guarda
+  /** Segundos por bloco e tamanho da janela, conforme o relógio do contrato. */
+  const blockSecs = () => (S.glob && S.glob.fast ? FAST_SECONDS : L1_SECONDS);
+  const drawWindow = () => (S.glob && S.glob.fast ? FAST_WINDOW : 256);
 
   const S = {
     filter: null, fuseFilter: null, //           filtros por raridade (bando e fusão)
@@ -66,7 +73,7 @@
   const dec = (v, d = 2) => Number(v).toLocaleString(loc(), { minimumFractionDigits: d, maximumFractionDigits: d });
   const short = (a) => (a ? a.slice(0, 6) + '…' + a.slice(-4) : '');
   /** Segundos até o sorteio sair, descontando o tempo desde a última leitura. */
-  const drawIn = (target) => (target - S.glob.block + 1) * L1_SECONDS - (Date.now() - S.glob.at) / 1000;
+  const drawIn = (target) => (target - S.glob.block + 1) * blockSecs() - (Date.now() - S.glob.at) / 1000;
   const drawText = (target) => {
     const left = drawIn(target);
     return left > 0 ? t('p.draw.in', { t: dur(left) }) : t('p.draw.now');
@@ -146,9 +153,14 @@
       [C.game, 'outstanding()'],
       [C.game, 'avgPerWeight()'],
       [C.bounty, 'balanceOf(address)', [C.game]],
-      [C.multicall, 'getBlockNumber()'], // o bloco da L1, o mesmo que o contrato enxerga
+      [C.multicall, 'getBlockNumber()'], // o bloco da L1 (contrato antigo, e reserva)
       [C.game, 'nextToSettle()'],
     ]);
+    // o relógio do sorteio é o que o contrato usa: o bloco da própria Robinhood
+    // quando ele acha o ArbSys, senão o da L1 (o mesmo do multicall)
+    const [fast, own] = await Chain.calls([[C.game, 'fastDraw()'], [C.game, 'drawBlock()']], { partial: true });
+    const v3 = fast !== null && fast !== undefined; //  contrato novo: tem sorteio próprio, lote e abrir+trabalhar
+    const fastDraw = !!(fast && fast[0] === 1n);
     // runningWeight só anda quando alguém transaciona. O peso da época atual é
     // ele mais as entradas e saídas agendadas nas épocas que ainda não fecharam.
     let weight = running;
@@ -159,7 +171,10 @@
         weight += d >= 1n << 255n ? d - (1n << 256n) : d; // int256
       }
     }
-    S.glob = { epoch: Number(epoch), weight, owed, avg, pool, free: pool - owed, block: Number(block), at: Date.now() };
+    S.glob = {
+      epoch: Number(epoch), weight, owed, avg, pool, free: pool - owed,
+      block: Number(fastDraw && own ? own[0] : block), fast: fastDraw, v3, at: Date.now(),
+    };
   }
 
   const asOutlaw = (id, w) => ({
@@ -305,7 +320,7 @@
     const st = iso.stats;
     return `<figure class="rv-card ${rarityClass(o.rank)} ${cls}" style="--i:${i};${rarityStyle(o.rank)}">
       <img src="${url}" alt="${esc(t('p.card.alt', { id: o.id }))}" width="128" height="128">
-      <figcaption><span class="rv-id">#${o.id}</span><b>${gem}${esc(RANK[o.rank])}</b>
+      <figcaption><span class="rv-id">#${o.id}</span><b>${gem}${esc(RANK[o.rank])}</b><i>${esc(TITLE[o.rank])}</i>
         <small>${esc(t('p.rv.stats', { a: st.pontaria.toFixed(0), s: st.forca.toFixed(0), t: st.furtividade.toFixed(0) }))}<br>${esc(t('p.rv.weight', { w: dec(o.weight / 10_000) }))}</small>
       </figcaption></figure>`;
   }
@@ -452,6 +467,15 @@
     S.user.allowance = amount;
   }
 
+  /** Janelinha de aviso: título, um número grande e uma linha de explicação. */
+  function showNote(title, big, lines) {
+    const dlg = $('#note');
+    dlg.innerHTML = `<h3>${esc(title)}</h3>${big ? `<p class="big">${esc(big)}</p>` : ''}`
+      + lines.filter(Boolean).map((l) => `<p>${esc(l)}</p>`).join('')
+      + `<button class="btn btn-gold" data-act="close-note" style="margin-top:10px">${esc(t('p.note.ok'))}</button>`;
+    dlg.showModal();
+  }
+
   /** Escolha da carteira: uma linha por extensão instalada, com ícone e nome. */
   function pickWallet() {
     const dlg = $('#wallets');
@@ -557,8 +581,38 @@
     } catch {}
   }
 
+  /**
+   * O sorteio sai no bloco seguinte (~1 s na Robinhood). Em vez de deixar o
+   * jogador caçar o botão de abrir, o painel espera o bloco e já faz sozinho.
+   * Se a carteira recusar, não tem drama: o botão continua lá.
+   */
+  async function autoReveal(fn, target) {
+    for (let i = 0; i < 90 && !S.demo; i++) {
+      await new Promise((ok) => setTimeout(ok, 700));
+      if (S.glob?.v3) {
+        const [b] = await Chain.calls([[C.game, 'drawBlock()']], { partial: true });
+        if (b && Number(b[0]) > target) break;
+      } else if (drawIn(target) <= 0) { //       contrato antigo: conta pelo bloco da L1
+        break;
+      } else if (i % 8 === 7) {
+        await refresh(); //                      atualiza o bloco de referência
+      }
+    }
+    if (S.demo) return;
+    await refresh();
+    await fn();
+  }
+
   const byId = (id) => S.user.outlaws.find((o) => o.id === id);
   const selectedOutlaws = () => [...S.selected].map(byId).filter(Boolean);
+
+  /** Guarda o saco recém-comprado pra abrir sozinho quando o sorteio sair. */
+  function afterBuy(receipt) {
+    const [ev] = Chain.logsOf(receipt, 'SackBought'); // (sackId) buyer, count, target
+    if (!ev) return;
+    const id = Number(ev.topics[1]), target = Number(ev.data[2]);
+    S.pending = autoReveal(() => actions.open(id), target).catch(() => {});
+  }
 
   const actions = {
     /**
@@ -635,14 +689,33 @@
       return run(t('p.act.buy'), async () => {
         const total = S.cfg.price * BigInt(S.qty);
         if (S.user.bounty < total) throw new Error(t('p.err.noBounty'));
+        // caminho curto: assinar a autorização é de graça e some com uma transação
+        if (S.user.allowance < total) {
+          try {
+            const p = await Chain.signPermit(C.bounty, S.me, C.game, total, BOUNTY_NAME);
+            const r = await tx(t('p.act.buyTx', { n: S.qty }), C.game,
+              'buySacksWithPermit(uint256,uint256,uint8,bytes32,bytes32)', [S.qty, p.deadline, p.v, p.r, p.s]);
+            afterBuy(r);
+            return;
+          } catch (e) {
+            if (e.code === 4001 || /rejeit|recus|denied|rejected/i.test(e.message || '')) throw e;
+            toast(t('p.tavern.permitOff'), 'aviso'); //  carteira sem assinatura de tipo: volta pro approve
+          }
+        }
         await ensureAllowance(total);
-        await tx(t('p.act.buyTx', { n: S.qty }), C.game, 'buySacks(uint256)', [S.qty]);
+        afterBuy(await tx(t('p.act.buyTx', { n: S.qty }), C.game, 'buySacks(uint256)', [S.qty]));
       });
     },
     open(id) {
       if (S.demo) return showReveal({ kind: 'sack', id, expired: false, ids: [1] });
       return run(t('p.act.open'), async () => {
-        const r = await tx(t('p.act.openTx', { id }), C.game, 'openSack(uint256)', [id]);
+        // "já mandar trabalhar" numa transação só, quando cabe no limite do bando
+        const sack = S.user?.sacks.find((k) => k.id === id);
+        const auto = S.glob?.v3 && $('#auto-work')?.checked && sack && sack.count <= room();
+        const r = auto
+          ? await tx(t('p.act.openWorkTx', { id }), C.game, 'openAndWork(uint256,uint256)',
+            [id, Math.min(S.shiftLen, S.cfg.maxLife)])
+          : await tx(t('p.act.openTx', { id }), C.game, 'openSack(uint256)', [id]);
         const [ev] = Chain.logsOf(r, 'SackOpened'); // (sackId) expired, firstTokenId, count
         if (ev) S.reveal = { kind: 'sack', id, expired: ev.data[0] === 1n, ids: [...Array(Number(ev.data[2])).keys()].map((i) => Number(ev.data[1]) + i) };
       });
@@ -675,10 +748,61 @@
           await refresh();
           list = ids.map(byId).filter((o) => o && o.pending > 0n);
         }
-        if (!list.length) throw new Error(t('p.claim.notYet', { t: dur(nextEpochIn()) }));
+        if (!list.length) {
+          showNote(t('p.act.claim'), null, [t('p.claim.notYet', { t: dur(nextEpochIn()) })]);
+          return;
+        }
         const total = list.reduce((s, o) => s + o.pending, 0n);
         await tx(t('p.act.claimTx', { amount: fmtB(total) }), C.game, 'claim(uint256[])', [list.map((o) => o.id)]);
+        showNote(t('p.claim.done'), fmtB(total) + ' $BOUNTY', [
+          t('p.claim.next', { t: dur(nextEpochIn()) }),
+          t('p.claim.free'),
+        ]);
       });
+    },
+    /** Conserta todo mundo que dá, numa transação só. */
+    'repair-all'() {
+      return run(t('p.act.repairAll'), async () => {
+        const list = (S.user?.outlaws || []).filter((o) => o.status === 0 && o.lifeLeft < S.cfg.maxLife && o.lifeLeft > 0);
+        if (!list.length) throw new Error(t('p.err.noRepair'));
+        const costs = await Chain.calls(list.map((o) => [C.game, 'repairCost(uint256,uint256)', [o.id, S.cfg.maxLife - o.lifeLeft]]));
+        const total = costs.reduce((s, c) => s + c[0], 0n);
+        if (S.user.bounty < total) throw new Error(t('p.err.noBounty'));
+        if (!confirm(t('p.confirm.repairAll', { n: list.length, cost: fmtB(total) }))) return;
+        await ensureAllowance(total);
+        await tx(t('p.act.repairAllTx', { n: list.length, cost: fmtB(total) }), C.game, 'repairMany(uint256[],uint256[])',
+          [list.map((o) => o.id), list.map((o) => S.cfg.maxLife - o.lifeLeft)]);
+      });
+    },
+    /** Escolhe sozinho um par pronto (o rank mais alto, com mais vida). */
+    'fuse-auto'() {
+      const pairs = fusePairs();
+      if (!pairs.length) return toast(t('p.fuse.none'), 'aviso');
+      const [a, b] = pairs[0];
+      S.selected = new Set([a.id, b.id]);
+      S.fuseFilter = a.rank;
+      renderBand();
+      renderFusion();
+      loadOdds().then(renderFusion).catch(() => {});
+      toast(t('p.fuse.picked', { a: a.id, b: b.id, rank: RANK[a.rank] }));
+    },
+    /** Todos os pares possíveis numa transação só. */
+    'fuse-all'() {
+      return run(t('p.act.fuseAll'), async () => {
+        const pairs = fusePairs();
+        if (!pairs.length) throw new Error(t('p.fuse.none'));
+        const total = pairs.reduce((s, [a]) => s + (S.cfg.price * BigInt(a.rank + 1)) / 2n, 0n);
+        if (S.user.bounty < total) throw new Error(t('p.err.noBounty'));
+        if (!confirm(t('p.confirm.fuseAll', { n: pairs.length, cost: fmtB(total) }))) return;
+        await ensureAllowance(total);
+        await tx(t('p.act.fuseAllTx', { n: pairs.length }), C.game, 'startFusions(uint256[],uint256[])',
+          [pairs.map(([a]) => a.id), pairs.map(([, b]) => b.id)]);
+        S.selected.clear();
+      });
+    },
+    /** A torneira, chamada do painel do caixa. */
+    'faucet-vault'() {
+      return actions.faucet();
     },
     repair(id) {
       return run(t('p.act.repair'), async () => {
@@ -701,7 +825,13 @@
         const [a, b] = selectedOutlaws();
         const fee = (S.cfg.price * BigInt(a.rank + 1)) / 2n;
         await ensureAllowance(fee);
-        await tx(t('p.act.fuseTx', { a: a.id, b: b.id }), C.game, 'startFusion(uint256,uint256)', [a.id, b.id]);
+        const r = await tx(t('p.act.fuseTx', { a: a.id, b: b.id }), C.game, 'startFusion(uint256,uint256)', [a.id, b.id]);
+        const [ev] = Chain.logsOf(r, 'FusionStarted'); //  (fusionId) a, b, success, critical
+        if (ev) {
+          const fid = Number(ev.topics[1]);
+          const [k] = await Chain.calls([[C.game, 'fusions(uint256)', [fid]]], { partial: true });
+          if (k) S.pending = autoReveal(() => actions.finish(fid), Number(k[6])).catch(() => {});
+        }
         S.selected.clear();
       });
     },
@@ -750,6 +880,7 @@
   function render() {
     renderHeader();
     renderStats();
+    renderVaultClaim();
     renderHeist();
     renderStart();
     renderTavern();
@@ -798,11 +929,8 @@
       : `<button class="btn ${hasBounty ? '' : 'btn-gold'}" data-act="faucet" ${S.busy || dry || !hasEth ? 'disabled' : ''}
            title="${esc(dry ? t('p.tap.dry') : !hasEth ? t('p.tap.needEth') : t('p.tap.every'))}">${tapLabel}</button>`;
 
-    if (connected && hasEth && hasBounty) { //   tudo certo: só a torneira, pra quem quiser mais
-      box.innerHTML = `<h2>${esc(t('p.tap.title'))}</h2><div class="pbody">
-        <div class="row" style="border:0;padding:0"><small>${esc(dry ? t('p.tap.dry') : t('p.tap.every'))}</small>${tapBtn}</div>
-        <details class="more-eth" ${open ? 'open' : ''}><summary>${esc(t('p.moreEth'))}</summary>${ethWays()}</details>
-        <p class="safety">${SAFETY()}</p></div>`;
+    if (connected && hasEth && hasBounty) { //   já deu os primeiros passos: o painel some
+      box.hidden = true; //                      a torneira continua no painel do caixa
       return;
     }
     const step = (ok, n, html) => `<li class="${ok ? 'ok' : ''}"><span class="n">${ok ? '✓' : n}</span><div>${html}</div></li>`;
@@ -893,6 +1021,19 @@
       : '';
   }
 
+  /** O saque na tela principal: o que já rendeu, subindo, e o botão. */
+  function renderVaultClaim() {
+    const box = $('#vault-claim'), u = S.user;
+    if (!box) return;
+    if (!u || S.readOnly) return void (box.innerHTML = '');
+    const pending = u.outlaws.reduce((s, o) => s + o.pending, 0n);
+    const earning = u.outlaws.some((o) => o.status === 1 && S.glob.epoch >= o.shiftStart);
+    if (!pending && !earning) return void (box.innerHTML = '');
+    box.innerHTML = `<button class="btn btn-gold" data-act="b-claim" ${S.busy ? 'disabled' : ''}>${
+      pending > 0n ? esc(t('p.bar.claimAllN', { amount: fmtB(pending) })) : esc(t('p.bar.accruing'))}</button>`
+      + (earning ? `<span class="live">+<span data-accrue>${dec(accruing())}</span> ${esc(t('p.vault.live'))}</span>` : '');
+  }
+
   function renderStats() {
     const g = S.glob, c = S.cfg;
     if (!g || !c) return;
@@ -959,7 +1100,7 @@
       let state;
       if (!ready) state = `<span data-draw="${k.target}">${drawText(k.target)}</span>`;
       else if (expired) state = t('p.sack.expired');
-      else state = t('p.sack.ready', { t: dur((k.target + 256 - block) * L1_SECONDS) });
+      else state = t('p.sack.ready', { t: dur((k.target + drawWindow() - block) * blockSecs()) });
       return `<div class="row">
         <div><b>${esc(t('p.sack.row', { id: k.id }))}</b> · ${esc(t('p.sack.count', { n: k.count }))}<br><small>${state}</small></div>
         <button class="btn ${ready ? 'btn-gold' : ''}" data-act="open" data-id="${k.id}" ${!ready || S.busy ? 'disabled' : ''}>${esc(t('p.open'))}</button>
@@ -994,6 +1135,7 @@
           (S.glob.epoch + 1 < o.shiftEnd ? '<br>' + t('p.card.lifeIn', { next }) : '')
         : t('p.card.startsIn', { next });
     }
+    if (o.status === 1 && S.glob.epoch >= o.shiftStart && o.shiftEnd === S.glob.epoch + 1) info += '<br>' + esc(t('p.card.leaving'));
     if (o.status === 2) info = esc(t('p.card.captured'));
     if (o.status === 3) info = esc(t('p.card.inFusion', { id: o.fusion }));
 
@@ -1013,6 +1155,7 @@
       <img src="${url}" alt="${esc(t('p.card.alt', { id: o.id }))}" width="96" height="96">
       <div class="c-id">#${o.id}</div>
       <div class="c-rank">${gem}${esc(RANK[o.rank])}</div>
+      <div class="c-title">${esc(TITLE[o.rank])}</div>
       <div class="c-bounty">${bounty} $BOUNTY</div>
       <dl class="c-stats">
         <div><dt>${esc(t('p.card.aim'))}</dt><dd>${dec(iso.stats.pontaria)}</dd></div>
@@ -1065,6 +1208,8 @@
     }
     $('#shift').value = S.shiftLen;
     $('#b-work').disabled = S.busy || !free.length || room() === 0;
+    const repairAll = $('#b-repair');
+    if (repairAll) repairAll.hidden = !S.glob?.v3; //  conserto em lote só existe no contrato novo
     $('#b-stop').disabled = S.busy || !working.length;
     $('#b-claim').disabled = S.busy; //        sem trava: o saque é livre
     // sem nada a sacar ainda: diz quando cai o próximo (o rendimento de cada época entra quando ela fecha)
@@ -1097,12 +1242,33 @@
     };
   }
 
+  /**
+   * Os pares que dá pra fundir agora: mesmo rank, livres e com vida, do rank
+   * mais alto pro mais baixo e com a vida mais alta primeiro (melhor chance).
+   */
+  function fusePairs() {
+    const free = (S.user?.outlaws || []).filter(fusable);
+    const byRank = new Map();
+    for (const o of free) {
+      if (!byRank.has(o.rank)) byRank.set(o.rank, []);
+      byRank.get(o.rank).push(o);
+    }
+    const pairs = [];
+    for (const r of [...byRank.keys()].sort((a, b) => b - a)) {
+      const list = byRank.get(r).sort((a, b) => b.lifeLeft - a.lifeLeft);
+      for (let i = 0; i + 1 < list.length; i += 2) pairs.push([list[i], list[i + 1]]);
+    }
+    return pairs;
+  }
+
   /** Quem pode entrar numa fusão: livre, com vida e abaixo de Lenda. */
   const fusable = (o) => o.status === 0 && o.lifeLeft > 0 && o.rank < 5;
 
   /** A lista de candidatos da aba Fusão: clicar escolhe (no máximo dois). */
   function renderFuseList() {
     const box = $('#fuse-list'), u = S.user;
+    const all = document.querySelector('[data-act="fuse-all"]');
+    if (all) all.hidden = !S.glob?.v3; //          fusão em lote idem
     if (!box) return;
     if (!u) return void (box.innerHTML = '');
     const free = u.outlaws.filter(fusable);
@@ -1153,7 +1319,7 @@
         const ready = block > f.target;
         return `<div class="row"><div><b>${esc(t('p.fuse.row', { id: f.id }))}</b> · #${f.a} + #${f.b}<br><small>${!ready ? `<span data-draw="${f.target}">${drawText(f.target)}</span>`
           : block > f.target + 256 ? t('p.fuse.expired')
-          : t('p.fuse.ready', { t: dur((f.target + 256 - block) * L1_SECONDS) })}</small></div>
+          : t('p.fuse.ready', { t: dur((f.target + drawWindow() - block) * blockSecs()) })}</small></div>
           <button class="btn ${ready ? 'btn-gold' : ''}" data-act="finish" data-id="${f.id}" ${!ready || S.busy ? 'disabled' : ''}>${esc(t('p.fuse.reveal'))}</button></div>`;
       }).join('');
     }
@@ -1212,6 +1378,7 @@
     if (act === 'fix-rpc') return actions['fix-rpc']();
     if (act === 'use-wallet') { $('#wallets').close(); return actions.connect(b.dataset.rdns); }
     if (act === 'close-wallets') return $('#wallets').close();
+    if (act === 'close-note') return $('#note').close();
     if (act === 'b-work') return actions.work([...S.selected]);
     if (act === 'b-stop') return actions.stop([...S.selected]);
     if (act === 'b-claim') return actions.claim(S.user.outlaws.map((o) => o.id));
@@ -1278,10 +1445,10 @@
     }
     loadLog();
     Heist.mount($('#heist-map'));
-    let tab = 'assalto';
+    let tab = 'bando';
     try { tab = localStorage.getItem('outlaws:tab') || tab; } catch {}
     tab = params.get('tab') || tab;
-    showTab(document.getElementById('tab-' + tab) ? tab : 'assalto');
+    showTab(document.getElementById('tab-' + tab) ? tab : 'bando');
     I18N.onChange(() => render());
     render();
     await refresh();

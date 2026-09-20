@@ -303,6 +303,40 @@
     }
   }
 
+  /**
+   * Autorização por assinatura (EIP-2612): em vez de uma transação de approve,
+   * a pessoa assina de graça e a compra vai numa transação só. Devolve o que o
+   * contrato precisa pra usar a assinatura.
+   */
+  async function signPermit(token, owner, spender, value, name) {
+    const [[nonce]] = await calls([[token, 'nonces(address)', [owner]]]);
+    const deadline = BigInt(Math.floor(Date.now() / 1000) + 3600);
+    const data = {
+      types: {
+        EIP712Domain: [
+          { name: 'name', type: 'string' }, { name: 'version', type: 'string' },
+          { name: 'chainId', type: 'uint256' }, { name: 'verifyingContract', type: 'address' },
+        ],
+        Permit: [
+          { name: 'owner', type: 'address' }, { name: 'spender', type: 'address' },
+          { name: 'value', type: 'uint256' }, { name: 'nonce', type: 'uint256' },
+          { name: 'deadline', type: 'uint256' },
+        ],
+      },
+      primaryType: 'Permit',
+      domain: { name, version: '1', chainId: CFG.chainId, verifyingContract: token },
+      message: {
+        owner, spender, value: value.toString(), nonce: nonce.toString(), deadline: deadline.toString(),
+      },
+    };
+    await ensureChain();
+    const sig = await wallet().request({ method: 'eth_signTypedData_v4', params: [owner, JSON.stringify(data)] });
+    const h = sig.slice(2);
+    let v = parseInt(h.slice(128, 130), 16);
+    if (v < 27) v += 27; //                     carteira que assina com 0/1
+    return { deadline, v, r: '0x' + h.slice(0, 64), s: '0x' + h.slice(64, 128) };
+  }
+
   /** Reoferece a rede com as nossas RPCs (a carteira pode estar numa que limita). */
   async function fixChain() {
     await wallet().request({
@@ -373,6 +407,6 @@
   root.Chain = {
     CFG, MAX_UINT, rpc, encode, words, asAddr, asHex32, call, calls, contractBlock, ethBalance,
     hasWallet, wallets, use, current, onWallet, accounts, forget, rediscover,
-    connect, ensureChain, fixChain, send, waitReceipt, logsOf, humanError,
+    connect, ensureChain, fixChain, signPermit, send, waitReceipt, logsOf, humanError,
   };
 })(window);
