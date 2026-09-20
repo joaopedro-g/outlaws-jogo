@@ -28,7 +28,8 @@
   const drawWindow = () => (S.glob && S.glob.fast ? FAST_WINDOW : 256);
 
   const S = {
-    filter: null, fuseFilter: null, //           filtros por raridade (bando e fusão)
+    filter: null, //                            filtro por raridade do bando
+    alarm: 0, alarmed: false, //                aviso de saque: valor em $BOUNTY inteiro, e se já avisou
     me: null,
     view: null,
     readOnly: false,
@@ -571,6 +572,7 @@
 
   /** O registro fica salvo: sacar, recarregar ou trocar de aba não apaga nada. */
   const LOG_KEY = 'outlaws:log';
+  const ALARM_KEY = 'outlaws:avisar'; //        de quanto em quanto o painel chama pro saque
   const GAME_KEY = 'outlaws:game'; //          qual contrato este navegador viu por último
 
   /**
@@ -819,7 +821,7 @@
       if (!pairs.length) return toast(t('p.fuse.none'), 'aviso');
       const [a, b] = pairs[0];
       S.selected = new Set([a.id, b.id]);
-      S.fuseFilter = a.rank;
+      S.filter = null; //                        tira o filtro pra o par aparecer na lista
       renderBand();
       renderFusion();
       loadOdds().then(renderFusion).catch(() => {});
@@ -915,10 +917,54 @@
     S.odds = { key: `${p.a.id}-${p.b.id}`, success, fail: 10_000 - success - critical, critical };
   }
 
-  /* ------------------------------------------------------- próximo passo */
+  /* ------------------------------------------------------------- aviso */
 
-  /** Em que aba mora cada ação, pra acender também a aba quando ela está fechada. */
-  const TAB_DA_ACAO = { buy: 'taverna', 'fuse-auto': 'fusao', 'fuse-all': 'fusao' };
+  /**
+   * Saque automático de verdade não existe sem entregar a chave a alguém: cada
+   * saque é uma assinatura. O que dá pra fazer bem é avisar — o painel fica de
+   * olho no acumulado e chama quando passa do valor, mesmo com a aba no fundo,
+   * e o botão de sacar já está aceso ao lado.
+   */
+  function loadAlarm() {
+    try { S.alarm = Number(localStorage.getItem(ALARM_KEY)) || 0; } catch { S.alarm = 0; }
+    const campo = $('#alarm-at');
+    if (campo && S.alarm) campo.value = String(S.alarm);
+  }
+
+  function setAlarm(valor) {
+    S.alarm = Number.isFinite(valor) && valor > 0 ? Math.floor(valor) : 0;
+    S.alarmed = false;
+    try {
+      if (S.alarm) localStorage.setItem(ALARM_KEY, String(S.alarm));
+      else localStorage.removeItem(ALARM_KEY);
+    } catch {}
+    if (!S.alarm) return toast(t('p.alarm.off'), 'aviso');
+    toast(t('p.alarm.on', { amount: S.alarm.toLocaleString(loc()) }));
+    //                                          permissão só depois do clique da pessoa
+    try {
+      if ('Notification' in window && Notification.permission === 'default') Notification.requestPermission();
+    } catch {}
+  }
+
+  /** Chama quando o acumulado passa do valor; só uma vez por subida. */
+  function checkAlarm() {
+    const u = S.user;
+    if (!S.alarm || !u || S.demo || S.readOnly) return;
+    const parado = u.outlaws.reduce((s, o) => s + o.pending, 0n);
+    const alvo = BigInt(S.alarm) * WEI;
+    if (parado < alvo) return void (S.alarmed = false); //  saiu do valor: pode avisar de novo
+    if (S.alarmed) return;
+    S.alarmed = true;
+    const recado = t('p.alarm.hit', { amount: fmtB(parado) });
+    toast(recado, 'aviso');
+    try {
+      if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification('OUTLAWS', { body: recado, icon: '../site/assets/icon-coin.png' });
+      }
+    } catch {}
+  }
+
+  /* ------------------------------------------------------- próximo passo */
 
   /**
    * O que fazer agora. A ordem é a do ciclo do jogo — ligar, abastecer, abrir
@@ -973,11 +1019,6 @@
       : `[data-act="${passo.act}"][data-id="${passo.id}"]`;
     for (const el of document.querySelectorAll(alvo)) el.classList.add('is-next');
 
-    const aba = TAB_DA_ACAO[passo.act];
-    if (aba && aba !== S.tab) {
-      const chave = document.querySelector(`[data-act="tab"][data-tab="${aba}"]`);
-      if (chave) chave.classList.add('is-next');
-    }
   }
 
   /* ----------------------------------------------------------- render */
@@ -992,6 +1033,7 @@
     renderFusion();
     renderLog();
     renderNextStep();
+    checkAlarm();
   }
 
   /**
@@ -1371,36 +1413,22 @@
   /** Quem pode entrar numa fusão: livre, com vida e abaixo de Lenda. */
   const fusable = (o) => o.status === 0 && o.lifeLeft > 0 && o.rank < 5;
 
-  /** A lista de candidatos da aba Fusão: clicar escolhe (no máximo dois). */
-  function renderFuseList() {
-    const box = $('#fuse-list'), u = S.user;
-    const all = document.querySelector('[data-act="fuse-all"]');
-    if (all) all.hidden = !S.glob?.v3; //          fusão em lote idem
-    if (!box) return;
-    if (!u) return void (box.innerHTML = '');
-    const free = u.outlaws.filter(fusable);
-    renderFilters($('#fuse-filter'), free, S.fuseFilter, (r) => { S.fuseFilter = r; renderFuseList(); });
-    const shown = S.fuseFilter === null ? free : free.filter((o) => o.rank === S.fuseFilter);
-    // mesma lista na tela: só remarca quem está escolhido (redesenhar tirava o clique do lugar)
-    const sig = shown.map((o) => o.id).join(",");
-    if (box.dataset.sig === sig && shown.length) {
-      for (const b of box.querySelectorAll(".fuse-pick")) b.setAttribute("aria-pressed", String(S.selected.has(Number(b.dataset.id))));
-      return;
-    }
-    box.dataset.sig = sig;
-    box.innerHTML = shown.length
-      ? shown.map((o) => `<button class="fuse-pick" data-act="pick-fuse" data-id="${o.id}" aria-pressed="${S.selected.has(o.id)}" style="${rarityStyle(o.rank)}">
-          <img src="${art(o).url}" alt="" width="64" height="64"><b>${esc(RANK[o.rank])}</b><small>#${o.id}</small></button>`).join('')
-      : `<p class="muted">${esc(t(free.length ? 'p.filter.none' : 'p.fuse.none'))}</p>`;
-  }
-
   function renderFusion() {
-    renderFuseList();
     const box = $('#fusion');
+    const emLote = $('#b-fuse-all');
+    if (emLote) emLote.hidden = !S.glob?.v3; //   fundir tudo de uma vez só existe no contrato novo
+    const podeFundir = (S.user?.outlaws || []).filter(fusable).length >= 2;
+    const auto = $('#b-fuse-auto');
+    if (auto) auto.disabled = S.busy || !podeFundir;
+    if (emLote) emLote.disabled = S.busy || !podeFundir;
+
     const p = S.user ? fusionPair() : null;
+    const pendentes = S.user?.fusions || [];
+    box.hidden = !p && !pendentes.length; //      sem par e sem fusão em curso, nem aparece
+    if (box.hidden) return void (box.innerHTML = '');
     let html = '';
     if (!p) {
-      html = `<p class="muted">${t('p.fuse.pick')}</p>`;
+      html = '';
     } else if (p.invalid) {
       html = `<p class="t-danger">${esc(p.invalid)}</p>`;
     } else {
@@ -1419,10 +1447,9 @@
         <p class="muted">${esc(t('p.fuse.fee', { fee: fmtB(fee, 0) }))}</p>
         <button class="btn btn-gold" data-act="fuse" ${S.busy || !o || S.readOnly ? 'disabled' : ''}>${esc(t('p.fuse.start'))}</button>`;
     }
-    const pend = S.user?.fusions || [];
-    if (pend.length) {
+    if (pendentes.length) {
       const block = S.glob.block;
-      html += '<div class="sep"></div>' + pend.map((f) => {
+      html += (html ? '<div class="sep"></div>' : '') + pendentes.map((f) => {
         const ready = block > f.target;
         return `<div class="row"><div><b>${esc(t('p.fuse.row', { id: f.id }))}</b> · #${f.a} + #${f.b}<br><small>${!ready ? `<span data-draw="${f.target}">${drawText(f.target)}</span>`
           : block > f.target + 256 ? t('p.fuse.expired')
@@ -1469,19 +1496,6 @@
     }
     if (act === 'tab') return showTab(b.dataset.tab);
     if (act === 'board-refresh') return wantBoard(true);
-    if (act === 'pick-fuse') { //                no máximo dois escolhidos: o terceiro empurra o mais antigo
-      if (S.selected.has(id)) S.selected.delete(id);
-      else {
-        const keep = [...S.selected].filter((x) => byId(x) && fusable(byId(x)));
-        while (keep.length >= 2) S.selected.delete(keep.shift());
-        S.selected.add(id);
-      }
-      renderFuseList();
-      renderBand();
-      renderFusion();
-      loadOdds().then(renderFusion).catch(() => {});
-      return;
-    }
     if (act === 'fix-rpc') return actions['fix-rpc']();
     if (act === 'use-wallet') { $('#wallets').close(); return actions.connect(b.dataset.rdns); }
     if (act === 'close-wallets') return $('#wallets').close();
@@ -1496,6 +1510,7 @@
   });
 
   document.addEventListener('input', (e) => {
+    if (e.target.id === 'alarm-at') return setAlarm(Number(e.target.value));
     if (e.target.id === 'shift') {
       const v = Math.max(1, Math.min(S.cfg?.maxLife || 30, Number(e.target.value) || 1));
       S.shiftLen = v;
@@ -1552,6 +1567,7 @@
     }
     const trocou = resetOnNewGame();
     loadLog();
+    loadAlarm();
     Heist.mount($('#heist-map'));
     let tab = 'bando';
     try { tab = localStorage.getItem('outlaws:tab') || tab; } catch {}

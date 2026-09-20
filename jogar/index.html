@@ -295,6 +295,14 @@
   .vault-claim { margin-top: 14px; display: grid; gap: 8px; }
   .vault-claim .btn { width: 100%; }
   .vault-claim .live { font: 10px var(--pixel); color: var(--gold-hi); }
+  /* o aviso de saque: quando o acumulado passa do valor, o painel chama */
+  .alarm { display: flex; align-items: center; gap: 6px; margin-top: 12px; font-size: 12px; color: var(--text-dim); }
+  .alarm input {
+    width: 88px; padding: 6px 8px; background: #1E1307; color: var(--text);
+    border: 2px solid var(--wood-lo); box-shadow: inset 0 0 0 1px var(--wood-mid);
+    font: 11px var(--pixel); text-align: right;
+  }
+
   .vault-tools { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
   .fuse-tools { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
   dialog.note {
@@ -319,6 +327,14 @@
   .filters button[aria-pressed="true"] { color: #1E1307; background: linear-gradient(#E8B858, #C68F2B); box-shadow: inset 0 0 0 1px #F2CE7E; }
   .filters .gem { margin: 0; }
   .filters .n { font: 9px var(--pixel); }
+
+  /* o balcão da taverna, agora dentro do bando */
+  .shop { border: 2px solid var(--wood-lo); box-shadow: inset 0 0 0 1px var(--wood-mid); padding: 12px; margin-bottom: 14px; }
+  .shop .buyline { margin: 0; }
+  .shop .auto-work { margin-top: 10px; }
+  .shop-note { margin: 10px 0 0; }
+  .fusion-box { border: 2px solid var(--gold-lo, var(--wood-lo)); box-shadow: inset 0 0 0 1px var(--wood-mid); padding: 12px; margin-bottom: 14px; }
+  .fusion-box .sep { height: 2px; background: var(--wood-lo); margin: 12px 0; }
 
   .fuse-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 10px; margin-bottom: 16px; }
   .fuse-pick {
@@ -440,6 +456,11 @@
         </dl>
         <button id="next-step" class="btn btn-gold next-step" hidden></button>
         <div id="vault-claim" class="vault-claim"></div>
+        <label class="alarm" for="alarm-at">
+          <span data-i18n="p.alarm.label">Warn me at</span>
+          <input id="alarm-at" type="number" min="0" step="100" inputmode="numeric" placeholder="0">
+          <span>$BOUNTY</span>
+        </label>
         <div class="vault-tools">
           <button class="btn" data-act="faucet-vault" data-i18n="p.tap.getPlain">Get test $BOUNTY</button>
           <button class="btn" data-act="fix-rpc" title="Re-offer the network with our RPCs" data-i18n-title="p.rpc.fix.title" data-i18n="p.rpc.fix">Fix network</button>
@@ -472,6 +493,20 @@
     <section id="tab-bando" class="tab panel" aria-labelledby="t-bando" hidden>
       <h2 id="t-bando"><span data-i18n="p.band.title">Your gang</span> <small data-i18n="p.band.sub">tick to act on several at once</small></h2>
       <div class="pbody">
+        <div class="shop">
+          <div class="buyline">
+            <div class="stepper">
+              <button data-act="qty-" aria-label="One bag less" data-i18n-aria-label="p.tavern.less">−</button><span id="qty">1</span><button data-act="qty+" aria-label="One bag more" data-i18n-aria-label="p.tavern.more">+</button>
+            </div>
+            <div class="total"><b id="price">…</b> $BOUNTY</div>
+            <button id="buy" class="btn btn-gold btn-big" data-act="buy" data-i18n="p.tavern.buy">Buy</button>
+          </div>
+          <label class="auto-work"><input type="checkbox" id="auto-work" checked>
+            <span data-i18n="p.tavern.autoWork">Send them straight to work when I open the bag</span></label>
+          <p class="note shop-note" data-i18n="p.tavern.desc">Each bag is a random outlaw. The draw lands about a second after you buy, and you have ~25 minutes to open it.</p>
+          <p id="approve-note" class="note" hidden data-i18n="p.tavern.approve">The wallet asks for two confirmations: approving the exact amount of this purchase, and the purchase itself. Never approve "unlimited".</p>
+        </div>
+
         <div id="bar" class="bar" hidden>
           <span id="bar-count"></span>
           <span id="bar-duty" class="duty" title="Up to 10 per wallet on duty at once" data-i18n-title="p.bar.duty.title" hidden></span>
@@ -482,40 +517,13 @@
           <button class="btn" data-act="select-free" data-i18n="p.bar.selectFree">Select free</button>
           <button class="btn" data-act="clear" data-i18n="p.bar.clear">Clear</button>
           <button id="b-repair" class="btn" data-act="repair-all" data-i18n="p.bar.repairAll">Repair team</button>
+          <button id="b-fuse-auto" class="btn" data-act="fuse-auto" data-i18n="p.fuse.auto">Pick a pair</button>
+          <button id="b-fuse-all" class="btn" data-act="fuse-all" data-i18n="p.fuse.all">Fuse every pair</button>
           <button id="b-claim" class="btn btn-gold" data-act="b-claim">Claim all</button>
         </div>
+        <div id="fusion" class="fusion-box" hidden></div>
         <div id="band-filter" class="filters"></div>
         <div id="band"></div>
-      </div>
-    </section>
-
-    <section id="tab-taverna" class="tab panel" aria-labelledby="t-taverna" hidden>
-      <h2 id="t-taverna" data-i18n="p.tavern.title">Tavern</h2>
-      <div class="pbody">
-        <p data-i18n="p.tavern.desc">Each bag is a random outlaw. The draw lands about a second after you buy, and you have ~25 minutes to open it.</p>
-        <div class="buyline">
-          <div class="stepper">
-            <button data-act="qty-" aria-label="One bag less" data-i18n-aria-label="p.tavern.less">−</button><span id="qty">1</span><button data-act="qty+" aria-label="One bag more" data-i18n-aria-label="p.tavern.more">+</button>
-          </div>
-          <div class="total"><b id="price">…</b> $BOUNTY</div>
-        </div>
-        <button id="buy" class="btn btn-gold btn-big" data-act="buy" data-i18n="p.tavern.buy">Buy</button>
-        <p id="approve-note" class="note" hidden data-i18n="p.tavern.approve">The wallet asks for two confirmations: approving the exact amount of this purchase, and the purchase itself. Never approve "unlimited".</p>
-        <label class="auto-work"><input type="checkbox" id="auto-work" checked>
-          <span data-i18n="p.tavern.autoWork">Send them straight to work when I open the bag</span></label>
-      </div>
-    </section>
-
-    <section id="tab-fusao" class="tab panel" aria-labelledby="t-fusao" hidden>
-      <h2 id="t-fusao" data-i18n="p.fusion.title">Fusion</h2>
-      <div class="pbody">
-        <div class="fuse-tools">
-          <button class="btn" data-act="fuse-auto" data-i18n="p.fuse.auto">Pick a pair</button>
-          <button class="btn btn-gold" data-act="fuse-all" data-i18n="p.fuse.all">Fuse every pair</button>
-        </div>
-        <div id="fuse-filter" class="filters"></div>
-        <div id="fuse-list" class="fuse-list"></div>
-        <div id="fusion"></div>
       </div>
     </section>
 
@@ -529,12 +537,6 @@
 <nav class="hud-tabs" role="tablist" aria-label="Sections" data-i18n-aria-label="p.tabs">
   <button class="tab-btn" role="tab" data-act="tab" data-tab="bando" aria-selected="true" aria-controls="tab-bando">
     <img src="../assets/icon-hood.png" alt="" width="30" height="30"><span data-i18n="p.tab.gang">Gang</span>
-  </button>
-  <button class="tab-btn" role="tab" data-act="tab" data-tab="taverna" aria-selected="false" aria-controls="tab-taverna">
-    <img src="../assets/icon-sack.png" alt="" width="30" height="30"><span data-i18n="p.tab.tavern">Tavern</span>
-  </button>
-  <button class="tab-btn" role="tab" data-act="tab" data-tab="fusao" aria-selected="false" aria-controls="tab-fusao">
-    <img src="../assets/icon-gem.png" alt="" width="30" height="30"><span data-i18n="p.tab.fusion">Fusion</span>
   </button>
   <button class="tab-btn" role="tab" data-act="tab" data-tab="ranking" aria-selected="false" aria-controls="tab-ranking">
     <img src="../assets/icon-trophy.png" alt="" width="30" height="30"><span data-i18n="p.tab.board">Ranking</span>
@@ -553,10 +555,10 @@
 
 <script src="js/abi.js?v=fb5f1921"></script>
 <script src="js/lib.js?v=c9f5a400"></script>
-<script src="js/i18n.js?v=7538e013"></script>
+<script src="js/i18n.js?v=5f9d11f8"></script>
 <script src="js/chain.js?v=77b65dec"></script>
 <script src="js/heist.js?v=c44bd7a0"></script>
 <script src="js/reveal-fx.js?v=02281b66"></script>
-<script src="js/app.js?v=1d406224"></script>
+<script src="js/app.js?v=5b7b6fa4"></script>
 </body>
 </html>
