@@ -296,7 +296,13 @@
   .vault-claim .btn { width: 100%; }
   .vault-claim .live { font: 10px var(--pixel); color: var(--gold-hi); }
   /* o aviso de saque: quando o acumulado passa do valor, o painel chama */
-  .alarm { display: flex; align-items: center; gap: 6px; margin-top: 12px; font-size: 12px; color: var(--text-dim); }
+  /* o motivo de um botão estar apagado, dito com todas as letras */
+  .bar-why {
+    margin: 0 0 12px; padding: 8px 10px; font-size: 13px; color: var(--gold-hi);
+    background: rgba(217,164,65,.08); border-left: 3px solid var(--gold);
+  }
+
+  .alarm { display: flex; align-items: center; gap: 6px; margin-top: 12px; font-size: 12px; color: var(--text-dim); flex-wrap: wrap; }
   .alarm input {
     width: 88px; padding: 6px 8px; background: #1E1307; color: var(--text);
     border: 2px solid var(--wood-lo); box-shadow: inset 0 0 0 1px var(--wood-mid);
@@ -438,6 +444,7 @@
     <span class="pill hot"><img src="../assets/icon-hourglass.png" alt="" width="22" height="22"><span><span class="k" data-i18n="p.stat.next">Next epoch in</span><span class="v" id="stat-next">…</span></span></span>
   </div>
   <div class="langs" data-flags aria-label="Language" data-i18n-aria-label="lang.label"></div>
+  <button class="btn" data-act="ajustes" data-i18n="p.settings">Settings</button>
   <div id="wallet"></div>
 </header>
 <p id="banner" class="banner" hidden></p>
@@ -457,15 +464,6 @@
         </dl>
         <button id="next-step" class="btn btn-gold next-step" hidden></button>
         <div id="vault-claim" class="vault-claim"></div>
-        <label class="alarm" for="alarm-at">
-          <span data-i18n="p.alarm.label">Warn me at</span>
-          <input id="alarm-at" type="number" min="0" step="100" inputmode="numeric" placeholder="0">
-          <span>$BOUNTY</span>
-        </label>
-        <div class="vault-tools">
-          <button class="btn" data-act="faucet-vault" data-i18n="p.tap.getPlain">Get test $BOUNTY</button>
-          <button class="btn" data-act="fix-rpc" title="Re-offer the network with our RPCs" data-i18n-title="p.rpc.fix.title" data-i18n="p.rpc.fix">Fix network</button>
-        </div>
       </div>
     </section>
 
@@ -505,6 +503,7 @@
           <label class="auto-work"><input type="checkbox" id="auto-work" checked>
             <span data-i18n="p.tavern.autoWork">Send them straight to work when I open the bag</span></label>
           <p class="note shop-note" data-i18n="p.tavern.desc">Each bag is a random outlaw. The draw lands about a second after you buy, and you have ~25 minutes to open it.</p>
+          <p id="buy-why" class="bar-why" hidden></p>
           <p id="approve-note" class="note" hidden data-i18n="p.tavern.approve">The wallet asks for two confirmations: approving the exact amount of this purchase, and the purchase itself. Never approve "unlimited".</p>
         </div>
 
@@ -523,6 +522,7 @@
           <button id="b-claim" class="btn btn-gold" data-act="b-claim">Claim all</button>
         </div>
         <div id="fusion" class="fusion-box" hidden></div>
+        <p id="bar-why" class="bar-why" hidden></p>
         <div id="band-filter" class="filters"></div>
         <div id="band"></div>
       </div>
@@ -548,6 +548,21 @@
 <dialog id="wallets" class="wallets"></dialog>
 <dialog id="note" class="note"></dialog>
 
+<dialog id="ajustes" class="wallets">
+  <h3 data-i18n="p.settings">Settings</h3>
+  <p class="muted" data-i18n="p.alarm.help">The panel cannot claim for you — every claim is a signature in your wallet. What it can do is call you when the pile is worth it.</p>
+  <label class="alarm" for="alarm-at">
+    <span data-i18n="p.alarm.a">Call me when I have</span>
+    <input id="alarm-at" type="number" min="0" step="100" inputmode="numeric" placeholder="0">
+    <span data-i18n="p.alarm.b">$BOUNTY to claim</span>
+  </label>
+  <div class="vault-tools">
+    <button class="btn" data-act="faucet-vault" data-i18n="p.tap.getPlain">Get test $BOUNTY</button>
+    <button class="btn" data-act="fix-rpc" title="Re-offer the network with our RPCs" data-i18n-title="p.rpc.fix.title" data-i18n="p.rpc.fix">Fix network</button>
+  </div>
+  <button class="btn btn-gold" data-act="close-ajustes" data-i18n="p.note.ok">Got it</button>
+</dialog>
+
 <footer>
   <span data-i18n="p.footer">Contracts with verified code:</span>
   <a href="https://explorer.testnet.chain.robinhood.com/address/0x771875f3AcdA1216350Fa6112787d7700297DeBA" target="_blank" rel="noopener">OUTLAWS</a>
@@ -556,10 +571,10 @@
 
 <script src="js/abi.js?v=fb5f1921"></script>
 <script src="js/lib.js?v=c9f5a400"></script>
-<script src="js/i18n.js?v=f07f744c"></script>
+<script src="js/i18n.js?v=649a6cae"></script>
 <script src="js/chain.js?v=a0c7677f"></script>
 <script src="js/heist.js?v=c44bd7a0"></script>
 <script src="js/reveal-fx.js?v=02281b66"></script>
-<script src="js/app.js?v=4da924b5"></script>
+<script src="js/app.js?v=849a6ecd"></script>
 </body>
 </html>

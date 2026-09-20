@@ -1254,7 +1254,14 @@
     const total = c.price * BigInt(S.qty);
     $('#qty').textContent = S.qty;
     $('#price').textContent = fmtB(total, 0);
-    $('#buy').disabled = S.busy || S.readOnly || !u;
+    const semGrana = !!u && u.bounty < total;
+    $('#buy').disabled = S.busy || S.readOnly || !u || semGrana;
+    const faltaGrana = $('#buy-why');
+    if (faltaGrana) {
+      faltaGrana.hidden = !semGrana;
+      if (semGrana) faltaGrana.textContent = t('p.tavern.short', { falta: fmtB(total - u.bounty, 0) });
+    }
+    $('#buy').title = semGrana ? t('p.tavern.short', { falta: fmtB(total - u.bounty, 0) }) : '';
     $('#approve-note').hidden = !(u && !S.readOnly && u.allowance < total);
 
     const list = $('#sacks'), quadro = $('#sacks-panel');
@@ -1378,10 +1385,35 @@
       duty.classList.toggle('is-full', room() === 0);
     }
     $('#shift').value = S.shiftLen;
-    $('#b-work').disabled = S.busy || !free.length || room() === 0;
+    const livres = u.outlaws.filter((o) => o.status === 0 && o.lifeLeft > 0);
+    const cheio = room() === 0;
+    /* Botão apagado sem explicação parece botão quebrado — foi o que aconteceu
+       com o bando cheio. Agora a barra diz o motivo e cada botão repete no título. */
+    const motivo = cheio ? t('p.bar.why.full', { max })
+      : !livres.length ? t('p.bar.why.noFree')
+      : !free.length ? t('p.bar.why.noSel')
+      : '';
+    const porque = $('#bar-why');
+    if (porque) {
+      porque.textContent = motivo;
+      porque.hidden = !motivo || S.readOnly; //  sem barra de ações, não há botão pra explicar
+    }
+    $('#b-work').disabled = S.busy || !free.length || cheio;
+    $('#b-work').title = motivo;
+    const melhores = $('#b-best');
+    if (melhores) {
+      melhores.disabled = S.busy || !livres.length || cheio;
+      melhores.title = cheio ? t('p.bar.why.full', { max }) : !livres.length ? t('p.bar.why.noFree') : '';
+    }
     const repairAll = $('#b-repair');
-    if (repairAll) repairAll.hidden = !S.glob?.v3; //  conserto em lote só existe no contrato novo
+    if (repairAll) {
+      repairAll.hidden = !S.glob?.v3; //          conserto em lote só existe no contrato novo
+      const surrados = u.outlaws.filter((o) => o.status === 0 && o.lifeLeft > 0 && o.lifeLeft < S.cfg.maxLife);
+      repairAll.disabled = S.busy || !surrados.length;
+      repairAll.title = surrados.length ? '' : t('p.bar.why.noRepair');
+    }
     $('#b-stop').disabled = S.busy || !working.length;
+    $('#b-stop').title = working.length ? '' : t('p.bar.why.noWorking');
     $('#b-claim').disabled = S.busy; //        sem trava: o saque é livre
     // sem nada a sacar ainda: diz quando cai o próximo (o rendimento de cada época entra quando ela fecha)
     // sem contagem regressiva: o que a época corrente rende sobe na hora, a cada segundo
@@ -1440,9 +1472,10 @@
     const emLote = $('#b-fuse-all');
     if (emLote) emLote.hidden = !S.glob?.v3; //   fundir tudo de uma vez só existe no contrato novo
     const podeFundir = (S.user?.outlaws || []).filter(fusable).length >= 2;
+    const faltaPar = podeFundir ? '' : t('p.bar.why.noFuse');
     const auto = $('#b-fuse-auto');
-    if (auto) auto.disabled = S.busy || !podeFundir;
-    if (emLote) emLote.disabled = S.busy || !podeFundir;
+    if (auto) { auto.disabled = S.busy || !podeFundir; auto.title = faltaPar; }
+    if (emLote) { emLote.disabled = S.busy || !podeFundir; emLote.title = faltaPar; }
 
     const p = S.user ? fusionPair() : null;
     const pendentes = S.user?.fusions || [];
@@ -1522,6 +1555,8 @@
     if (act === 'use-wallet') { $('#wallets').close(); return actions.connect(b.dataset.rdns); }
     if (act === 'close-wallets') return $('#wallets').close();
     if (act === 'close-note') return $('#note').close();
+    if (act === 'ajustes') return $('#ajustes').showModal();
+    if (act === 'close-ajustes') return $('#ajustes').close();
     if (act === 'b-work') return actions.work([...S.selected]);
     if (act === 'b-stop') return actions.stop([...S.selected]);
     if (act === 'b-claim') return actions.claim(S.user.outlaws.map((o) => o.id));
