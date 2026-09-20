@@ -479,9 +479,11 @@
   /** Escolha da carteira: uma linha por extensão instalada, com ícone e nome. */
   function pickWallet() {
     const dlg = $('#wallets');
+    const ultima = Chain.current()?.info.rdns; //  a do último acesso vai marcada
     dlg.innerHTML = `<h3>${esc(t('p.wallet.pick'))}</h3><p class="muted">${esc(t('p.wallet.pick.sub'))}</p>
       <ul class="wlist">${Chain.wallets().map((w) => `<li><button class="btn" data-act="use-wallet" data-rdns="${esc(w.info.rdns)}">
-        ${w.info.icon ? `<img src="${esc(w.info.icon)}" alt="" width="28" height="28">` : ''}<span>${esc(w.info.name)}</span></button></li>`).join('')}</ul>
+        ${w.info.icon ? `<img src="${esc(w.info.icon)}" alt="" width="28" height="28">` : ''}<span>${esc(w.info.name)}</span>${
+          w.info.rdns === ultima ? `<small class="wlast">${esc(t('p.wallet.last'))}</small>` : ''}</button></li>`).join('')}</ul>
       <button class="btn" data-act="close-wallets">${esc(t('p.wallet.cancel'))}</button>`;
     dlg.showModal();
   }
@@ -646,8 +648,8 @@
       if (S.connecting) return toast(t('p.conn.waiting'), 'aviso');
       Chain.rediscover(); //                     extensão que entrou depois
       if (!Chain.hasWallet()) return toast(t('p.noWallet'), 'erro');
-      // mais de uma carteira instalada: o jogador escolhe qual conecta
-      if (!rdns && !Chain.current()) return pickWallet();
+      // clicar em conectar sempre abre a lista: quem escolhe a carteira é o jogador
+      if (!rdns) return pickWallet();
       S.connecting = true;
       render();
       const slow = setTimeout(() => toast(t('p.conn.slow'), 'aviso'), 8000);
