@@ -130,6 +130,7 @@
     if (e.code === 4001 || /user (rejected|denied)/i.test(e.message || '')) return tr('e.rejected');
     if (e.code === -32002) return tr('e.pending'); //  já tem pedido aberto na extensão
     if (e.code === -32005 || /rate.?limit/i.test(e.message || '')) return tr('e.rateLimit');
+    if (/insufficient funds/i.test(e.message || '')) return tr('e.noGas');
     const data = e.data?.data || e.data?.originalError?.data || e.data;
     return explain(typeof data === 'string' ? data : null) || e.message || String(e);
   }
@@ -270,7 +271,9 @@
     if (p.isBraveWallet) return 'Brave';
     if (p.isCoinbaseWallet) return 'Coinbase Wallet';
     if (p.isTrust) return 'Trust';
-    if (p.isMetaMask) return 'MetaMask';
+    if (p.isOkxWallet) return 'OKX';
+    if (p.isBitKeep) return 'Bitget';
+    // isMetaMask sozinho não prova nada: meia dúzia de carteiras se diz MetaMask
     return '';
   }
 

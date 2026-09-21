@@ -436,6 +436,8 @@
     if (S.demo) return toast(t('p.demo.noop'), 'aviso');
     if (S.readOnly) return toast(t('p.readonly.noop'), 'aviso');
     if (S.busy) return;
+    //                                          toda ação custa gás: sem ETH, a carteira só devolveria erro
+    if (S.user && S.user.eth === 0n) return semGas();
     S.busy = true;
     render();
     try {
@@ -537,6 +539,20 @@
     if (S.user.allowance >= amount) return;
     await tx(t('p.approve', { amount: fmtB(amount) }), C.bounty, 'approve(address,uint256)', [C.game, amount]);
     S.user.allowance = amount;
+  }
+
+  /** A janelinha de quem ainda não tem ETH: o que falta e o link pra pegar. */
+  function semGas() {
+    showNote(t('p.noGas.title'), '0 ETH', [t('p.noGas.body')]);
+    const dlg = $('#note');
+    const ir = document.createElement('a');
+    ir.className = 'btn btn-gold';
+    ir.href = C.ethFaucet;
+    ir.target = '_blank';
+    ir.rel = 'noopener';
+    ir.textContent = t('p.noGas.go');
+    ir.style.cssText = 'display:block;text-align:center;margin-top:10px';
+    dlg.insertBefore(ir, dlg.querySelector('[data-act="close-note"]'));
   }
 
   /** Janelinha de aviso: título, um número grande e uma linha de explicação. */
@@ -943,6 +959,10 @@
     'finish-all'() {
       return revealBatch(false, true);
     },
+    /** A torneira de ETH da Robinhood, numa aba nova. */
+    'eth-faucet'() {
+      window.open(C.ethFaucet, '_blank', 'noopener');
+    },
     /** A torneira, chamada do painel do caixa. */
     'faucet-vault'() {
       return actions.faucet();
@@ -1079,7 +1099,7 @@
     if (S.demo || S.readOnly) return null;
     if (!S.me) return { act: 'connect', msg: t('p.next.connect') };
     if (!u || !c || !S.glob) return null;
-    if (u.eth === 0n) return { act: 'faucet-vault', msg: t('p.next.eth') };
+    if (u.eth === 0n) return { act: 'eth-faucet', msg: t('p.next.eth') };
 
     const prontos = u.sacks.filter((k) => S.glob.block > k.target && S.glob.block <= k.target + drawWindow());
     if (prontos.length > 1) return { act: 'open-all', msg: t('p.batch.openAll', { n: prontos.length }) };
