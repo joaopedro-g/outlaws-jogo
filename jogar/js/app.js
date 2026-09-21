@@ -450,7 +450,72 @@
         S.reveal = null;
         await showReveal(rv);
       }
+      if (S.depois) { //                          resumo do lote, com o bando já relido
+        const f = S.depois;
+        S.depois = null;
+        f();
+      }
     }
+  }
+
+  /**
+   * Revela numa transação só tudo o que está pronto: abre os sacos e fecha as
+   * fusões. Dá porque as duas coisas são abertas a qualquer um no contrato —
+   * o resultado vai sempre pro dono e já está selado pelo bloco do sorteio.
+   * Teto por transação pra não estourar o gás: saco pesa pelo número de
+   * bonecos que cunha, fusão pesa 1.
+   */
+  const TETO_LOTE = 60;
+  function revealBatch(querSacos, querFusoes) {
+    const u = S.user, block = S.glob.block;
+    let peso = 0;
+    const cabe = (p) => (peso + p <= TETO_LOTE ? ((peso += p), true) : false);
+    const sacos = querSacos ? u.sacks.filter((k) => block > k.target && cabe(k.count)) : [];
+    const fusoes = querFusoes ? u.fusions.filter((f) => block > f.target && cabe(1)) : [];
+    if (!sacos.length && !fusoes.length) return toast(t('p.batch.none'), 'aviso');
+    const antes = new Map(fusoes.map((f) => [f.id, { a: f.a, b: f.b, rank: f.rank }]));
+    const label = t('p.batch.label', { n: sacos.length + fusoes.length });
+    return run(label, async () => {
+      toast(t('p.tx.confirm', { label }), 'aviso');
+      const hash = await Chain.sendBatch(S.me, [
+        ...sacos.map((k) => [C.game, 'openSack(uint256)', [k.id]]),
+        ...fusoes.map((f) => [C.game, 'finishFusion(uint256)', [f.id]]),
+      ]);
+      toast(t('p.tx.sent', { label }), 'aviso', hash);
+      const r = await Chain.waitReceipt(hash);
+      toast(t('p.tx.done', { label }), 'ok', hash);
+
+      const novos = [];
+      for (const ev of Chain.logsOf(r, 'SackOpened')) { // (sackId) expired, firstTokenId, count
+        const first = Number(ev.data[1]), n = Number(ev.data[2]);
+        for (let i = 0; i < n; i++) novos.push(first + i);
+      }
+      const placar = [0, 0, 0]; //                sucesso, falha, crítica
+      for (const ev of Chain.logsOf(r, 'FusionFinished')) { // (fusionId) outcome, newTokenId
+        const id = Number(ev.topics[0]), resultado = Number(ev.data[0]), nid = Number(ev.data[1]);
+        const f = antes.get(id) || {};
+        placar[resultado]++;
+        if (resultado === 0) toast(t('p.rv.toastOk', { id, nid, rank: RANK[(f.rank ?? 0) + 1] }), 'ok');
+        else if (resultado === 1) toast(t('p.rv.toastFail', { id, a: f.a, b: f.b }), 'aviso');
+        else toast(t('p.rv.toastCrit', { id, names: t('p.rv.names', { a: f.a, b: f.b, rank: RANK[f.rank ?? 0] }) }), 'erro');
+        if (nid) novos.push(nid);
+      }
+      S.selected.clear();
+      // o resumo sai depois da releitura, quando os novos já têm raridade
+      S.depois = () => {
+        const porRaridade = new Map();
+        for (const id of novos) {
+          const o = byId(id);
+          if (o) porRaridade.set(o.rank, (porRaridade.get(o.rank) || 0) + 1);
+        }
+        const linhas = [...porRaridade.entries()].sort((a, b) => b[0] - a[0]).map(([rk, n]) => `${n}× ${RANK[rk]}`);
+        showNote(t('p.batch.title'), t('p.batch.big', { n: novos.length }), [
+          fusoes.length ? t('p.batch.fusions', { n: fusoes.length, ok: placar[0], fail: placar[1], crit: placar[2] }) : '',
+          sacos.length ? t('p.batch.sacks', { n: sacos.length }) : '',
+          linhas.length ? t('p.batch.got', { list: linhas.join(' · ') }) : '',
+        ]);
+      };
+    });
   }
 
   async function tx(label, to, sig, args) {
@@ -870,6 +935,14 @@
         S.selected.clear();
       });
     },
+    /** Abre todos os sacos prontos numa assinatura só. */
+    'open-all'() {
+      return revealBatch(true, false);
+    },
+    /** Revela todas as fusões prontas numa assinatura só. */
+    'finish-all'() {
+      return revealBatch(false, true);
+    },
     /** A torneira, chamada do painel do caixa. */
     'faucet-vault'() {
       return actions.faucet();
@@ -1008,8 +1081,11 @@
     if (!u || !c || !S.glob) return null;
     if (u.eth === 0n) return { act: 'faucet-vault', msg: t('p.next.eth') };
 
-    const pronto = u.sacks.find((k) => S.glob.block > k.target && S.glob.block <= k.target + drawWindow());
-    if (pronto) return { act: 'open', id: pronto.id, msg: t('p.next.open', { id: pronto.id }) };
+    const prontos = u.sacks.filter((k) => S.glob.block > k.target && S.glob.block <= k.target + drawWindow());
+    if (prontos.length > 1) return { act: 'open-all', msg: t('p.batch.openAll', { n: prontos.length }) };
+    if (prontos.length) return { act: 'open', id: prontos[0].id, msg: t('p.next.open', { id: prontos[0].id }) };
+    const fusoesProntas = u.fusions.filter((f) => S.glob.block > f.target).length;
+    if (fusoesProntas > 1) return { act: 'finish-all', msg: t('p.batch.finishAll', { n: fusoesProntas }) };
 
     const parado = u.outlaws.reduce((s, o) => s + o.pending, 0n);
     if (parado > 0n) return { act: 'b-claim', msg: t('p.next.claim', { amount: fmtB(parado) }) };
@@ -1027,7 +1103,7 @@
   }
 
   /** Em que aba mora cada ação, pra acender também a aba quando ela está fechada. */
-  const TAB_DA_ACAO = { buy: 'taverna', 'fuse-auto': 'fusao', 'fuse-all': 'fusao' };
+  const TAB_DA_ACAO = { buy: 'taverna', 'fuse-auto': 'fusao', 'fuse-all': 'fusao', 'finish-all': 'fusao' };
 
   /** Escreve a dica no caixa e acende o botão (e a aba) a que ela leva. */
   function renderNextStep() {
@@ -1292,6 +1368,13 @@
     }
     if (quadro) quadro.hidden = false;
     const block = S.glob.block;
+    const prontos = u.sacks.filter((k) => block > k.target).length;
+    const todos = $('#open-all');
+    if (todos) {
+      todos.hidden = prontos < 2 || S.readOnly;
+      todos.disabled = S.busy;
+      todos.textContent = t('p.batch.openAll', { n: prontos });
+    }
     const sig = u.sacks.map((k) => `${k.id}:${block > k.target}`).join(',');
     if (list.dataset.sig !== sig) { //            só redesenha quando muda de verdade: a cena é animada
       list.dataset.sig = sig;
@@ -1591,7 +1674,12 @@
     }
     if (pendentes.length) {
       const block = S.glob.block;
-      html += (html ? '<div class="sep"></div>' : '') + pendentes.map((f) => {
+      const prontas = pendentes.filter((f) => block > f.target).length;
+      html += (html ? '<div class="sep"></div>' : '')
+        + (prontas >= 2 && !S.readOnly
+          ? `<button class="btn btn-gold btn-big batch-btn" data-act="finish-all" ${S.busy ? 'disabled' : ''}>${esc(t('p.batch.finishAll', { n: prontas }))}</button>`
+          : '')
+        + pendentes.map((f) => {
         const ready = block > f.target;
         return `<div class="row"><div><b>${esc(t('p.fuse.row', { id: f.id }))}</b> · #${f.a} + #${f.b}<br><small>${!ready ? `<span data-draw="${f.target}">${drawText(f.target)}</span>`
           : block > f.target + 256 ? t('p.fuse.expired')

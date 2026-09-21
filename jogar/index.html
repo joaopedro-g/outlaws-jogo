@@ -166,12 +166,11 @@
   .tab-btn .dot { width: 8px; height: 8px; background: var(--danger); border-radius: 50%; position: absolute; }
 
   /* ----------------------------------------------------------- a caixa */
-  .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 0; }
-  .stat { padding: 9px 10px; background: #1A1108; border: 2px solid var(--wood-lo); box-shadow: inset 0 0 0 1px var(--wood-mid); }
-  .stat:last-child { grid-column: span 2; }
+  .stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0; }
+  .stat { min-width: 0; padding: 9px 10px; background: #1A1108; border: 2px solid var(--wood-lo); box-shadow: inset 0 0 0 1px var(--wood-mid); }
   .stat dt { font: 14px var(--fellsc); letter-spacing: .04em; color: var(--text-dim); }
-  .stat dd { margin: 7px 0 0; font: 13px var(--pixel); color: var(--text); font-variant-numeric: tabular-nums; }
-  .stat dd small { font: 11px var(--body); color: var(--text-dim); margin-left: 4px; }
+  .stat dd { margin: 7px 0 0; font: 12px var(--pixel); color: var(--text); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  .stat dd small { display: block; margin: 5px 0 0; font: 11px var(--body); color: var(--text-dim); }
   .stat.hot dd { color: var(--gold-hi); }
 
   /* ---------------------------------------------------------- assalto */
@@ -191,13 +190,18 @@
     border: 2px solid var(--wood-lo); box-shadow: inset 0 0 0 1px var(--wood-mid);
   }
   .bar #bar-count { font-size: 13px; color: var(--text-dim); margin-right: auto; }
-  .bar .duty { font: 10px var(--pixel); color: var(--text-dim); padding: 7px 9px; border: 2px solid var(--wood-lo); box-shadow: inset 0 0 0 1px var(--wood-mid); }
-  .bar .duty.is-full { color: var(--gold-hi); border-color: var(--gold-dim); }
-  .bar label { font-size: 13px; color: var(--text-dim); display: flex; align-items: center; gap: 6px; }
-  .bar input[type=number] {
-    width: 58px; padding: 7px; background: #120C06; color: var(--text); border: 2px solid var(--wood-lo);
-    box-shadow: inset 0 0 0 1px var(--wood-mid); font: 11px var(--pixel);
+  .bar .duty, .lineup .duty { font: 10px var(--pixel); color: var(--text-dim); padding: 7px 9px; border: 2px solid var(--wood-lo); box-shadow: inset 0 0 0 1px var(--wood-mid); }
+  .bar .duty.is-full, .lineup .duty.is-full { color: var(--gold-hi); border-color: var(--gold-dim); }
+  .bar label, .lineup label { font-size: 13px; color: var(--text-dim); display: flex; align-items: center; gap: 6px; }
+  .bar input[type=number], .lineup input[type=number], .alarm input {
+    width: 58px; padding: 7px; background: #120C06; color: var(--gold-hi); border: 2px solid var(--wood-lo);
+    box-shadow: inset 0 0 0 1px var(--wood-mid); font: 11px var(--pixel); text-align: center;
+    -moz-appearance: textfield; appearance: textfield;
   }
+  .bar input[type=number]:focus, .lineup input[type=number]:focus, .alarm input:focus { outline: 2px solid var(--gold-dim); outline-offset: 0; }
+  .lineup input::-webkit-inner-spin-button, .lineup input::-webkit-outer-spin-button,
+  .alarm input::-webkit-inner-spin-button, .alarm input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  .batch-btn { width: 100%; margin-bottom: 10px; }
 
   /* --------------------------------------------------------- cartaz */
   .card {
@@ -258,7 +262,8 @@
   .odds-legend div { display: flex; justify-content: space-between; padding: 2px 0; }
   .odds-legend dt { color: var(--text-dim); } .odds-legend dd { margin: 0; font-weight: 700; font-variant-numeric: tabular-nums; }
 
-  #log { list-style: none; margin: 0; padding: 0; font-size: 12px; max-height: 260px; overflow: auto; }
+  #log { list-style: none; margin: 0; padding: 0; font-size: 12px; max-height: 260px; overflow: auto; scrollbar-width: none; }
+  #log::-webkit-scrollbar { display: none; } /* rola na roda do mouse, sem a barra */
   #log li { padding: 7px 0; border-top: 1px solid var(--wood-mid); }
   #log time { color: var(--text-dim); font-variant-numeric: tabular-nums; margin-right: 4px; }
   #log .log-erro { color: #F2A493; } #log .log-aviso { color: var(--gold-hi); }
@@ -492,7 +497,10 @@
 
     <section id="sacks-panel" class="panel" aria-labelledby="t-sacos" hidden>
       <h2 id="t-sacos" data-i18n="p.sacks.title">Bags to open</h2>
-      <div class="pbody"><div id="sacks"></div></div>
+      <div class="pbody">
+        <button id="open-all" class="btn btn-gold btn-big batch-btn" data-act="open-all" hidden></button>
+        <div id="sacks"></div>
+      </div>
     </section>
 
     <section class="panel" aria-labelledby="t-registro">
@@ -619,11 +627,11 @@
 
 <script src="js/abi.js?v=fb5f1921"></script>
 <script src="js/lib.js?v=c9f5a400"></script>
-<script src="js/i18n.js?v=aada59e6"></script>
-<script src="js/chain.js?v=a0c7677f"></script>
+<script src="js/i18n.js?v=86262601"></script>
+<script src="js/chain.js?v=2174acfc"></script>
 <script src="js/heist.js?v=c44bd7a0"></script>
 <script src="js/road.js?v=0c6cf2d9"></script>
 <script src="js/reveal-fx.js?v=02281b66"></script>
-<script src="js/app.js?v=99920c98"></script>
+<script src="js/app.js?v=3ad4c553"></script>
 </body>
 </html>

@@ -147,34 +147,44 @@
    * palavras de cada uma, na ordem; com `partial`, a que reverter vira null
    * em vez de derrubar o lote.
    */
+  /** O calldata do Multicall3.aggregate3: cada item vira (alvo, pode falhar, dados). */
+  function aggregateData(list) {
+    const parts = list.map(([to, sig, args]) => {
+      const d = encode(sig, args).slice(2);
+      return addr(to) + uint(1) + uint(0x60) + uint(d.length / 2) + d.padEnd(Math.ceil(d.length / 64) * 64, '0');
+    });
+    let off = parts.length * 32;
+    const heads = parts.map((p) => {
+      const h = uint(off);
+      off += p.length / 2;
+      return h;
+    });
+    return '0x' + AGGREGATE3 + uint(0x20) + uint(parts.length) + heads.join('') + parts.join('');
+  }
+
+  /** A resposta do aggregate3, (bool ok, bytes data)[], como [{ ok, ret }]. */
+  function aggregateResult(hex) {
+    const h = hex.slice(2);
+    const num = (byte) => Number(BigInt('0x' + h.slice(byte * 2, byte * 2 + 64)));
+    const base = num(0) + 32, out = [];
+    for (let i = 0; i < num(num(0)); i++) {
+      const t = base + num(base + i * 32);
+      const d = t + num(t + 32);
+      out.push({ ok: num(t) === 1, ret: '0x' + h.slice((d + 32) * 2, (d + 32 + num(d)) * 2) });
+    }
+    return out;
+  }
+
   async function calls(list, { partial = false } = {}) {
     const out = [];
     for (let at = 0; at < list.length; at += 150) {
       const chunk = list.slice(at, at + 150);
-      const parts = chunk.map(([to, sig, args]) => {
-        const d = encode(sig, args).slice(2);
-        return addr(to) + uint(1) + uint(0x60) + uint(d.length / 2) + d.padEnd(Math.ceil(d.length / 64) * 64, '0');
-      });
-      let off = parts.length * 32;
-      const heads = parts.map((p) => {
-        const h = uint(off);
-        off += p.length / 2;
-        return h;
-      });
-      const data = '0x' + AGGREGATE3 + uint(0x20) + uint(parts.length) + heads.join('') + parts.join('');
-      const h = (await rpc('eth_call', [{ to: CFG.multicall, data }, 'latest'])).slice(2);
-
-      // resposta: (bool ok, bytes data)[]
-      const num = (byte) => Number(BigInt('0x' + h.slice(byte * 2, byte * 2 + 64)));
-      const base = num(0) + 32;
-      for (let i = 0; i < num(num(0)); i++) {
-        const t = base + num(base + i * 32);
-        const d = t + num(t + 32);
-        const ret = '0x' + h.slice((d + 32) * 2, (d + 32 + num(d)) * 2);
-        if (num(t) === 1) out.push(words(ret));
+      const resp = aggregateResult(await rpc('eth_call', [{ to: CFG.multicall, data: aggregateData(chunk) }, 'latest']));
+      resp.forEach(({ ok, ret }, i) => {
+        if (ok) out.push(words(ret));
         else if (partial) out.push(null);
         else throw Object.assign(new Error('leitura recusada pelo contrato: ' + chunk[i][1]), { data: ret });
-      }
+      });
     }
     return out;
   }
@@ -414,6 +424,35 @@
     }
   }
 
+  /**
+   * Várias chamadas numa transação só, pelo Multicall3. Só serve pra função
+   * que qualquer um pode chamar (abrir saco, revelar fusão): dentro do lote,
+   * quem chama o jogo é o Multicall3, não a pessoa. Cada item pode falhar sem
+   * derrubar os outros; se a simulação diz que nenhum passaria, nem pede
+   * assinatura.
+   */
+  async function sendBatch(from, list) {
+    await ensureChain();
+    const data = aggregateData(list);
+    let simulado;
+    for (let attempt = 1; ; attempt++) {
+      try {
+        simulado = await rpc('eth_call', [{ from, to: CFG.multicall, data }, 'latest']);
+        break;
+      } catch (e) {
+        if (attempt === 3) throw new Error(humanError(e));
+        await sleep(1500);
+      }
+    }
+    const passam = aggregateResult(simulado).filter((r) => r.ok).length;
+    if (!passam) throw new Error(tr('e.batchNone'));
+    try {
+      return await wallet().request({ method: 'eth_sendTransaction', params: [{ from, to: CFG.multicall, data }] });
+    } catch (e) {
+      throw new Error(humanError(e));
+    }
+  }
+
   /** Eventos do jogo num recibo: [{ topics: [indexados…], data: [palavras…] }], como BigInt. */
   function logsOf(receipt, name) {
     const topic = ABI.events[name];
@@ -437,6 +476,6 @@
   root.Chain = {
     CFG, MAX_UINT, rpc, encode, words, asAddr, asHex32, call, calls, contractBlock, ethBalance,
     hasWallet, wallets, use, current, walletName, realName, onWallet, accounts, forget, rediscover,
-    connect, ensureChain, fixChain, signPermit, send, waitReceipt, logsOf, humanError,
+    connect, ensureChain, fixChain, signPermit, send, sendBatch, waitReceipt, logsOf, humanError,
   };
 })(window);
