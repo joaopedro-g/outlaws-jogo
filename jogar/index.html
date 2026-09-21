@@ -514,7 +514,7 @@
       <div class="pbody">
         <div id="heist" class="heist" hidden>
           <canvas id="heist-map" width="544" height="416" role="img" aria-label="Heist map: outlaws on duty breaking crates and opening chests" data-i18n-aria-label="p.heist.aria"></canvas>
-          <p class="note" data-i18n="p.heist.note">Stealth is speed, Strength is the hit (the number that pops off the crate), Aim is the arrow. Every cleared room moves on to the next terrain, from the road to the castle. The Crown's gold strongboxes (0 to 5 per room) take many more hits and are worth 10 chests. The map is a showcase: how much each one earns is decided by the contract (weight × vault), and the chests show that estimate. What counts is the "Claim" button on the card.</p>
+          <p class="note" data-i18n="p.heist.note">Stealth = speed. Strength = hit. Aim = arrows. Clear a room to reach the next terrain. A gold strongbox is worth 10 chests.</p>
         </div>
       </div>
   </section>
@@ -550,7 +550,7 @@
     <section id="tab-taverna" class="tab panel" aria-labelledby="t-taverna" hidden>
       <h2 id="t-taverna" data-i18n="p.tavern.title">Tavern</h2>
       <div class="pbody">
-        <p class="note shop-note" data-i18n="p.tavern.desc">Each bag is a random outlaw. The draw lands about a second after you buy, and you have ~25 minutes to open it.</p>
+        <p class="note shop-note" data-i18n="p.tavern.desc">Each bag = random outlaws. Ready in ~1 s. Open within 25 min.</p>
         <div class="buyline">
           <div class="stepper">
             <button data-act="qty-" aria-label="One bag less" data-i18n-aria-label="p.tavern.less">−</button><span id="qty">1</span><button data-act="qty+" aria-label="One bag more" data-i18n-aria-label="p.tavern.more">+</button>
@@ -561,7 +561,7 @@
         <label class="auto-work"><input type="checkbox" id="auto-work" checked>
           <span data-i18n="p.tavern.autoWork">Send them straight to work when I open the bag</span></label>
         <p id="buy-why" class="bar-why" hidden></p>
-        <p id="approve-note" class="note" hidden data-i18n="p.tavern.approve">The wallet asks for two confirmations: approving the exact amount of this purchase, and the purchase itself. Never approve "unlimited".</p>
+        <p id="approve-note" class="note" hidden data-i18n="p.tavern.approve">Two confirmations: approve this exact amount, then buy. Never approve "unlimited".</p>
       </div>
     </section>
 
@@ -606,7 +606,7 @@
 
 <dialog id="ajustes" class="wallets">
   <h3 data-i18n="p.settings">Settings</h3>
-  <p class="muted" data-i18n="p.alarm.help">The panel cannot claim for you — every claim is a signature in your wallet. What it can do is call you when the pile is worth it.</p>
+  <p class="muted" data-i18n="p.alarm.help">Claims always need your signature. We just call you when it pays off.</p>
   <label class="alarm" for="alarm-at">
     <span data-i18n="p.alarm.a">Call me when I have</span>
     <input id="alarm-at" type="number" min="0" step="100" inputmode="numeric" placeholder="0">
@@ -627,7 +627,7 @@
 
 <script src="js/abi.js?v=fb5f1921"></script>
 <script src="js/lib.js?v=c9f5a400"></script>
-<script src="js/i18n.js?v=86262601"></script>
+<script src="js/i18n.js?v=6331cb13"></script>
 <script src="js/chain.js?v=2174acfc"></script>
 <script src="js/heist.js?v=c44bd7a0"></script>
 <script src="js/road.js?v=0c6cf2d9"></script>
