@@ -28,7 +28,7 @@
   const drawWindow = () => (S.glob && S.glob.fast ? FAST_WINDOW : 256);
 
   const S = {
-    filter: null, //                            filtro por raridade do bando
+    filter: null, fuseFilter: null, //          filtros por raridade (bando e fusão)
     alarm: 0, alarmed: false, //                aviso de saque: valor em $BOUNTY inteiro, e se já avisou
     me: null,
     view: null,
@@ -824,19 +824,24 @@
       });
     },
     /**
-     * Escala sozinho os melhores que estão livres, até encher o bando: peso
-     * primeiro (é ele que decide a paga), vida como desempate.
+     * Monta o melhor time possível para as vagas que existem — peso primeiro
+     * (é ele que decide a paga), vida como desempate — e deixa marcado na
+     * tela. NÃO manda trabalhar: quem confirma é a pessoa, no botão verde,
+     * depois de ver quem foi escolhido e quanto o time rende.
      */
     'work-best'() {
       const vagas = room();
-      if (!vagas) return toast(t('p.err.cap', { max: S.cfg.maxActive, n: onDuty(), room: 0 }), 'aviso');
+      if (!vagas) return toast(t('p.bar.why.full', { max: S.cfg.maxActive }), 'aviso');
       const livres = (S.user?.outlaws || [])
         .filter((o) => o.status === 0 && o.lifeLeft > 0)
         .sort((a, b) => b.weight - a.weight || b.lifeLeft - a.lifeLeft);
-      if (!livres.length) return toast(t('p.err.noFree'), 'aviso');
-      const escalados = livres.slice(0, Math.min(vagas, livres.length));
-      S.selected = new Set(escalados.map((o) => o.id));
-      return actions.work(escalados.map((o) => o.id));
+      if (!livres.length) return toast(t('p.bar.why.noFree'), 'aviso');
+      const time = livres.slice(0, Math.min(vagas, livres.length));
+      S.selected = new Set(time.map((o) => o.id));
+      S.filter = null; //                        tira o filtro pra o time aparecer inteiro
+      renderBand();
+      renderFusion();
+      toast(t('p.lineup.built', { n: time.length }));
     },
 
     /** Escolhe sozinho um par pronto (o rank mais alto, com mais vida). */
@@ -1021,6 +1026,9 @@
     return null;
   }
 
+  /** Em que aba mora cada ação, pra acender também a aba quando ela está fechada. */
+  const TAB_DA_ACAO = { buy: 'taverna', 'fuse-auto': 'fusao', 'fuse-all': 'fusao' };
+
   /** Escreve a dica no caixa e acende o botão (e a aba) a que ela leva. */
   function renderNextStep() {
     const btn = $('#next-step');
@@ -1043,6 +1051,11 @@
       : `[data-act="${passo.act}"][data-id="${passo.id}"]`;
     for (const el of document.querySelectorAll(alvo)) el.classList.add('is-next');
 
+    const aba = TAB_DA_ACAO[passo.act];
+    if (aba && aba !== S.tab) {
+      const chave = document.querySelector(`[data-act="tab"][data-tab="${aba}"]`);
+      if (chave) chave.classList.add('is-next');
+    }
   }
 
   /* ----------------------------------------------------------- render */
@@ -1206,7 +1219,7 @@
     if (!pending && !earning) return void (box.innerHTML = '');
     box.innerHTML = `<button class="btn btn-gold" data-act="b-claim" ${S.busy ? 'disabled' : ''}>${
       pending > 0n ? esc(t('p.bar.claimAllN', { amount: fmtB(pending) })) : esc(t('p.bar.accruing'))}</button>`
-      + (earning ? `<span class="live">+<span data-accrue>${dec(accruing())}</span> ${esc(t('p.vault.live'))}</span>` : '');
+      + (earning ? `<span class="live"><span data-accrue>+${dec(accruing())}</span> ${esc(t('p.vault.live'))}</span>` : '');
   }
 
   function renderStats() {
@@ -1376,7 +1389,8 @@
         <span style="width:${(o.lifeLeft / c.maxLife) * 100}%"></span>
         <em>${esc(t('p.card.lifeN', { n: o.lifeLeft, max: c.maxLife }))}</em>
       </div>
-      <div class="c-status"><span class="chip chip-${STATUS_KEY[o.status]}">${STATUS[o.status]}</span><small>${info}</small></div>
+      <div class="c-status"><span class="chip chip-${STATUS_KEY[o.status]}">${
+        o.status === 1 && o.shiftEnd === S.glob.epoch + 1 ? esc(t('p.st.leaving')) : STATUS[o.status]}</span><small>${info}</small></div>
       <div class="c-acts">${acts.join('')}</div>
     </article>`;
   }
@@ -1399,7 +1413,10 @@
       return;
     }
     renderFilters($('#band-filter'), u.outlaws, S.filter, (r) => { S.filter = r; renderBand(); });
-    const shown = S.filter === null ? u.outlaws : u.outlaws.filter((o) => o.rank === S.filter);
+    const ORDEM = { 1: 0, 0: 1, 3: 2, 2: 3 }; //  em serviço, livre, em fusão, capturado
+    const shown = (S.filter === null ? u.outlaws : u.outlaws.filter((o) => o.rank === S.filter))
+      .slice()
+      .sort((a, b) => ORDEM[a.status] - ORDEM[b.status] || b.weight - a.weight || a.id - b.id);
     box.innerHTML = shown.length ? shown.map(card).join('')
       : `<div class="empty"><p>${esc(t('p.filter.none'))}</p></div>`;
 
@@ -1411,8 +1428,13 @@
     $('#bar-count').textContent = sel.length ? t('p.bar.count', { n: sel.length }) : t('p.bar.none');
     const duty = $('#bar-duty'), max = S.cfg.maxActive;
     duty.hidden = !max;
+    /* "Mais de 10 trabalhando" é o turno que termina nesta época: ele ainda
+       rende hoje, mas já não ocupa vaga pro turno seguinte — que é o que o
+       contrato conta. A tela diz os dois números pra ninguém achar que o
+       limite furou. */
+    const saindo = u.outlaws.filter((o) => o.status === 1 && o.shiftEnd === S.glob.epoch + 1).length;
     if (max) {
-      duty.textContent = t('p.bar.duty', { n: onDuty(), max });
+      duty.textContent = t('p.bar.duty', { n: onDuty(), max }) + (saindo ? ' · ' + t('p.bar.leaving', { n: saindo }) : '');
       duty.classList.toggle('is-full', room() === 0);
     }
     $('#shift').value = S.shiftLen;
@@ -1420,16 +1442,19 @@
     const cheio = room() === 0;
     /* Botão apagado sem explicação parece botão quebrado — foi o que aconteceu
        com o bando cheio. Agora a barra diz o motivo e cada botão repete no título. */
+    const vagas = room();
+    const demais = free.length > vagas; //        o contrato recusa; a tela nem deixa tentar
     const motivo = cheio ? t('p.bar.why.full', { max })
       : !livres.length ? t('p.bar.why.noFree')
       : !free.length ? t('p.bar.why.noSel')
+      : demais ? t('p.bar.why.over', { n: free.length, room: vagas, x: free.length - vagas })
       : '';
     const porque = $('#bar-why');
     if (porque) {
       porque.textContent = motivo;
       porque.hidden = !motivo || S.readOnly; //  sem barra de ações, não há botão pra explicar
     }
-    $('#b-work').disabled = S.busy || !free.length || cheio;
+    $('#b-work').disabled = S.busy || !free.length || cheio || demais;
     $('#b-work').title = motivo;
     const melhores = $('#b-best');
     if (melhores) {
@@ -1445,16 +1470,25 @@
     }
     $('#b-stop').disabled = S.busy || !working.length;
     $('#b-stop').title = working.length ? '' : t('p.bar.why.noWorking');
-    $('#b-claim').disabled = S.busy; //        sem trava: o saque é livre
-    // sem nada a sacar ainda: diz quando cai o próximo (o rendimento de cada época entra quando ela fecha)
-    // sem contagem regressiva: o que a época corrente rende sobe na hora, a cada segundo
-    const earning = u.outlaws.some((o) => o.status === 1 && S.glob.epoch >= o.shiftStart);
-    const live = earning ? ` <span class="accrue" data-accrue>+${dec(accruing())}</span>` : '';
-    $('#b-claim').innerHTML = pending > 0n
-      ? esc(t('p.bar.claimAllN', { amount: fmtB(pending) })) + live
-      : earning ? esc(t('p.bar.accruing')) + live : esc(t('p.bar.claimAll'));
-    $('#b-claim').classList.toggle('is-live', earning);
-    $('#b-claim').title = earning ? t('p.bar.accrue.title') : '';
+    /* O resumo da escalação: quem está marcado, quanto pesa e o que isso
+       deve render por época. É o que faltava pra "escolher os melhores" ser
+       uma decisão e não um chute. */
+    const resumo = $('#lineup-sum');
+    if (resumo) {
+      const podem = free.filter((o) => !S.selected.size || S.selected.has(o.id));
+      const peso = podem.reduce((s, o) => s + o.weight, 0);
+      resumo.hidden = !podem.length;
+      if (podem.length) {
+        const total = Number(S.glob.weight) + peso;
+        const porEpoca = total > 0 ? (Number(S.glob.free / WEI) * 0.005 * peso) / total : 0;
+        resumo.innerHTML = t('p.lineup.sum', {
+          n: podem.length,
+          w: dec(peso / 10_000),
+          b: Math.round(porEpoca).toLocaleString(loc()),
+          e: S.shiftLen,
+        });
+      }
+    }
   }
 
   /**
@@ -1498,7 +1532,31 @@
   /** Quem pode entrar numa fusão: livre, com vida e abaixo de Lenda. */
   const fusable = (o) => o.status === 0 && o.lifeLeft > 0 && o.rank < 5;
 
+  /** A lista de candidatos da aba Fusão: clicar escolhe (no máximo dois). */
+  function renderFuseList() {
+    const box = $('#fuse-list'), u = S.user;
+    const all = document.querySelector('[data-act="fuse-all"]');
+    if (all) all.hidden = !S.glob?.v3; //          fusão em lote idem
+    if (!box) return;
+    if (!u) return void (box.innerHTML = '');
+    const free = u.outlaws.filter(fusable);
+    renderFilters($('#fuse-filter'), free, S.fuseFilter, (r) => { S.fuseFilter = r; renderFuseList(); });
+    const shown = S.fuseFilter === null ? free : free.filter((o) => o.rank === S.fuseFilter);
+    // mesma lista na tela: só remarca quem está escolhido (redesenhar tirava o clique do lugar)
+    const sig = shown.map((o) => o.id).join(",");
+    if (box.dataset.sig === sig && shown.length) {
+      for (const b of box.querySelectorAll(".fuse-pick")) b.setAttribute("aria-pressed", String(S.selected.has(Number(b.dataset.id))));
+      return;
+    }
+    box.dataset.sig = sig;
+    box.innerHTML = shown.length
+      ? shown.map((o) => `<button class="fuse-pick" data-act="pick-fuse" data-id="${o.id}" aria-pressed="${S.selected.has(o.id)}" style="${rarityStyle(o.rank)}">
+          <img src="${art(o).url}" alt="" width="64" height="64"><b>${esc(RANK[o.rank])}</b><small>#${o.id}</small></button>`).join('')
+      : `<p class="muted">${esc(t(free.length ? 'p.filter.none' : 'p.fuse.none'))}</p>`;
+  }
+
   function renderFusion() {
+    renderFuseList();
     const box = $('#fusion');
     const emLote = $('#b-fuse-all');
     if (emLote) emLote.hidden = !S.glob?.v3; //   fundir tudo de uma vez só existe no contrato novo
@@ -1510,11 +1568,9 @@
 
     const p = S.user ? fusionPair() : null;
     const pendentes = S.user?.fusions || [];
-    box.hidden = !p && !pendentes.length; //      sem par e sem fusão em curso, nem aparece
-    if (box.hidden) return void (box.innerHTML = '');
     let html = '';
     if (!p) {
-      html = '';
+      html = `<p class="muted">${t('p.fuse.pick')}</p>`;
     } else if (p.invalid) {
       html = `<p class="t-danger">${esc(p.invalid)}</p>`;
     } else {
@@ -1582,6 +1638,19 @@
     }
     if (act === 'tab') return showTab(b.dataset.tab);
     if (act === 'board-refresh') return wantBoard(true);
+    if (act === 'pick-fuse') { //                no máximo dois escolhidos: o terceiro empurra o mais antigo
+      if (S.selected.has(id)) S.selected.delete(id);
+      else {
+        const keep = [...S.selected].filter((x) => byId(x) && fusable(byId(x)));
+        while (keep.length >= 2) S.selected.delete(keep.shift());
+        S.selected.add(id);
+      }
+      renderFuseList();
+      renderBand();
+      renderFusion();
+      loadOdds().then(renderFusion).catch(() => {});
+      return;
+    }
     if (act === 'fix-rpc') return actions['fix-rpc']();
     if (act === 'use-wallet') { $('#wallets').close(); return actions.connect(b.dataset.rdns); }
     if (act === 'close-wallets') return $('#wallets').close();

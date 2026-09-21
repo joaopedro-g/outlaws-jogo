@@ -97,7 +97,7 @@
   .btn-big { font-size: 12px; padding: 14px 20px; }
   .btn-danger { border-color: #6B2A1E; color: #F2A493; }
   .btn .accrue { font-size: .9em; opacity: .85; margin-left: 4px; }
-  #b-claim.is-live:disabled { opacity: 1; color: var(--gold-hi); cursor: default; }
+  [data-act="b-claim"].is-live:disabled { opacity: 1; color: var(--gold-hi); cursor: default; }
   .accrue-chip { font: 8px var(--pixel); color: var(--gold); padding: 7px 6px; align-self: center; white-space: nowrap; }
 
   .chip { font: 8px var(--pixel); letter-spacing: .06em; padding: 5px 7px; border: 1px solid; display: inline-block; white-space: nowrap; }
@@ -297,6 +297,19 @@
   .vault-claim .live { font: 10px var(--pixel); color: var(--gold-hi); }
   /* o aviso de saque: quando o acumulado passa do valor, o painel chama */
   /* o motivo de um botão estar apagado, dito com todas as letras */
+  /* a escalação: quem vai trabalhar, com a conta na frente */
+  .lineup { border: 2px solid var(--wood-lo); box-shadow: inset 0 0 0 1px var(--wood-mid); padding: 12px; margin-bottom: 14px; }
+  .lineup-top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+  .lineup-tools, .lineup-go { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .lineup-go { margin-top: 10px; }
+  .lineup-count { font-size: 13px; color: var(--text-dim); }
+  .lineup-sum {
+    margin: 10px 0 0; padding: 10px; font-size: 13px; color: var(--text);
+    background: rgba(85,131,47,.12); border-left: 3px solid var(--green-hi);
+  }
+  .lineup-sum b { color: var(--gold-hi); }
+  .card.is-sel { outline: 3px solid var(--green-hi); outline-offset: -3px; }
+
   .bar-why {
     margin: 0 0 12px; padding: 8px 10px; font-size: 13px; color: var(--gold-hi);
     background: rgba(217,164,65,.08); border-left: 3px solid var(--gold);
@@ -502,39 +515,58 @@
     <section id="tab-bando" class="tab panel" aria-labelledby="t-bando" hidden>
       <h2 id="t-bando"><span data-i18n="p.band.title">Your gang</span> <small data-i18n="p.band.sub">tick to act on several at once</small></h2>
       <div class="pbody">
-        <div class="shop">
-          <div class="buyline">
-            <div class="stepper">
-              <button data-act="qty-" aria-label="One bag less" data-i18n-aria-label="p.tavern.less">−</button><span id="qty">1</span><button data-act="qty+" aria-label="One bag more" data-i18n-aria-label="p.tavern.more">+</button>
-            </div>
-            <div class="total"><b id="price">…</b> $BOUNTY</div>
-            <button id="buy" class="btn btn-gold btn-big" data-act="buy" data-i18n="p.tavern.buy">Buy</button>
+        <div id="bar" class="lineup" hidden>
+          <div class="lineup-top">
+            <span id="bar-duty" class="duty" title="Up to 10 per wallet on duty at once" data-i18n-title="p.bar.duty.title" hidden></span>
+            <label for="shift"><span data-i18n="p.bar.shiftA">shift of</span> <input id="shift" type="number" min="1" max="30" value="10"> <span data-i18n="p.bar.shiftB">epochs</span></label>
           </div>
-          <label class="auto-work"><input type="checkbox" id="auto-work" checked>
-            <span data-i18n="p.tavern.autoWork">Send them straight to work when I open the bag</span></label>
-          <p class="note shop-note" data-i18n="p.tavern.desc">Each bag is a random outlaw. The draw lands about a second after you buy, and you have ~25 minutes to open it.</p>
-          <p id="buy-why" class="bar-why" hidden></p>
-          <p id="approve-note" class="note" hidden data-i18n="p.tavern.approve">The wallet asks for two confirmations: approving the exact amount of this purchase, and the purchase itself. Never approve "unlimited".</p>
+          <div class="lineup-tools">
+            <button id="b-best" class="btn" data-act="work-best" data-i18n="p.lineup.best">Build the best team</button>
+            <button class="btn" data-act="select-free" data-i18n="p.bar.selectFree">Select free</button>
+            <button class="btn" data-act="clear" data-i18n="p.bar.clear">Clear</button>
+          </div>
+          <p id="lineup-sum" class="lineup-sum" hidden></p>
+          <div class="lineup-go">
+            <button id="b-work" class="btn btn-green btn-big" data-act="b-work" data-i18n="p.lineup.send">Send to work</button>
+            <button id="b-stop" class="btn" data-act="b-stop" data-i18n="p.bar.stop">End shift</button>
+            <button id="b-repair" class="btn" data-act="repair-all" data-i18n="p.bar.repairAll">Repair team</button>
+            <span id="bar-count" class="lineup-count"></span>
+          </div>
+          <p id="bar-why" class="bar-why" hidden></p>
         </div>
-
-        <div id="bar" class="bar" hidden>
-          <span id="bar-count"></span>
-          <span id="bar-duty" class="duty" title="Up to 10 per wallet on duty at once" data-i18n-title="p.bar.duty.title" hidden></span>
-          <label for="shift"><span data-i18n="p.bar.shiftA">shift of</span> <input id="shift" type="number" min="1" max="30" value="10"> <span data-i18n="p.bar.shiftB">epochs</span></label>
-          <button id="b-best" class="btn btn-green btn-big" data-act="work-best" data-i18n="p.bar.best">Send the best</button>
-          <button id="b-work" class="btn btn-green" data-act="b-work" data-i18n="p.bar.work">Work</button>
-          <button id="b-stop" class="btn" data-act="b-stop" data-i18n="p.bar.stop">End shift</button>
-          <button class="btn" data-act="select-free" data-i18n="p.bar.selectFree">Select free</button>
-          <button class="btn" data-act="clear" data-i18n="p.bar.clear">Clear</button>
-          <button id="b-repair" class="btn" data-act="repair-all" data-i18n="p.bar.repairAll">Repair team</button>
-          <button id="b-fuse-auto" class="btn" data-act="fuse-auto" data-i18n="p.fuse.auto">Pick a pair</button>
-          <button id="b-fuse-all" class="btn" data-act="fuse-all" data-i18n="p.fuse.all">Fuse every pair</button>
-          <button id="b-claim" class="btn btn-gold" data-act="b-claim">Claim all</button>
-        </div>
-        <div id="fusion" class="fusion-box" hidden></div>
-        <p id="bar-why" class="bar-why" hidden></p>
         <div id="band-filter" class="filters"></div>
         <div id="band"></div>
+      </div>
+    </section>
+
+    <section id="tab-taverna" class="tab panel" aria-labelledby="t-taverna" hidden>
+      <h2 id="t-taverna" data-i18n="p.tavern.title">Tavern</h2>
+      <div class="pbody">
+        <p class="note shop-note" data-i18n="p.tavern.desc">Each bag is a random outlaw. The draw lands about a second after you buy, and you have ~25 minutes to open it.</p>
+        <div class="buyline">
+          <div class="stepper">
+            <button data-act="qty-" aria-label="One bag less" data-i18n-aria-label="p.tavern.less">−</button><span id="qty">1</span><button data-act="qty+" aria-label="One bag more" data-i18n-aria-label="p.tavern.more">+</button>
+          </div>
+          <div class="total"><b id="price">…</b> $BOUNTY</div>
+          <button id="buy" class="btn btn-gold btn-big" data-act="buy" data-i18n="p.tavern.buy">Buy</button>
+        </div>
+        <label class="auto-work"><input type="checkbox" id="auto-work" checked>
+          <span data-i18n="p.tavern.autoWork">Send them straight to work when I open the bag</span></label>
+        <p id="buy-why" class="bar-why" hidden></p>
+        <p id="approve-note" class="note" hidden data-i18n="p.tavern.approve">The wallet asks for two confirmations: approving the exact amount of this purchase, and the purchase itself. Never approve "unlimited".</p>
+      </div>
+    </section>
+
+    <section id="tab-fusao" class="tab panel" aria-labelledby="t-fusao" hidden>
+      <h2 id="t-fusao" data-i18n="p.fusion.title">Fusion</h2>
+      <div class="pbody">
+        <div class="fuse-tools">
+          <button id="b-fuse-auto" class="btn" data-act="fuse-auto" data-i18n="p.fuse.auto">Pick a pair</button>
+          <button id="b-fuse-all" class="btn btn-gold" data-act="fuse-all" data-i18n="p.fuse.all">Fuse every pair</button>
+        </div>
+        <div id="fuse-filter" class="filters"></div>
+        <div id="fuse-list" class="fuse-list"></div>
+        <div id="fusion" class="fusion-box"></div>
       </div>
     </section>
 
@@ -548,6 +580,12 @@
 <nav class="hud-tabs" role="tablist" aria-label="Sections" data-i18n-aria-label="p.tabs">
   <button class="tab-btn" role="tab" data-act="tab" data-tab="bando" aria-selected="true" aria-controls="tab-bando">
     <img src="../assets/icon-hood.png" alt="" width="30" height="30"><span data-i18n="p.tab.gang">Gang</span>
+  </button>
+  <button class="tab-btn" role="tab" data-act="tab" data-tab="taverna" aria-selected="false" aria-controls="tab-taverna">
+    <img src="../assets/icon-sack.png" alt="" width="30" height="30"><span data-i18n="p.tab.tavern">Tavern</span>
+  </button>
+  <button class="tab-btn" role="tab" data-act="tab" data-tab="fusao" aria-selected="false" aria-controls="tab-fusao">
+    <img src="../assets/icon-gem.png" alt="" width="30" height="30"><span data-i18n="p.tab.fusion">Fusion</span>
   </button>
   <button class="tab-btn" role="tab" data-act="tab" data-tab="ranking" aria-selected="false" aria-controls="tab-ranking">
     <img src="../assets/icon-trophy.png" alt="" width="30" height="30"><span data-i18n="p.tab.board">Ranking</span>
@@ -581,11 +619,11 @@
 
 <script src="js/abi.js?v=fb5f1921"></script>
 <script src="js/lib.js?v=c9f5a400"></script>
-<script src="js/i18n.js?v=7e0690a7"></script>
+<script src="js/i18n.js?v=aada59e6"></script>
 <script src="js/chain.js?v=a0c7677f"></script>
 <script src="js/heist.js?v=c44bd7a0"></script>
 <script src="js/road.js?v=0c6cf2d9"></script>
 <script src="js/reveal-fx.js?v=02281b66"></script>
-<script src="js/app.js?v=b87c8382"></script>
+<script src="js/app.js?v=99920c98"></script>
 </body>
 </html>
