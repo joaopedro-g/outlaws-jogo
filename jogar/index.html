@@ -20,6 +20,11 @@
     --gold:    #D9A441; --gold-hi: #F2CE7E; --gold-dim: #8C6A29;
     --moss:    #8FB35E; --green: #55832F; --green-hi: #79B04A;
     --danger:  #D0654D; --violet: #A58BDB;
+    /* cores dos botões da barra do bando: cada ação com a sua, pra achar de olho */
+    --red:     #C43A2A; --red-lo: #7E1D14; --red-hi: #F08A70;
+    --ember:   #DE5A26; --ember-lo: #92300F; --ember-hi: #FF9E6B;
+    --amber:   #EBC62E; --amber-lo: #A8830E; --amber-hi: #FFE88A;
+    --jade:    #2F9670; --jade-lo: #17573F; --jade-hi: #74D6AC;
     --text:    #EDE2C8; --text-dim: #B09B77;
     --pixel:   "Press Start 2P", ui-monospace, monospace;
     --slab:    "Holtwood One SC", Georgia, serif;
@@ -96,6 +101,16 @@
   .btn-green:hover:not(:disabled) { background: linear-gradient(#7CB84A, #4C7C29); color: #fff; }
   .btn-big { font-size: 12px; padding: 14px 20px; }
   .btn-danger { border-color: #6B2A1E; color: #F2A493; }
+  /* botão tingido: a cor vem de --b-top/--b-bot/--b-rim, cada variante só troca os três */
+  .btn-tone { background: linear-gradient(var(--b-top), var(--b-bot)); color: var(--b-ink, var(--text)); box-shadow: inset 0 0 0 1px var(--b-rim), inset 0 2px 0 rgba(255,255,255,.25), 0 3px 0 rgba(0,0,0,.5); text-shadow: 0 1px 0 rgba(0,0,0,.35); }
+  .btn-tone:hover:not(:disabled) { background: linear-gradient(var(--b-rim), var(--b-top)); color: var(--b-ink, var(--text)); }
+  .btn-red   { --b-top: var(--red);   --b-bot: var(--red-lo);   --b-rim: var(--red-hi); }
+  .btn-ember { --b-top: var(--ember); --b-bot: var(--ember-lo); --b-rim: var(--ember-hi); }
+  .btn-jade  { --b-top: var(--jade);  --b-bot: var(--jade-lo);  --b-rim: var(--jade-hi); }
+  .btn-amber { --b-top: var(--amber); --b-bot: var(--amber-lo); --b-rim: var(--amber-hi); --b-ink: var(--wood-lo); text-shadow: 0 1px 0 rgba(255,255,255,.3); }
+  /* o passo antes do conserto: mesma família do amarelo, só no contorno */
+  .btn-line-amber { border-color: var(--amber-lo); color: var(--amber-hi); box-shadow: inset 0 0 0 1px var(--amber), 0 3px 0 rgba(0,0,0,.5); }
+  .btn-line-amber:hover:not(:disabled) { color: var(--amber-hi); border-color: var(--amber); }
   .btn .accrue { font-size: .9em; opacity: .85; margin-left: 4px; }
   [data-act="b-claim"].is-live:disabled { opacity: 1; color: var(--gold-hi); cursor: default; }
   .accrue-chip { font: 8px var(--pixel); color: var(--gold); padding: 7px 6px; align-self: center; white-space: nowrap; }
@@ -360,6 +375,19 @@
   .fusion-box { border: 2px solid var(--gold-lo, var(--wood-lo)); box-shadow: inset 0 0 0 1px var(--wood-mid); padding: 12px; margin-bottom: 14px; }
   .fusion-box .sep { height: 2px; background: var(--wood-lo); margin: 12px 0; }
 
+  /* a tabela de custo da fusão: raridade, pares, chance e taxa, antes do clique */
+  .fuse-plan { border: 2px solid var(--wood-lo); box-shadow: inset 0 0 0 1px var(--wood-mid); margin-bottom: 14px; overflow-x: auto; }
+  .fuse-plan table { width: 100%; border-collapse: collapse; }
+  .fuse-plan th { font: 13px var(--fellsc); letter-spacing: .03em; color: var(--text-dim); text-align: left; font-weight: 400;
+                  padding: 8px 8px; border-bottom: 2px solid var(--wood-lo); white-space: nowrap; }
+  .fuse-plan td { font: 15px var(--press); padding: 7px 8px; border-bottom: 1px solid var(--wood-lo); white-space: nowrap; }
+  .fuse-plan .num { text-align: right; }
+  .fuse-plan td.num { font: 11px var(--pixel); font-variant-numeric: tabular-nums; }
+  .fuse-plan td:last-child { text-align: right; width: 1%; }
+  .fuse-plan .btn { padding: 7px 9px; }
+  .fuse-plan .to { color: var(--text-dim); margin: 0 4px; }
+  .fuse-plan td.cost { color: var(--gold-hi); }
+  .fuse-plan tfoot td { color: var(--gold); border-bottom: 0; }
   .fuse-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 10px; margin-bottom: 16px; }
   .fuse-pick {
     display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; padding: 8px 6px;
@@ -529,15 +557,16 @@
             <label for="shift"><span data-i18n="p.bar.shiftA">shift of</span> <input id="shift" type="number" min="1" max="30" value="10"> <span data-i18n="p.bar.shiftB">epochs</span></label>
           </div>
           <div class="lineup-tools">
-            <button id="b-best" class="btn" data-act="work-best" data-i18n="p.lineup.best">Build the best team</button>
-            <button class="btn" data-act="select-free" data-i18n="p.bar.selectFree">Select free</button>
+            <button id="b-best" class="btn btn-tone btn-ember" data-act="work-best" data-i18n="p.lineup.best">Build the best team</button>
+            <button class="btn btn-tone btn-jade" data-act="select-free" data-i18n="p.bar.selectFree">Select free</button>
             <button class="btn" data-act="clear" data-i18n="p.bar.clear">Clear</button>
           </div>
           <p id="lineup-sum" class="lineup-sum" hidden></p>
           <div class="lineup-go">
             <button id="b-work" class="btn btn-green btn-big" data-act="b-work" data-i18n="p.lineup.send">Send to work</button>
-            <button id="b-stop" class="btn" data-act="b-stop" data-i18n="p.bar.stop">End shift</button>
-            <button id="b-repair" class="btn" data-act="repair-all" data-i18n="p.bar.repairAll">Repair team</button>
+            <button id="b-stop" class="btn btn-tone btn-red" data-act="b-stop" data-i18n="p.bar.stop">End shift</button>
+            <button id="b-pull" class="btn btn-line-amber" data-act="pull-repair" hidden>Pull out to repair</button>
+            <button id="b-repair" class="btn btn-tone btn-amber" data-act="repair-all" data-i18n="p.bar.repairAll">Repair team</button>
             <span id="bar-count" class="lineup-count"></span>
           </div>
           <p id="bar-why" class="bar-why" hidden></p>
@@ -570,9 +599,10 @@
       <div class="pbody">
         <div class="fuse-tools">
           <button id="b-fuse-auto" class="btn" data-act="fuse-auto" data-i18n="p.fuse.auto">Pick a pair</button>
-          <button id="b-fuse-all" class="btn btn-gold" data-act="fuse-all" data-i18n="p.fuse.all">Fuse every pair</button>
+          <button id="b-fuse-all" class="btn btn-gold" data-act="fuse-all">Fuse every pair</button>
         </div>
         <div id="fuse-filter" class="filters"></div>
+        <div id="fuse-plan" class="fuse-plan" hidden></div>
         <div id="fuse-list" class="fuse-list"></div>
         <div id="fusion" class="fusion-box"></div>
       </div>
@@ -626,12 +656,12 @@
 </footer>
 
 <script src="js/abi.js?v=fb5f1921"></script>
-<script src="js/lib.js?v=c9f5a400"></script>
-<script src="js/i18n.js?v=94821cf9"></script>
+<script src="js/lib.js?v=5ecaecf7"></script>
+<script src="js/i18n.js?v=8a376289"></script>
 <script src="js/chain.js?v=396bc465"></script>
-<script src="js/heist.js?v=c44bd7a0"></script>
+<script src="js/heist.js?v=1df686a1"></script>
 <script src="js/road.js?v=0c6cf2d9"></script>
 <script src="js/reveal-fx.js?v=02281b66"></script>
-<script src="js/app.js?v=589bfc68"></script>
+<script src="js/app.js?v=5111840b"></script>
 </body>
 </html>

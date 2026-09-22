@@ -298,10 +298,12 @@
     const st = [0, 1, 1, 2, 0, 1, 3, 0, 1];
     const seeds = ranks.map((r, i) => seedFor(r, i));
     S.cfg = { price: 1000n * WEI, epochLength: 3600, maxLife: 30, maxActive: 10, genesis: Math.floor(Date.now() / 1000) - 5 * 3600 - 1200 };
-    S.glob = { epoch: 5, weight: 88_000n, owed: 1n, avg: 0n, pool: 101_675n * WEI, free: 101_675n * WEI, block: 1000, at: Date.now() };
+    // v3: a demonstração mostra o contrato publicado, com lote de conserto e fusão
+    S.glob = { v3: true, epoch: 5, weight: 88_000n, owed: 1n, avg: 0n, pool: 101_675n * WEI, free: 101_675n * WEI, block: 1000, at: Date.now() };
     const outlaws = seeds.map((seed, i) => {
       const rank = ranks[i];
-      const lifeLeft = st[i] === 2 ? 0 : 30 - ((i * 7) % 24);
+      // #3 está num turno que zera a vida: é quem o "Tirar pra consertar" tira
+      const lifeLeft = st[i] === 2 ? 0 : i === 2 ? 6 : 30 - ((i * 7) % 24);
       return {
         id: i + 1, seed, rank, flags: 0, weight: T.derive(seed).raw.weightBps, lifeUsed: 30 - lifeLeft, ransoms: 0,
         shiftStart: st[i] === 1 ? 4 : 0, shiftEnd: st[i] === 1 ? 4 + 6 + i : 0, fusion: st[i] === 3 ? 1 : 0, lifeLeft, status: st[i],
@@ -661,6 +663,7 @@
   const LOG_KEY = 'outlaws:log';
   const ALARM_KEY = 'outlaws:avisar'; //        de quanto em quanto o painel chama pro saque
   const GAME_KEY = 'outlaws:game'; //          qual contrato este navegador viu por último
+  const PULL_KEY = 'outlaws:puxados'; //       quem a pessoa tirou do turno pra consertar
 
   /**
    * Toda vez que o jogo muda de contrato, o guardado aqui deixa de fazer
@@ -675,6 +678,7 @@
       if (seen === now) return false;
       localStorage.removeItem(LOG_KEY);
       localStorage.removeItem('outlaws:tab');
+      localStorage.removeItem(PULL_KEY);
       localStorage.setItem(GAME_KEY, now);
       return !!seen; //                        primeira visita não é "mudou de jogo"
     } catch {
@@ -691,6 +695,53 @@
       const raw = JSON.parse(localStorage.getItem(LOG_KEY) || '[]');
       S.log = raw.slice(0, 60).map((l) => ({ ...l, at: new Date(l.at) }));
     } catch {}
+  }
+
+  /*
+   * Tirados pro conserto. O contrato só conserta quem está fora de serviço, e
+   * o turno só acaba no fim da época. Então "consertar quem está trabalhando"
+   * são dois passos com uma virada de época no meio. O painel anota aqui quem
+   * a pessoa tirou e, quando eles ficam livres, o próximo passo é o conserto —
+   * e não mandá-los de volta gastos. É lembrete deste navegador, não regra:
+   * o contrato não sabe dele.
+   */
+  function pulledIds() {
+    try { return JSON.parse(localStorage.getItem(PULL_KEY) || '{}')[String(S.view).toLowerCase()] || []; } catch { return []; }
+  }
+  function savePulled(ids) {
+    try {
+      const all = JSON.parse(localStorage.getItem(PULL_KEY) || '{}');
+      const k = String(S.view).toLowerCase();
+      if (ids.length) all[k] = ids;
+      else delete all[k];
+      localStorage.setItem(PULL_KEY, JSON.stringify(all));
+    } catch {}
+  }
+  /** Os tirados que ainda esperam conserto; esquece quem foi consertado, voltou ao turno ou mudou de dono. */
+  function pulled() {
+    if (!S.user || !S.glob || !S.cfg) return [];
+    const ids = pulledIds(), ep = S.glob.epoch;
+    const vivos = ids.map(byId).filter((o) => o && (
+      (o.status === 1 && o.shiftEnd === ep + 1) || //              ainda saindo
+      (o.status === 0 && o.lifeLeft > 0 && o.lifeLeft < S.cfg.maxLife))); // livre e gasto
+    if (vivos.length !== ids.length) savePulled(vivos.map((o) => o.id));
+    return vivos;
+  }
+  /** Vida que sobra quando o turno acabar; 0 = capturado no fim dele. */
+  const lifeAtEnd = (o) => o.lifeLeft - (o.shiftEnd - (S.glob.epoch + 1));
+  /**
+   * Quem o "Tirar pra consertar" tira: os marcados que estão em serviço, se a
+   * pessoa marcou algum; senão, quem vai ser capturado — o turno termina com a
+   * vida zerada, e aí só o resgate (2x o conserto, ou mais) tira da cadeia.
+   * Fica de fora quem já sai nesta época (não tem o que antecipar) e quem
+   * está de vida cheia (não tem o que consertar; pra esse é o Encerrar).
+   */
+  function pullable() {
+    if (!S.user || !S.glob || !S.cfg) return { list: [], sel: false };
+    const ep = S.glob.epoch;
+    const podem = S.user.outlaws.filter((o) => o.status === 1 && o.shiftEnd > ep + 1 && o.lifeLeft < S.cfg.maxLife);
+    const marcados = podem.filter((o) => S.selected.has(o.id));
+    return marcados.length ? { list: marcados, sel: true } : { list: podem.filter((o) => lifeAtEnd(o) <= 0), sel: false };
   }
 
   /**
@@ -905,6 +956,31 @@
       });
     },
     /**
+     * Tira do turno pra consertar. Consertar em serviço o contrato recusa, então
+     * isto é o primeiro passo: encerra o turno no fim desta época (a época
+     * corrente ainda paga) e anota quem saiu. Quando a época vira, o próximo
+     * passo do painel vira "Consertar time". A vida que eles têm agora já conta
+     * a época corrente como gasta, então o conserto estimado é o de verdade;
+     * só o preço anda com a média do caixa, por isso "cerca de".
+     */
+    'pull-repair'() {
+      return run(t('p.act.pull'), async () => {
+        const { list } = pullable();
+        if (!list.length) throw new Error(t('p.bar.why.noPull'));
+        const costs = await Chain.calls(list.map((o) => [C.game, 'repairCost(uint256,uint256)', [o.id, S.cfg.maxLife - o.lifeLeft]]));
+        const cost = costs.reduce((s, c) => s + c[0], 0n);
+        const risco = list.filter((o) => lifeAtEnd(o) <= 0);
+        const ids = list.map((o) => '#' + o.id).join(', ');
+        if (!confirm(t('p.confirm.pull', {
+          n: list.length, ids, tm: dur(nextEpochIn()), cost: fmtB(cost),
+          risk: risco.map((o) => '#' + o.id).join(', '), riskN: risco.length,
+        }))) return;
+        await tx(t('p.act.pullTx', { ids }), C.game, 'endShift(uint256[])', [list.map((o) => o.id)]);
+        savePulled([...new Set([...pulledIds(), ...list.map((o) => o.id)])]);
+        S.depois = () => showNote(t('p.pull.done'), ids, [t('p.pull.when', { t: dur(nextEpochIn()) }), t('p.pull.then')]);
+      });
+    },
+    /**
      * Monta o melhor time possível para as vagas que existem — peso primeiro
      * (é ele que decide a paga), vida como desempate — e deixa marcado na
      * tela. NÃO manda trabalhar: quem confirma é a pessoa, no botão verde,
@@ -937,19 +1013,13 @@
       loadOdds().then(renderFusion).catch(() => {});
       toast(t('p.fuse.picked', { a: a.id, b: b.id, rank: RANK[a.rank] }));
     },
-    /** Todos os pares possíveis numa transação só. */
+    /** Todos os pares numa transação só — com filtro de raridade ligado, só os daquela raridade. */
     'fuse-all'() {
-      return run(t('p.act.fuseAll'), async () => {
-        const pairs = fusePairs();
-        if (!pairs.length) throw new Error(t('p.fuse.none'));
-        const total = pairs.reduce((s, [a]) => s + (S.cfg.price * BigInt(a.rank + 1)) / 2n, 0n);
-        if (S.user.bounty < total) throw new Error(t('p.err.noBounty'));
-        if (!confirm(t('p.confirm.fuseAll', { n: pairs.length, cost: fmtB(total) }))) return;
-        await ensureAllowance(total);
-        await tx(t('p.act.fuseAllTx', { n: pairs.length }), C.game, 'startFusions(uint256[],uint256[])',
-          [pairs.map(([a]) => a.id), pairs.map(([, b]) => b.id)]);
-        S.selected.clear();
-      });
+      return fuseBatch(fusePairs(S.fuseFilter));
+    },
+    /** Todos os pares de uma raridade: o botão da linha na tabela de fusão. */
+    'fuse-rank'(rank) {
+      return fuseBatch(fusePairs(rank));
     },
     /** Abre todos os sacos prontos numa assinatura só. */
     'open-all'() {
@@ -1032,12 +1102,20 @@
     const p = fusionPair();
     S.odds = null;
     if (!p || p.invalid) return;
-    const full = 2 * S.cfg.maxLife;
-    const left = p.a.lifeLeft + p.b.lifeLeft;
-    const success = Math.floor(((2000 * full + 4000 * left) * (10 - p.a.rank)) / (10 * full));
-    const critical = Math.floor((2500 * (full - left)) / full);
-    S.odds = { key: `${p.a.id}-${p.b.id}`, success, fail: 10_000 - success - critical, critical };
+    S.odds = { key: `${p.a.id}-${p.b.id}`, ...oddsOf(p.a, p.b) };
   }
+
+  /** A chance de um par, em pontos-base — a conta inteira do contrato (ver loadOdds). */
+  function oddsOf(a, b) {
+    const full = 2 * S.cfg.maxLife;
+    const left = a.lifeLeft + b.lifeLeft;
+    const success = Math.floor(((2000 * full + 4000 * left) * (10 - a.rank)) / (10 * full));
+    const critical = Math.floor((2500 * (full - left)) / full);
+    return { success, fail: 10_000 - success - critical, critical };
+  }
+
+  /** Taxa de uma fusão: metade do saco por degrau de raridade — a conta do contrato. */
+  const fuseFee = (rank) => (S.cfg.price * BigInt(rank + 1)) / 2n;
 
   /* ------------------------------------------------------------- aviso */
 
@@ -1109,6 +1187,12 @@
 
     const parado = u.outlaws.reduce((s, o) => s + o.pending, 0n);
     if (parado > 0n) return { act: 'b-claim', msg: t('p.next.claim', { amount: fmtB(parado) }) };
+
+    /* Quem a pessoa tirou do turno pra consertar passa na frente do "mandar
+       trabalhar": senão o painel sugeriria devolver ao turno, gasto, quem
+       acabou de sair justamente pro conserto. */
+    const aConsertar = pulled().filter((o) => o.status === 0);
+    if (aConsertar.length && S.glob.v3) return { act: 'repair-all', msg: t('p.next.repairPulled', { n: aConsertar.length }) };
 
     const livres = u.outlaws.filter((o) => o.status === 0 && o.lifeLeft > 0);
     if (livres.length && room() > 0) {
@@ -1460,7 +1544,9 @@
           (S.glob.epoch + 1 < o.shiftEnd ? '<br>' + t('p.card.lifeIn', { next }) : '')
         : t('p.card.startsIn', { next });
     }
-    if (o.status === 1 && S.glob.epoch >= o.shiftStart && o.shiftEnd === S.glob.epoch + 1) info += '<br>' + esc(t('p.card.leaving'));
+    const puxado = S.puxados?.has(o.id);
+    if (o.status === 1 && S.glob.epoch >= o.shiftStart && o.shiftEnd === S.glob.epoch + 1) info += '<br>' + esc(t(puxado ? 'p.card.toRepair' : 'p.card.leaving'));
+    if (o.status === 0 && puxado) info = esc(t('p.card.waitRepair'));
     if (o.status === 2) info = esc(t('p.card.captured'));
     if (o.status === 3) info = esc(t('p.card.inFusion', { id: o.fusion }));
 
@@ -1516,7 +1602,8 @@
       return;
     }
     renderFilters($('#band-filter'), u.outlaws, S.filter, (r) => { S.filter = r; renderBand(); });
-    const ORDEM = { 1: 0, 0: 1, 3: 2, 2: 3 }; //  em serviço, livre, em fusão, capturado
+    S.puxados = new Set(pulled().map((o) => o.id)); // o cartão diz "sai pro conserto" / "esperando conserto"
+    const ORDEM ={ 1: 0, 0: 1, 3: 2, 2: 3 }; //  em serviço, livre, em fusão, capturado
     const shown = (S.filter === null ? u.outlaws : u.outlaws.filter((o) => o.rank === S.filter))
       .slice()
       .sort((a, b) => ORDEM[a.status] - ORDEM[b.status] || b.weight - a.weight || a.id - b.id);
@@ -1573,6 +1660,17 @@
     }
     $('#b-stop').disabled = S.busy || !working.length;
     $('#b-stop').title = working.length ? '' : t('p.bar.why.noWorking');
+    /* Tirar pra consertar: o número no botão diz quantos ele tira, e o título
+       diz quais — os marcados em serviço, ou quem vai ser capturado. */
+    const tirar = $('#b-pull');
+    if (tirar) {
+      tirar.hidden = !S.glob?.v3; //               o segundo passo é o conserto em lote, do contrato novo
+      const { list, sel: soMarcados } = pullable();
+      tirar.disabled = S.busy || !list.length;
+      tirar.textContent = list.length ? t('p.bar.pullN', { n: list.length }) : t('p.bar.pull');
+      tirar.title = !list.length ? t('p.bar.why.noPull')
+        : t(soMarcados ? 'p.bar.pull.sel' : 'p.bar.pull.risk', { ids: list.map((o) => '#' + o.id).join(', ') });
+    }
     /* O resumo da escalação: quem está marcado, quanto pesa e o que isso
        deve render por época. É o que faltava pra "escolher os melhores" ser
        uma decisão e não um chute. */
@@ -1617,8 +1715,8 @@
    * Os pares que dá pra fundir agora: mesmo rank, livres e com vida, do rank
    * mais alto pro mais baixo e com a vida mais alta primeiro (melhor chance).
    */
-  function fusePairs() {
-    const free = (S.user?.outlaws || []).filter(fusable);
+  function fusePairs(rank = null) {
+    const free = (S.user?.outlaws || []).filter((o) => fusable(o) && (rank === null || o.rank === rank));
     const byRank = new Map();
     for (const o of free) {
       if (!byRank.has(o.rank)) byRank.set(o.rank, []);
@@ -1635,6 +1733,68 @@
   /** Quem pode entrar numa fusão: livre, com vida e abaixo de Lenda. */
   const fusable = (o) => o.status === 0 && o.lifeLeft > 0 && o.rank < 5;
 
+  /**
+   * A tabela da fusão: por raridade, quantos livres, quantos pares, no que
+   * viram, a chance média e a taxa. O preço tem que estar na tela ANTES do
+   * clique — só na janela de confirmação ele chegava tarde demais.
+   */
+  function fusePlan() {
+    const rows = [];
+    for (let r = 0; r < 5; r++) {
+      const pairs = fusePairs(r);
+      if (!pairs.length) continue;
+      rows.push({
+        rank: r,
+        free: (S.user?.outlaws || []).filter((o) => fusable(o) && o.rank === r).length,
+        pairs,
+        cost: fuseFee(r) * BigInt(pairs.length),
+        chance: pairs.reduce((s, [a, b]) => s + oddsOf(a, b).success, 0) / pairs.length,
+      });
+    }
+    return rows;
+  }
+
+  /** Uma assinatura pra vários pares: confere saldo, mostra o total, autoriza e manda. */
+  function fuseBatch(pairs) {
+    return run(t('p.act.fuseAll'), async () => {
+      if (!pairs.length) throw new Error(t('p.fuse.none'));
+      const total = pairs.reduce((s, [a]) => s + fuseFee(a.rank), 0n);
+      if (S.user.bounty < total) throw new Error(t('p.err.noBounty'));
+      if (!confirm(t('p.confirm.fuseAll', { n: pairs.length, cost: fmtB(total) }))) return;
+      await ensureAllowance(total);
+      await tx(t('p.act.fuseAllTx', { n: pairs.length }), C.game, 'startFusions(uint256[],uint256[])',
+        [pairs.map(([a]) => a.id), pairs.map(([, b]) => b.id)]);
+      S.selected.clear();
+    });
+  }
+
+  function renderFusePlan() {
+    const box = $('#fuse-plan');
+    if (!box) return;
+    const rows = S.glob?.v3 && S.user ? fusePlan() : [];
+    const shown = S.fuseFilter === null ? rows : rows.filter((r) => r.rank === S.fuseFilter);
+    box.hidden = !shown.length; //                  quadro vazio não aparece
+    if (!shown.length) return void (box.innerHTML = '');
+    const off = S.busy ? 'disabled' : '';
+    const pct = (v) => (v / 100).toLocaleString(loc(), { maximumFractionDigits: 0 }) + '%';
+    const pares = shown.reduce((s, r) => s + r.pairs.length, 0);
+    const total = shown.reduce((s, r) => s + r.cost, 0n);
+    // raridade e no que vira numa coluna só, e a taxa antes da chance: numa
+    // tela estreita o que corta primeiro é a ponta direita — o preço não pode estar lá
+    box.innerHTML = `<table>
+      <thead><tr><th>${esc(t('p.plan.rarity'))}</th><th class="num">${esc(t('p.plan.pairs'))}</th>
+        <th class="num">${esc(t('p.plan.cost'))}</th><th class="num">${esc(t('p.plan.chance'))}</th><th></th></tr></thead>
+      <tbody>${shown.map((r) => `<tr>
+        <td><span style="${rarityStyle(r.rank)}">${gem}${esc(RANK[r.rank])}</span> <span class="to">→</span>
+          <span style="${rarityStyle(r.rank + 1)}">${gem}${esc(RANK[r.rank + 1])}</span></td>
+        <td class="num">${r.pairs.length}</td><td class="num cost">${fmtB(r.cost, 0)}</td><td class="num">${pct(r.chance)}</td>
+        <td><button class="btn" data-act="fuse-rank" data-id="${r.rank}" ${off}>${esc(t('p.plan.fuse', { n: r.pairs.length }))}</button></td>
+      </tr>`).join('')}</tbody>
+      ${shown.length > 1 ? `<tfoot><tr><td>${esc(t('p.plan.total'))}</td><td class="num">${pares}</td>
+        <td class="num cost">${fmtB(total, 0)}</td><td></td><td></td></tr></tfoot>` : ''}
+    </table>`;
+  }
+
   /** A lista de candidatos da aba Fusão: clicar escolhe (no máximo dois). */
   function renderFuseList() {
     const box = $('#fuse-list'), u = S.user;
@@ -1643,7 +1803,8 @@
     if (!box) return;
     if (!u) return void (box.innerHTML = '');
     const free = u.outlaws.filter(fusable);
-    renderFilters($('#fuse-filter'), free, S.fuseFilter, (r) => { S.fuseFilter = r; renderFuseList(); });
+    // trocar o filtro muda a tabela de custo e o botão dourado, não só a lista
+    renderFilters($('#fuse-filter'), free, S.fuseFilter, (r) => { S.fuseFilter = r; renderFusion(); });
     const shown = S.fuseFilter === null ? free : free.filter((o) => o.rank === S.fuseFilter);
     // mesma lista na tela: só remarca quem está escolhido (redesenhar tirava o clique do lugar)
     const sig = shown.map((o) => o.id).join(",");
@@ -1667,7 +1828,17 @@
     const faltaPar = podeFundir ? '' : t('p.bar.why.noFuse');
     const auto = $('#b-fuse-auto');
     if (auto) { auto.disabled = S.busy || !podeFundir; auto.title = faltaPar; }
-    if (emLote) { emLote.disabled = S.busy || !podeFundir; emLote.title = faltaPar; }
+    if (emLote) {
+      // o botão já diz quantos pares e quanto custa — e obedece ao filtro de raridade
+      const lote = fusePairs(S.fuseFilter);
+      const custo = lote.reduce((s, [a]) => s + fuseFee(a.rank), 0n);
+      emLote.textContent = !lote.length ? t('p.fuse.all')
+        : S.fuseFilter === null ? t('p.fuse.allCost', { n: lote.length, cost: fmtB(custo, 0) })
+        : t('p.fuse.rankCost', { n: lote.length, rank: RANK[S.fuseFilter], cost: fmtB(custo, 0) });
+      emLote.disabled = S.busy || !lote.length; // só leitura: fica aceso e o clique explica
+      emLote.title = lote.length ? '' : faltaPar || t('p.fuse.none');
+    }
+    renderFusePlan();
 
     const p = S.user ? fusionPair() : null;
     const pendentes = S.user?.fusions || [];

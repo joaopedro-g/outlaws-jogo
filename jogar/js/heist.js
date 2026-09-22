@@ -16,8 +16,9 @@
  *
  * Os stats aparecem no jeito de trabalhar: Furtividade é a velocidade, Força o
  * dano por golpe, Pontaria a chance da flecha acertar. Arco e besta atiram de
- * duas casas; o resto bate de perto. O terreno sai do gerador de lib/map.js — o
- * mesmo do Node, conferido pixel a pixel no build.
+ * duas casas; o resto bate de perto. O terreno sai do gerador de lib/map.js e a
+ * pintura de lib/mapart.js (32 px por casa, luz e sombra) — as mesmas do Node,
+ * conferidas pixel a pixel no build. Aqui só se anima: chama, marola, brilho.
  *
  * Cofres dourados da Coroa: de 0 a 5 por sala, sorteados pela seed dela, com 8x
  * a vida do caixote, e cada um vale 10 baús do boneco mais pesado — sempre. Como a simulação é
@@ -34,9 +35,11 @@
   'use strict';
   const { map: MAP, rng: RNG, sprite: SP, sha256 } = root.OutlawsLib;
 
-  const T = MAP.TILE; //                        16 px por casa no gerador
-  const K = 2; //                               na tela, 1 casa = 32 px: o tamanho do boneco
-  const CELL = T * K;
+  /* 1 casa = 32 px de arte (lib/mapart.js), a mesma densidade do boneco. O
+     desenho é feito em "mundo" (px de arte) e o canvas guarda Q pixels por
+     pixel de arte — inteiro, nunca menos do que a tela mostra —, então chão,
+     boneco e letreiro saem nítidos em qualquer tela. */
+  const CELL = MAP.HD;
   const DT = 0.05; //                           passo fixo da simulação, igual em qualquer máquina
   const DIRS = [[1, 0], [-1, 0], [0, 1], [0, -1]];
   const RANGED = new Set(['bow', 'crossbow', 'both']);
@@ -321,6 +324,9 @@
   let data = null, sim = null, simSig = '', split = null, crewNow = [];
   const looks = new Map(); //                    id -> sprite (normal e espelhado)
   let art = null; //                             ladrilhos da sala em curso
+  let WW = 0, WH = 0, Q = 1; //                  tamanho da sala em px de arte, e a escala do canvas
+  const calm = root.matchMedia ? root.matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
+  const FLAME = ['#6e220c', '#b3421a', '#e67424', '#ffab3d', '#ffd873', '#fff4c4'];
   const vis = new Map(); //                      id -> { t, swing } (só animação)
   let fx = [], shake = new Map(), born = new Map();
 
@@ -378,22 +384,24 @@
     return frames;
   }
 
-  /** Ladrilhos da sala: chão, árvores/pedras e armadilhas num desenho só; caixote e baú vão por cima. */
+  /**
+   * A sala pintada: chão, o que não quebra, armadilhas e a luz assada num
+   * desenho só; caixote, baú e cofre são figuras à parte, porque quebram.
+   * A pintura sai da seed da sala — a mesma em qualquer aparelho.
+   */
   function roomArt(room) {
     if (art && art.seed === room.seed) return art;
-    const m = room.m, rnd = RNG.stream(room.seed, 'render');
-    const base = bitmap(m.w * T, m.h * T, (px) => {
-      for (let y = 0; y < m.h; y++)
-        for (let x = 0; x < m.w; x++) {
-          const k = m.grid[y][x];
-          MAP.drawTile(px, m.w * T, x * T, y * T, k === '#' || k === '~' ? k : '.', m.terrain, rnd);
-        }
-    });
-    const tile = (kind) => bitmap(T, T, (px) => MAP.drawTile(px, T, 0, 0, kind, m.terrain, RNG.stream(room.seed, kind)));
-    art = { seed: room.seed, base, crate: tile('o'), chest: tile('$') };
-    if (cv.width !== m.w * CELL || cv.height !== m.h * CELL) {
-      cv.width = m.w * CELL;
-      cv.height = m.h * CELL;
+    const m = room.m, painted = MAP.paintRoom(m);
+    const img = (p) => bitmap(p.w, p.h, (px) => px.set(p.px));
+    const gold = MAP.paintProp('gold', m.terrain, room.seed);
+    art = {
+      seed: room.seed, base: img(painted), lights: painted.lights, water: painted.water, dark: m.terrain.id === 5,
+      crate: img(MAP.paintProp('o', m.terrain, room.seed)), chest: img(MAP.paintProp('$', m.terrain, room.seed)),
+      gold: img(gold), goldFace: gold.face, mood: null,
+    };
+    if (WW !== m.w * CELL || WH !== m.h * CELL) {
+      WW = m.w * CELL;
+      WH = m.h * CELL;
       fit();
     }
     return art;
@@ -476,44 +484,6 @@
     ctx.fillText(s, x, y);
   }
 
-  /**
-   * Cofre dourado da Coroa, 16×16, no traço do caixote: ouro com cantoneiras e
-   * cinta de ferro, coroa com rubi na tampa e fechadura. '.' deixa o chão aparecer.
-   */
-  const GOLD_ART = [
-    '................',
-    '.DDDDDDDDDDDDDD.',
-    '.DII44444444IID.',
-    '.DI33I3II3I33ID.',
-    '.D433IIIIII331D.',
-    '.D433IIRRII331D.',
-    '.D433333333331D.',
-    '.D111111111111D.',
-    '.DIiIIIiiIIIiID.',
-    '.D4222iiii2221D.',
-    '.D4222iKKi2221D.',
-    '.D4222iiii2221D.',
-    '.D422222222221D.',
-    '.DII11111111IID.',
-    '.DDDDDDDDDDDDDD.',
-    '................',
-  ];
-  const GOLD_INK = { //                          1–4: ouro da sombra ao brilho; I/i ferro; R rubi; K fechadura
-    D: [58, 36, 10], 1: [170, 120, 30], 2: [226, 176, 56], 3: [246, 206, 98], 4: [255, 242, 190],
-    I: [52, 50, 58], i: [128, 124, 136], R: [210, 44, 64], K: [22, 14, 6],
-  };
-  let goldTile = null;
-  const goldArt = () => goldTile || (goldTile = bitmap(T, T, (px) => {
-    for (let y = 0; y < T; y++)
-      for (let x = 0; x < T; x++) {
-        const c = GOLD_INK[GOLD_ART[y][x]];
-        if (!c) continue;
-        const i = (y * T + x) * 4;
-        [px[i], px[i + 1], px[i + 2]] = c;
-        px[i + 3] = 255;
-      }
-  }));
-
   /** Brilho do cofre: halo que pulsa, um reflexo que atravessa a cada ~2 s e faísca em volta. */
   function drawGold(x, y, ox, k, now) {
     const cx = center(x) + ox, cy = center(y);
@@ -523,34 +493,106 @@
     halo.addColorStop(1, 'rgba(255,214,102,0)');
     ctx.fillStyle = halo;
     ctx.fillRect(cx - CELL, cy - CELL, CELL * 2, CELL * 2);
-    ctx.drawImage(goldArt(), x * CELL + ox, y * CELL, CELL, CELL);
-    const sweep = ((now / 1000 + k * 0.37) % 2.2) / 0.5; //  o reflexo leva meio segundo e volta a cada 2,2 s
+    const [f0, g0, f1, g1] = art.goldFace;
+    ctx.drawImage(art.gold, x * CELL + ox, y * CELL);
+    const sweep = calm.matches ? 2 : ((now / 1000 + k * 0.37) % 2.2) / 0.5; //  o reflexo leva meio segundo e volta a cada 2,2 s
     if (sweep < 1) {
-      ctx.fillStyle = 'rgba(255,250,225,.75)';
-      const d = Math.round(-6 + sweep * 26);
-      for (let py = 3; py <= 13; py++) {
-        for (const w of [0, 1]) {
-          const px = d - (py - 3) + w;
-          if (px >= 2 && px <= 13 && '1234'.includes(GOLD_ART[py][px])) ctx.fillRect(x * CELL + ox + px * K, y * CELL + py * K, K, K);
-        }
+      ctx.fillStyle = 'rgba(255,250,225,.6)';
+      const span = f1 - f0 + (g1 - g0), d = Math.round(f0 - (g1 - g0) + sweep * span);
+      for (let py = g0; py <= g1; py++) {
+        const px = d + (g1 - py), a0 = Math.max(px, f0), a1 = Math.min(px + 2, f1);
+        if (a1 >= a0) ctx.fillRect(x * CELL + ox + a0, y * CELL + py, a1 - a0 + 1, 1);
       }
     }
     const tw = Math.sin(now / 170 + k * 1.3);
-    if (tw > 0.8) { //                            faísca em cruz num canto
-      const [sx, sy] = [[3, 1], [14, 2], [15, 12], [0, 13]][(k + Math.floor(now / 900)) % 4];
+    if (tw > 0.8 && !calm.matches) { //          faísca em cruz num canto
+      const [sx, sy] = [[6, 3], [28, 5], [30, 25], [2, 27]][(k + Math.floor(now / 900)) % 4];
+      ctx.fillStyle = 'rgba(255,246,208,.5)';
+      ctx.fillRect(x * CELL + ox + sx - 1, y * CELL + sy - 1, 3, 3);
       ctx.fillStyle = '#FFF6D0';
-      ctx.fillRect(x * CELL + ox + sx * K, y * CELL + (sy - 1) * K, K, K * 3);
-      ctx.fillRect(x * CELL + ox + (sx - 1) * K, y * CELL + sy * K, K * 3, K);
+      ctx.fillRect(x * CELL + ox + sx, y * CELL + sy - 2, 1, 5);
+      ctx.fillRect(x * CELL + ox + sx - 2, y * CELL + sy, 5, 1);
     }
   }
 
-  /** Rachaduras que crescem com o dano. */
-  const CRACK = [[8, 6], [7, 7], [7, 8], [6, 9], [9, 8], [10, 9], [10, 10], [5, 10], [11, 11], [4, 11], [8, 11], [8, 12]];
+  /** Rachaduras que crescem com o dano: uma por caixote, do meio pra fora. */
+  const cracks = new Map();
+  const crackOf = (k) => {
+    if (!cracks.has(k)) cracks.set(k, MAP.crackPixels(k));
+    return cracks.get(k);
+  };
+
+  /** Chama que dança: mais larga embaixo, quente no miolo, balança com o tempo. */
+  function flame(cx, by, w, h, now, seed) {
+    const tm = calm.matches ? seed : now / 1000 + seed;
+    const hh = h * (0.85 + 0.15 * Math.sin(tm * 11 + seed));
+    for (let j = 0; j < hh; j++) {
+      const fr = j / hh, half = (w / 2) * (1 - fr ** 1.4) * (0.85 + 0.15 * Math.sin(tm * 9 + j));
+      const sway = Math.sin(tm * 6 + j * 0.7) * fr * 1.6;
+      for (let i = -Math.ceil(half); i <= Math.ceil(half); i++) {
+        if (Math.abs(i) > half + 0.25) continue;
+        const heat = (1 - Math.abs(i) / (half + 0.5)) * (1 - fr * 0.75);
+        ctx.fillStyle = FLAME[Math.min(5, Math.max(0, Math.floor(heat * 6.2)))];
+        ctx.fillRect(Math.round(cx + i + sway), Math.round(by - j), 1, 1);
+      }
+    }
+  }
+
+  /** Tochas, braseiros, lampiões e janelas: o halo pisca, a chama dança. */
+  function drawLights(a, now) {
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    for (const l of a.lights) {
+      const f = calm.matches ? 0.9 : 0.8 + 0.2 * Math.sin(now / 97 + l.x) * Math.sin(now / 61 + l.y * 0.7);
+      const r = l.r * (l.kind === 'window' ? 0.8 : 1.05);
+      const gl = ctx.createRadialGradient(l.x, l.y, 1, l.x, l.y, r);
+      gl.addColorStop(0, `rgba(255,170,80,${(l.kind === 'window' ? 0.08 : l.kind === 'lamp' ? 0.1 : 0.18) * f})`);
+      gl.addColorStop(1, 'rgba(255,170,80,0)');
+      ctx.fillStyle = gl;
+      ctx.fillRect(l.x - r, l.y - r, r * 2, r * 2);
+    }
+    ctx.restore();
+    for (const l of a.lights) {
+      if (l.kind === 'torch') flame(l.x, l.y + 3, 5, 8, now, l.x * 0.13);
+      else if (l.kind === 'fire') flame(l.x, l.y + 3, 13, 11, now, l.x * 0.17);
+    }
+  }
+
+  /** Marola passando na água da ponte. */
+  function drawWater(a, now) {
+    if (calm.matches || !a.water.length) return;
+    ctx.fillStyle = 'rgba(190,225,240,.28)';
+    for (const [x, y] of a.water)
+      for (let n = 0; n < 3; n++) {
+        const off = ((((x * 37 + n * 11 + y * 5) % 32) + now * (0.006 + n * 0.002)) % 40) - 4;
+        ctx.fillRect(Math.round(x * CELL + off), y * CELL + 6 + n * 8 + ((x + n) % 2) * 3, 4, 1);
+      }
+  }
+
+  /** O castelo é escuro: um véu por cima de tudo, aberto só onde tem fogo. */
+  function mood(a) {
+    if (a.mood) return a.mood;
+    const c = document.createElement('canvas');
+    c.width = WW;
+    c.height = WH;
+    const x = c.getContext('2d');
+    x.fillStyle = 'rgba(8,6,18,.34)';
+    x.fillRect(0, 0, WW, WH);
+    x.globalCompositeOperation = 'destination-out';
+    for (const l of a.lights) {
+      const r = l.r * 1.6, g = x.createRadialGradient(l.x, l.y, 2, l.x, l.y, r);
+      g.addColorStop(0, 'rgba(0,0,0,1)');
+      g.addColorStop(1, 'rgba(0,0,0,0)');
+      x.fillStyle = g;
+      x.fillRect(l.x - r, l.y - r, r * 2, r * 2);
+    }
+    return (a.mood = c);
+  }
 
   function drawRoom(now) {
     const r = sim.room, a = roomArt(r);
-    ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(a.base, 0, 0, a.base.width * K, a.base.height * K);
+    ctx.drawImage(a.base, 0, 0);
+    drawWater(a, now);
     for (let y = 0; y < r.m.h; y++) {
       for (let x = 0; x < r.m.w; x++) {
         const c = r.grid[y][x];
@@ -560,10 +602,15 @@
         if (c === 'o') {
           const gold = r.gold.has(k), full = gold ? r.maxHp * GOLD_HP : r.maxHp, left = r.hp.get(k) / full;
           if (gold) drawGold(x, y, ox, k, now);
-          else ctx.drawImage(a.crate, x * CELL + ox, y * CELL, CELL, CELL);
-          const n = Math.floor((1 - left) * CRACK.length);
-          ctx.fillStyle = gold ? '#6B4E16' : '#2A1A0C';
-          for (let i = 0; i < n; i++) ctx.fillRect(x * CELL + ox + CRACK[i][0] * K, y * CELL + CRACK[i][1] * K, K, K);
+          else ctx.drawImage(a.crate, x * CELL + ox, y * CELL);
+          const line = crackOf(k), n = Math.floor((1 - left) * line.length);
+          for (let i = 0; i < n; i++) {
+            const [px, py] = line[i];
+            ctx.fillStyle = gold ? '#6B4E16' : '#1E1208';
+            ctx.fillRect(x * CELL + ox + px, y * CELL + py, 1, 1);
+            ctx.fillStyle = gold ? 'rgba(255,240,180,.35)' : 'rgba(255,220,170,.18)';
+            ctx.fillRect(x * CELL + ox + px + 1, y * CELL + py + 1, 1, 1);
+          }
           if (gold && left < 1) { //                 o cofre aguenta muito: mostra quanto falta
             const bx = x * CELL + ox + 4, by = y * CELL - 2, bw = CELL - 8;
             ctx.fillStyle = '#0B0F08';
@@ -575,14 +622,16 @@
           const b = born.get(k);
           const p = b === undefined ? 1 : Math.min(1, (now - b) / 350);
           const oy = -Math.round(Math.sin(p * Math.PI) * 10);
-          ctx.drawImage(a.chest, x * CELL, y * CELL + oy, CELL, CELL);
-          if (Math.sin(now / 330 + x + y) > 0.85) { //  brilho de vez em quando
+          ctx.drawImage(a.chest, x * CELL, y * CELL + oy);
+          if (!calm.matches && Math.sin(now / 330 + x + y) > 0.85) { //  brilho de vez em quando
             ctx.fillStyle = '#FFF6D0';
-            ctx.fillRect(x * CELL + 9, y * CELL + 11 + oy, 2, 2);
+            ctx.fillRect(x * CELL + 14, y * CELL + 12 + oy, 1, 3);
+            ctx.fillRect(x * CELL + 13, y * CELL + 13 + oy, 3, 1);
           }
         }
       }
     }
+    drawLights(a, now);
   }
 
   /** Vida contínua, em épocas: desce durante o turno e bate com o contrato na virada. */
@@ -667,13 +716,16 @@
     } else if (f.kind === 'banner') {
       ctx.globalAlpha = Math.min(1, (1 - p) * 3);
       ctx.fillStyle = 'rgba(11,15,8,.7)';
-      ctx.fillRect(0, cv.height / 2 - 20, cv.width, 40);
-      text(f.text, cv.width / 2, cv.height / 2 - 6, '#F2CE7E', 12, 'center');
+      ctx.fillRect(0, WH / 2 - 20, WW, 40);
+      text(f.text, WW / 2, WH / 2 - 6, '#F2CE7E', 12, 'center');
       ctx.globalAlpha = 1;
     }
   }
 
   function draw(now, crew, waiting, nowEpochs, alpha) {
+    roomArt(sim.room); //                        sala nova pode mudar o tamanho do canvas: antes da escala
+    ctx.setTransform(Q, 0, 0, Q, 0, 0);
+    ctx.imageSmoothingEnabled = false;
     drawRoom(now);
     const spots = spawns(sim.room.m.w, sim.room.m.h);
     const list = [
@@ -688,21 +740,26 @@
     }
     list.sort((p, q) => p.y - q.y);
     for (const st of list) drawOutlaw(st.o, st.x, st.y, st);
+    if (art.dark) ctx.drawImage(mood(art), 0, 0); //  o véu do castelo cobre o bando também; o letreiro fica claro
     for (const f of fx) drawFx(f);
 
-    // letreiro de cima
-    ctx.fillStyle = 'rgba(11,15,8,.72)';
-    ctx.fillRect(0, 0, cv.width, 22);
+    // letreiro de cima: faixa que some pra baixo, pra não tapar a bandeira e a tocha do muro
+    const band = ctx.createLinearGradient(0, 0, 0, 24);
+    band.addColorStop(0, 'rgba(11,15,8,.82)');
+    band.addColorStop(0.6, 'rgba(11,15,8,.5)');
+    band.addColorStop(1, 'rgba(11,15,8,0)');
+    ctx.fillStyle = band;
+    ctx.fillRect(0, 0, WW, 24);
     text(roomName(sim), 8, 7, '#DCE0D2', 8);
     if (crew.length) {
       const total = crew.reduce((s, o) => s + o.perEpoch, 0);
-      text(t('h.perEpoch', { v: fmt(total) }), cv.width - 8, 7, '#F2CE7E', 8, 'right');
+      text(t('h.perEpoch', { v: fmt(total) }), WW - 8, 7, '#F2CE7E', 8, 'right');
     }
     if (!crew.length && !waiting.length) {
       ctx.fillStyle = 'rgba(11,15,8,.66)';
-      ctx.fillRect(0, 0, cv.width, cv.height);
-      text(t('h.none'), cv.width / 2, cv.height / 2 - 16, '#F2CE7E', 10, 'center');
-      text(t('h.noneSub'), cv.width / 2, cv.height / 2 + 6, '#DCE0D2', 7, 'center');
+      ctx.fillRect(0, 0, WW, WH);
+      text(t('h.none'), WW / 2, WH / 2 - 16, '#F2CE7E', 10, 'center');
+      text(t('h.noneSub'), WW / 2, WH / 2 + 6, '#DCE0D2', 7, 'center');
     }
   }
 
@@ -755,11 +812,25 @@
     draw(now, crew, waiting, nowEpochs, Math.min(1, Math.max(0, (target - sim.t) / DT)));
   }
 
-  /** Cabe na coluna e em ~60% da altura da tela, sem passar de 2x. */
+  /**
+   * Cabe na coluna e em ~60% da altura da tela, sem passar de 2x. O canvas
+   * guarda Q pixels de tela por pixel de arte, Q inteiro. Se um Q inteiro
+   * cabe perdendo até 10% do tamanho, usa ele cravado: pixel puro, sem
+   * filtro. Senão desenha no Q de cima e o navegador só REDUZ, suave — pixel
+   * de arte esticado em fração (1,2x) sairia torto, um mais gordo que o outro.
+   */
   function fit() {
-    if (!cv || !cv.parentElement) return;
-    const s = Math.min(cv.parentElement.clientWidth / cv.width, (innerHeight * 0.6) / cv.height, 2);
-    cv.style.width = Math.floor(cv.width * s) + 'px';
+    if (!cv || !cv.parentElement || !WW) return;
+    const s = Math.min(cv.parentElement.clientWidth / WW, (innerHeight * 0.6) / WH, 2);
+    const dpr = root.devicePixelRatio || 1, d = s * dpr, di = Math.floor(d);
+    const crisp = di >= 1 && di / d >= 0.9;
+    Q = crisp ? di : Math.max(1, Math.min(4, Math.ceil(d - 0.001)));
+    if (cv.width !== WW * Q || cv.height !== WH * Q) {
+      cv.width = WW * Q;
+      cv.height = WH * Q;
+    }
+    cv.style.width = (crisp ? (WW * di) / dpr : Math.floor(WW * s)) + 'px';
+    cv.style.imageRendering = crisp ? 'pixelated' : 'auto';
   }
 
   /* ---------------------------------------------------------------- API */
