@@ -1159,7 +1159,7 @@
     toast(recado, 'aviso');
     try {
       if ('Notification' in window && Notification.permission === 'granted') {
-        new Notification('OUTLAWS', { body: recado, icon: '../site/assets/icon-coin.png' });
+        new Notification('OUTLAWS', { body: recado, icon: '../assets/icon-coin.png' });
       }
     } catch {}
   }
@@ -1384,7 +1384,7 @@
 
     const u = S.user;
     $('#balances').innerHTML = u
-      ? `<span class="pill"><img src="../site/assets/icon-coin.png" alt="" width="22" height="22"><span><span class="k">$BOUNTY</span><span class="v">${fmtB(u.bounty)}</span></span></span>
+      ? `<span class="pill"><img src="../assets/icon-coin.png" alt="" width="22" height="22"><span><span class="k">$BOUNTY</span><span class="v">${fmtB(u.bounty)}</span></span></span>
          <span class="pill"><i></i><span><span class="k">ETH</span><span class="v">${fmtB(u.eth, 4)}</span></span></span>`
       : '';
   }
