@@ -1,0 +1,1334 @@
+{
+  "version": 1,
+  "title": "OUTLAWS original arcade scenery proposal",
+  "image": "scenario.png",
+  "tileSize": 24,
+  "tile": 24,
+  "columns": 8,
+  "rows": 4,
+  "width": 192,
+  "height": 96,
+  "baseline": 22,
+  "pixelScale": "integer-nearest-neighbor",
+  "palette": {
+    "ink": "#17182d",
+    "shadow": "#263d45",
+    "deep": "#263d45",
+    "moss": "#355e53",
+    "floor": "#3d685c",
+    "floorLight": "#477365",
+    "floorDark": "#365e55",
+    "grass": "#3f825e",
+    "grassLight": "#71b474",
+    "grassDark": "#32684e",
+    "teal": "#4f9c89",
+    "tealLight": "#8cdec1",
+    "tealShine": "#c0f5d5",
+    "tealDark": "#346558",
+    "wood": "#ad713b",
+    "woodLight": "#e1a550",
+    "woodShine": "#ffcd78",
+    "woodDark": "#714624",
+    "gold": "#f6c64e",
+    "goldLight": "#ffe695",
+    "goldDark": "#b88932",
+    "steel": "#607f94",
+    "steelLight": "#9ebac8",
+    "steelDark": "#3d566d",
+    "road": "#85714f",
+    "roadLight": "#a39060",
+    "roadDark": "#746246",
+    "coal": "#25303e",
+    "danger": "#ff9666",
+    "leaf": "#4ea471",
+    "leafLight": "#87d687"
+  },
+  "order": [
+    "floor_a",
+    "floor_b",
+    "floor_c",
+    "wall_center",
+    "wall_edge",
+    "wall_corner_outer",
+    "wall_corner_inner",
+    "crate",
+    "crate_damage_1",
+    "crate_damage_2",
+    "crate_damage_3",
+    "barrel",
+    "hay",
+    "chest_closed",
+    "chest_open",
+    "vault_closed",
+    "vault_open",
+    "exit_closed",
+    "exit_open",
+    "guard_front",
+    "guard_left",
+    "guard_right",
+    "guard_up",
+    "guard_front_alert",
+    "guard_up_alert",
+    "road_center",
+    "road_edge_left",
+    "road_edge_right",
+    "grass",
+    "tree",
+    "castle",
+    "signpost"
+  ],
+  "frames": {
+    "floor_a": {
+      "index": 0,
+      "x": 0,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 24
+      },
+      "role": "floor"
+    },
+    "floor_b": {
+      "index": 1,
+      "x": 24,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 24
+      },
+      "role": "floor"
+    },
+    "floor_c": {
+      "index": 2,
+      "x": 48,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 24
+      },
+      "role": "floor"
+    },
+    "wall_center": {
+      "index": 3,
+      "x": 72,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 1,
+        "y": 4,
+        "w": 22,
+        "h": 19
+      },
+      "role": "wall"
+    },
+    "wall_edge": {
+      "index": 4,
+      "x": 96,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 0,
+        "y": 4,
+        "w": 24,
+        "h": 19
+      },
+      "role": "wall",
+      "canonical": "north",
+      "rotate": true
+    },
+    "wall_corner_outer": {
+      "index": 5,
+      "x": 120,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 1,
+        "y": 4,
+        "w": 22,
+        "h": 19
+      },
+      "role": "wall",
+      "canonical": "northwest",
+      "rotate": true
+    },
+    "wall_corner_inner": {
+      "index": 6,
+      "x": 144,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 1,
+        "y": 4,
+        "w": 22,
+        "h": 19
+      },
+      "role": "wall",
+      "canonical": "northeast",
+      "rotate": true
+    },
+    "crate": {
+      "index": 7,
+      "x": 168,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 4,
+        "y": 4,
+        "w": 17,
+        "h": 19
+      },
+      "role": "obstacle",
+      "state": "intact"
+    },
+    "crate_damage_1": {
+      "index": 8,
+      "x": 0,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 4,
+        "y": 4,
+        "w": 17,
+        "h": 19
+      },
+      "role": "obstacle",
+      "state": "damage_1"
+    },
+    "crate_damage_2": {
+      "index": 9,
+      "x": 24,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 2,
+        "y": 4,
+        "w": 21,
+        "h": 19
+      },
+      "role": "obstacle",
+      "state": "damage_2"
+    },
+    "crate_damage_3": {
+      "index": 10,
+      "x": 48,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 1,
+        "y": 4,
+        "w": 22,
+        "h": 19
+      },
+      "role": "obstacle",
+      "state": "damage_3"
+    },
+    "barrel": {
+      "index": 11,
+      "x": 72,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 4,
+        "y": 3,
+        "w": 16,
+        "h": 20
+      },
+      "role": "prop"
+    },
+    "hay": {
+      "index": 12,
+      "x": 96,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 3,
+        "y": 7,
+        "w": 19,
+        "h": 16
+      },
+      "role": "prop"
+    },
+    "chest_closed": {
+      "index": 13,
+      "x": 120,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 4,
+        "y": 4,
+        "w": 17,
+        "h": 19
+      },
+      "role": "reward",
+      "state": "closed"
+    },
+    "chest_open": {
+      "index": 14,
+      "x": 144,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 4,
+        "y": 2,
+        "w": 17,
+        "h": 21
+      },
+      "role": "reward",
+      "state": "open"
+    },
+    "vault_closed": {
+      "index": 15,
+      "x": 168,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 4,
+        "y": 3,
+        "w": 17,
+        "h": 20
+      },
+      "role": "reward",
+      "state": "closed"
+    },
+    "vault_open": {
+      "index": 16,
+      "x": 0,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 1,
+        "y": 3,
+        "w": 20,
+        "h": 20
+      },
+      "role": "reward",
+      "state": "open"
+    },
+    "exit_closed": {
+      "index": 17,
+      "x": 24,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 4,
+        "y": 1,
+        "w": 17,
+        "h": 22
+      },
+      "role": "exit",
+      "state": "closed"
+    },
+    "exit_open": {
+      "index": 18,
+      "x": 48,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 4,
+        "y": 1,
+        "w": 17,
+        "h": 22
+      },
+      "role": "exit",
+      "state": "open",
+      "arrow": "state_indicator_only"
+    },
+    "guard_front": {
+      "index": 19,
+      "x": 72,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 5,
+        "y": 2,
+        "w": 15,
+        "h": 21
+      },
+      "role": "guard",
+      "direction": "down",
+      "state": "idle"
+    },
+    "guard_left": {
+      "index": 20,
+      "x": 96,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 5,
+        "y": 2,
+        "w": 15,
+        "h": 21
+      },
+      "role": "guard",
+      "direction": "left",
+      "state": "idle"
+    },
+    "guard_right": {
+      "index": 21,
+      "x": 120,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 4,
+        "y": 2,
+        "w": 15,
+        "h": 21
+      },
+      "role": "guard",
+      "direction": "right",
+      "state": "idle"
+    },
+    "guard_up": {
+      "index": 22,
+      "x": 144,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 5,
+        "y": 2,
+        "w": 15,
+        "h": 21
+      },
+      "role": "guard",
+      "direction": "up",
+      "state": "idle"
+    },
+    "guard_front_alert": {
+      "index": 23,
+      "x": 168,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 5,
+        "y": 1,
+        "w": 18,
+        "h": 22
+      },
+      "role": "guard",
+      "direction": "down",
+      "state": "alert"
+    },
+    "guard_up_alert": {
+      "index": 24,
+      "x": 0,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 5,
+        "y": 1,
+        "w": 18,
+        "h": 22
+      },
+      "role": "guard",
+      "direction": "up",
+      "state": "alert"
+    },
+    "road_center": {
+      "index": 25,
+      "x": 24,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 24
+      },
+      "role": "floor"
+    },
+    "road_edge_left": {
+      "index": 26,
+      "x": 48,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 24
+      },
+      "role": "floor"
+    },
+    "road_edge_right": {
+      "index": 27,
+      "x": 72,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 24
+      },
+      "role": "floor"
+    },
+    "grass": {
+      "index": 28,
+      "x": 96,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 24
+      },
+      "role": "floor"
+    },
+    "tree": {
+      "index": 29,
+      "x": 120,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 2,
+        "y": 1,
+        "w": 20,
+        "h": 22
+      },
+      "role": "prop"
+    },
+    "castle": {
+      "index": 30,
+      "x": 144,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 1,
+        "y": 2,
+        "w": 22,
+        "h": 21
+      },
+      "role": "prop"
+    },
+    "signpost": {
+      "index": 31,
+      "x": 168,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 3,
+        "y": 4,
+        "w": 17,
+        "h": 19
+      },
+      "role": "prop"
+    }
+  },
+  "tiles": {
+    "floor_a": {
+      "index": 0,
+      "x": 0,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 24
+      },
+      "role": "floor"
+    },
+    "floor_b": {
+      "index": 1,
+      "x": 24,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 24
+      },
+      "role": "floor"
+    },
+    "floor_c": {
+      "index": 2,
+      "x": 48,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 24
+      },
+      "role": "floor"
+    },
+    "wall_center": {
+      "index": 3,
+      "x": 72,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 1,
+        "y": 4,
+        "w": 22,
+        "h": 19
+      },
+      "role": "wall"
+    },
+    "wall_edge": {
+      "index": 4,
+      "x": 96,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 0,
+        "y": 4,
+        "w": 24,
+        "h": 19
+      },
+      "role": "wall",
+      "canonical": "north",
+      "rotate": true
+    },
+    "wall_corner_outer": {
+      "index": 5,
+      "x": 120,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 1,
+        "y": 4,
+        "w": 22,
+        "h": 19
+      },
+      "role": "wall",
+      "canonical": "northwest",
+      "rotate": true
+    },
+    "wall_corner_inner": {
+      "index": 6,
+      "x": 144,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 1,
+        "y": 4,
+        "w": 22,
+        "h": 19
+      },
+      "role": "wall",
+      "canonical": "northeast",
+      "rotate": true
+    },
+    "crate": {
+      "index": 7,
+      "x": 168,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 4,
+        "y": 4,
+        "w": 17,
+        "h": 19
+      },
+      "role": "obstacle",
+      "state": "intact"
+    },
+    "crate_damage_1": {
+      "index": 8,
+      "x": 0,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 4,
+        "y": 4,
+        "w": 17,
+        "h": 19
+      },
+      "role": "obstacle",
+      "state": "damage_1"
+    },
+    "crate_damage_2": {
+      "index": 9,
+      "x": 24,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 2,
+        "y": 4,
+        "w": 21,
+        "h": 19
+      },
+      "role": "obstacle",
+      "state": "damage_2"
+    },
+    "crate_damage_3": {
+      "index": 10,
+      "x": 48,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 1,
+        "y": 4,
+        "w": 22,
+        "h": 19
+      },
+      "role": "obstacle",
+      "state": "damage_3"
+    },
+    "barrel": {
+      "index": 11,
+      "x": 72,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 4,
+        "y": 3,
+        "w": 16,
+        "h": 20
+      },
+      "role": "prop"
+    },
+    "hay": {
+      "index": 12,
+      "x": 96,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 3,
+        "y": 7,
+        "w": 19,
+        "h": 16
+      },
+      "role": "prop"
+    },
+    "chest_closed": {
+      "index": 13,
+      "x": 120,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 4,
+        "y": 4,
+        "w": 17,
+        "h": 19
+      },
+      "role": "reward",
+      "state": "closed"
+    },
+    "chest_open": {
+      "index": 14,
+      "x": 144,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 4,
+        "y": 2,
+        "w": 17,
+        "h": 21
+      },
+      "role": "reward",
+      "state": "open"
+    },
+    "vault_closed": {
+      "index": 15,
+      "x": 168,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 4,
+        "y": 3,
+        "w": 17,
+        "h": 20
+      },
+      "role": "reward",
+      "state": "closed"
+    },
+    "vault_open": {
+      "index": 16,
+      "x": 0,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 1,
+        "y": 3,
+        "w": 20,
+        "h": 20
+      },
+      "role": "reward",
+      "state": "open"
+    },
+    "exit_closed": {
+      "index": 17,
+      "x": 24,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 4,
+        "y": 1,
+        "w": 17,
+        "h": 22
+      },
+      "role": "exit",
+      "state": "closed"
+    },
+    "exit_open": {
+      "index": 18,
+      "x": 48,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 4,
+        "y": 1,
+        "w": 17,
+        "h": 22
+      },
+      "role": "exit",
+      "state": "open",
+      "arrow": "state_indicator_only"
+    },
+    "guard_front": {
+      "index": 19,
+      "x": 72,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 5,
+        "y": 2,
+        "w": 15,
+        "h": 21
+      },
+      "role": "guard",
+      "direction": "down",
+      "state": "idle"
+    },
+    "guard_left": {
+      "index": 20,
+      "x": 96,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 5,
+        "y": 2,
+        "w": 15,
+        "h": 21
+      },
+      "role": "guard",
+      "direction": "left",
+      "state": "idle"
+    },
+    "guard_right": {
+      "index": 21,
+      "x": 120,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 4,
+        "y": 2,
+        "w": 15,
+        "h": 21
+      },
+      "role": "guard",
+      "direction": "right",
+      "state": "idle"
+    },
+    "guard_up": {
+      "index": 22,
+      "x": 144,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 5,
+        "y": 2,
+        "w": 15,
+        "h": 21
+      },
+      "role": "guard",
+      "direction": "up",
+      "state": "idle"
+    },
+    "guard_front_alert": {
+      "index": 23,
+      "x": 168,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 5,
+        "y": 1,
+        "w": 18,
+        "h": 22
+      },
+      "role": "guard",
+      "direction": "down",
+      "state": "alert"
+    },
+    "guard_up_alert": {
+      "index": 24,
+      "x": 0,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 5,
+        "y": 1,
+        "w": 18,
+        "h": 22
+      },
+      "role": "guard",
+      "direction": "up",
+      "state": "alert"
+    },
+    "road_center": {
+      "index": 25,
+      "x": 24,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 24
+      },
+      "role": "floor"
+    },
+    "road_edge_left": {
+      "index": 26,
+      "x": 48,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 24
+      },
+      "role": "floor"
+    },
+    "road_edge_right": {
+      "index": 27,
+      "x": 72,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 24
+      },
+      "role": "floor"
+    },
+    "grass": {
+      "index": 28,
+      "x": 96,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 24
+      },
+      "role": "floor"
+    },
+    "tree": {
+      "index": 29,
+      "x": 120,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 2,
+        "y": 1,
+        "w": 20,
+        "h": 22
+      },
+      "role": "prop"
+    },
+    "castle": {
+      "index": 30,
+      "x": 144,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 1,
+        "y": 2,
+        "w": 22,
+        "h": 21
+      },
+      "role": "prop"
+    },
+    "signpost": {
+      "index": 31,
+      "x": 168,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "anchor": {
+        "x": 12,
+        "y": 22
+      },
+      "occupiedBounds": {
+        "x": 3,
+        "y": 4,
+        "w": 17,
+        "h": 19
+      },
+      "role": "prop"
+    }
+  },
+  "composites": {
+    "guard_left_alert": {
+      "base": "guard_left",
+      "overlay": {
+        "frame": "guard_front_alert",
+        "crop": {
+          "x": 20,
+          "y": 0,
+          "w": 4,
+          "h": 8
+        },
+        "at": {
+          "x": 20,
+          "y": 0
+        }
+      }
+    },
+    "guard_right_alert": {
+      "base": "guard_right",
+      "overlay": {
+        "frame": "guard_front_alert",
+        "crop": {
+          "x": 20,
+          "y": 0,
+          "w": 4,
+          "h": 8
+        },
+        "at": {
+          "x": 20,
+          "y": 0
+        }
+      }
+    }
+  },
+  "rules": [
+    "Use existing gameplay state to choose damage/open/alert.",
+    "Exit arrow indicates existing exit state; no extra click action.",
+    "All prop pixels and shadows stay inside their 24x24 cell.",
+    "No JP artwork is overwritten."
+  ]
+}

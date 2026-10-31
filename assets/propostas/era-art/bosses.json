@@ -1,0 +1,983 @@
+{
+  "schema": "outlaws.era.bosses.v1",
+  "status": "proposal-only",
+  "generator": "tools/draw-era-bosses.cjs",
+  "originalArt": true,
+  "antialias": false,
+  "alpha": [
+    0,
+    255
+  ],
+  "cell": {
+    "width": 48,
+    "height": 48
+  },
+  "columns": 16,
+  "rows": 3,
+  "anchors": {
+    "foot": {
+      "x": 24,
+      "y": 43
+    }
+  },
+  "animations": {
+    "idle": {
+      "frames": [
+        0
+      ],
+      "fps": 1
+    },
+    "walk-down": {
+      "frames": [
+        0,
+        1,
+        2
+      ],
+      "fps": 7
+    },
+    "walk-left": {
+      "frames": [
+        3,
+        4,
+        5
+      ],
+      "fps": 7
+    },
+    "walk-right": {
+      "frames": [
+        6,
+        7,
+        8
+      ],
+      "fps": 7
+    },
+    "walk-up": {
+      "frames": [
+        9,
+        10,
+        11
+      ],
+      "fps": 7
+    },
+    "attack": {
+      "frames": [
+        12,
+        13
+      ],
+      "fps": 8,
+      "loop": false
+    },
+    "hit": {
+      "frames": [
+        14
+      ],
+      "fps": 8,
+      "loop": false
+    },
+    "fall": {
+      "frames": [
+        15
+      ],
+      "fps": 1,
+      "loop": false
+    }
+  },
+  "variants": {
+    "classic": {
+      "style": "classic",
+      "path": "assets/propostas/era-art/bosses-classic.png",
+      "image": "bosses-classic.png",
+      "width": 768,
+      "height": 144,
+      "cell": {
+        "width": 48,
+        "height": 48
+      },
+      "columns": 16,
+      "rows": 3,
+      "anchor": {
+        "x": 24,
+        "y": 43
+      },
+      "anchors": {
+        "foot": {
+          "x": 24,
+          "y": 43
+        }
+      },
+      "animations": {
+        "idle": {
+          "frames": [
+            0
+          ],
+          "fps": 1
+        },
+        "walk-down": {
+          "frames": [
+            0,
+            1,
+            2
+          ],
+          "fps": 7
+        },
+        "walk-left": {
+          "frames": [
+            3,
+            4,
+            5
+          ],
+          "fps": 7
+        },
+        "walk-right": {
+          "frames": [
+            6,
+            7,
+            8
+          ],
+          "fps": 7
+        },
+        "walk-up": {
+          "frames": [
+            9,
+            10,
+            11
+          ],
+          "fps": 7
+        },
+        "attack": {
+          "frames": [
+            12,
+            13
+          ],
+          "fps": 8,
+          "loop": false
+        },
+        "hit": {
+          "frames": [
+            14
+          ],
+          "fps": 8,
+          "loop": false
+        },
+        "fall": {
+          "frames": [
+            15
+          ],
+          "fps": 1,
+          "loop": false
+        }
+      },
+      "actors": [
+        {
+          "id": "king_tyrant",
+          "name": "King Tyrant",
+          "era": "medieval",
+          "row": 0,
+          "features": [
+            "five-point crown",
+            "heavy gilded armor",
+            "ruby scepter",
+            "fur mantle"
+          ],
+          "anchor": {
+            "x": 24,
+            "y": 43
+          },
+          "bounds": {
+            "x": 2,
+            "y": 4,
+            "width": 45,
+            "height": 40
+          },
+          "frameBounds": [
+            {
+              "x": 8,
+              "y": 4,
+              "width": 36,
+              "height": 40
+            },
+            {
+              "x": 8,
+              "y": 4,
+              "width": 36,
+              "height": 40
+            },
+            {
+              "x": 8,
+              "y": 4,
+              "width": 36,
+              "height": 40
+            },
+            {
+              "x": 8,
+              "y": 4,
+              "width": 36,
+              "height": 40
+            },
+            {
+              "x": 8,
+              "y": 4,
+              "width": 36,
+              "height": 40
+            },
+            {
+              "x": 8,
+              "y": 4,
+              "width": 36,
+              "height": 40
+            },
+            {
+              "x": 3,
+              "y": 4,
+              "width": 36,
+              "height": 40
+            },
+            {
+              "x": 3,
+              "y": 4,
+              "width": 36,
+              "height": 40
+            },
+            {
+              "x": 3,
+              "y": 4,
+              "width": 36,
+              "height": 40
+            },
+            {
+              "x": 8,
+              "y": 4,
+              "width": 36,
+              "height": 40
+            },
+            {
+              "x": 8,
+              "y": 4,
+              "width": 36,
+              "height": 40
+            },
+            {
+              "x": 8,
+              "y": 4,
+              "width": 36,
+              "height": 40
+            },
+            {
+              "x": 8,
+              "y": 4,
+              "width": 38,
+              "height": 40
+            },
+            {
+              "x": 8,
+              "y": 4,
+              "width": 39,
+              "height": 40
+            },
+            {
+              "x": 3,
+              "y": 4,
+              "width": 40,
+              "height": 40
+            },
+            {
+              "x": 2,
+              "y": 20,
+              "width": 41,
+              "height": 24
+            }
+          ]
+        },
+        {
+          "id": "swat_chief",
+          "name": "SWAT Chief",
+          "era": "modern",
+          "row": 1,
+          "features": [
+            "tactical visor",
+            "riot shield",
+            "heavy plate vest",
+            "shock baton"
+          ],
+          "anchor": {
+            "x": 24,
+            "y": 43
+          },
+          "bounds": {
+            "x": 2,
+            "y": 9,
+            "width": 45,
+            "height": 35
+          },
+          "frameBounds": [
+            {
+              "x": 7,
+              "y": 9,
+              "width": 34,
+              "height": 35
+            },
+            {
+              "x": 7,
+              "y": 9,
+              "width": 34,
+              "height": 35
+            },
+            {
+              "x": 7,
+              "y": 9,
+              "width": 34,
+              "height": 35
+            },
+            {
+              "x": 7,
+              "y": 9,
+              "width": 34,
+              "height": 35
+            },
+            {
+              "x": 7,
+              "y": 9,
+              "width": 34,
+              "height": 35
+            },
+            {
+              "x": 7,
+              "y": 9,
+              "width": 34,
+              "height": 35
+            },
+            {
+              "x": 7,
+              "y": 9,
+              "width": 33,
+              "height": 35
+            },
+            {
+              "x": 7,
+              "y": 9,
+              "width": 33,
+              "height": 35
+            },
+            {
+              "x": 7,
+              "y": 9,
+              "width": 33,
+              "height": 35
+            },
+            {
+              "x": 6,
+              "y": 9,
+              "width": 35,
+              "height": 35
+            },
+            {
+              "x": 6,
+              "y": 9,
+              "width": 35,
+              "height": 35
+            },
+            {
+              "x": 6,
+              "y": 9,
+              "width": 35,
+              "height": 35
+            },
+            {
+              "x": 7,
+              "y": 9,
+              "width": 37,
+              "height": 35
+            },
+            {
+              "x": 3,
+              "y": 9,
+              "width": 44,
+              "height": 35
+            },
+            {
+              "x": 3,
+              "y": 9,
+              "width": 37,
+              "height": 35
+            },
+            {
+              "x": 2,
+              "y": 22,
+              "width": 41,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "id": "alien_emperor",
+          "name": "Alien Emperor",
+          "era": "future",
+          "row": 2,
+          "features": [
+            "cosmic ruby",
+            "forked crest",
+            "imperial mantle",
+            "floating armor"
+          ],
+          "anchor": {
+            "x": 24,
+            "y": 43
+          },
+          "bounds": {
+            "x": 2,
+            "y": 4,
+            "width": 45,
+            "height": 40
+          },
+          "frameBounds": [
+            {
+              "x": 8,
+              "y": 4,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "x": 8,
+              "y": 4,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "x": 8,
+              "y": 4,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "x": 8,
+              "y": 4,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "x": 8,
+              "y": 4,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "x": 8,
+              "y": 4,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "x": 3,
+              "y": 4,
+              "width": 35,
+              "height": 40
+            },
+            {
+              "x": 3,
+              "y": 4,
+              "width": 35,
+              "height": 40
+            },
+            {
+              "x": 3,
+              "y": 4,
+              "width": 35,
+              "height": 40
+            },
+            {
+              "x": 8,
+              "y": 4,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "x": 8,
+              "y": 4,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "x": 8,
+              "y": 4,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "x": 8,
+              "y": 4,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "x": 8,
+              "y": 4,
+              "width": 39,
+              "height": 40
+            },
+            {
+              "x": 3,
+              "y": 4,
+              "width": 41,
+              "height": 40
+            },
+            {
+              "x": 2,
+              "y": 19,
+              "width": 41,
+              "height": 25
+            }
+          ]
+        }
+      ],
+      "sha256": "a7cb0d69389f0a1e544c3b1c9fb5af2aad9294a1de280897847f5518e04630d7"
+    },
+    "arcade": {
+      "style": "arcade",
+      "path": "assets/propostas/era-art/bosses-arcade.png",
+      "image": "bosses-arcade.png",
+      "width": 768,
+      "height": 144,
+      "cell": {
+        "width": 48,
+        "height": 48
+      },
+      "columns": 16,
+      "rows": 3,
+      "anchor": {
+        "x": 24,
+        "y": 43
+      },
+      "anchors": {
+        "foot": {
+          "x": 24,
+          "y": 43
+        }
+      },
+      "animations": {
+        "idle": {
+          "frames": [
+            0
+          ],
+          "fps": 1
+        },
+        "walk-down": {
+          "frames": [
+            0,
+            1,
+            2
+          ],
+          "fps": 7
+        },
+        "walk-left": {
+          "frames": [
+            3,
+            4,
+            5
+          ],
+          "fps": 7
+        },
+        "walk-right": {
+          "frames": [
+            6,
+            7,
+            8
+          ],
+          "fps": 7
+        },
+        "walk-up": {
+          "frames": [
+            9,
+            10,
+            11
+          ],
+          "fps": 7
+        },
+        "attack": {
+          "frames": [
+            12,
+            13
+          ],
+          "fps": 8,
+          "loop": false
+        },
+        "hit": {
+          "frames": [
+            14
+          ],
+          "fps": 8,
+          "loop": false
+        },
+        "fall": {
+          "frames": [
+            15
+          ],
+          "fps": 1,
+          "loop": false
+        }
+      },
+      "actors": [
+        {
+          "id": "king_tyrant",
+          "name": "King Tyrant",
+          "era": "medieval",
+          "row": 0,
+          "features": [
+            "five-point crown",
+            "heavy gilded armor",
+            "ruby scepter",
+            "fur mantle"
+          ],
+          "anchor": {
+            "x": 24,
+            "y": 43
+          },
+          "bounds": {
+            "x": 2,
+            "y": 1,
+            "width": 45,
+            "height": 43
+          },
+          "frameBounds": [
+            {
+              "x": 8,
+              "y": 1,
+              "width": 36,
+              "height": 43
+            },
+            {
+              "x": 8,
+              "y": 1,
+              "width": 36,
+              "height": 43
+            },
+            {
+              "x": 8,
+              "y": 1,
+              "width": 36,
+              "height": 43
+            },
+            {
+              "x": 8,
+              "y": 1,
+              "width": 36,
+              "height": 43
+            },
+            {
+              "x": 8,
+              "y": 1,
+              "width": 36,
+              "height": 43
+            },
+            {
+              "x": 8,
+              "y": 1,
+              "width": 36,
+              "height": 43
+            },
+            {
+              "x": 3,
+              "y": 1,
+              "width": 36,
+              "height": 43
+            },
+            {
+              "x": 3,
+              "y": 1,
+              "width": 36,
+              "height": 43
+            },
+            {
+              "x": 3,
+              "y": 1,
+              "width": 36,
+              "height": 43
+            },
+            {
+              "x": 8,
+              "y": 1,
+              "width": 36,
+              "height": 43
+            },
+            {
+              "x": 8,
+              "y": 1,
+              "width": 36,
+              "height": 43
+            },
+            {
+              "x": 8,
+              "y": 1,
+              "width": 36,
+              "height": 43
+            },
+            {
+              "x": 8,
+              "y": 1,
+              "width": 38,
+              "height": 43
+            },
+            {
+              "x": 8,
+              "y": 1,
+              "width": 39,
+              "height": 43
+            },
+            {
+              "x": 3,
+              "y": 1,
+              "width": 40,
+              "height": 43
+            },
+            {
+              "x": 2,
+              "y": 20,
+              "width": 43,
+              "height": 24
+            }
+          ]
+        },
+        {
+          "id": "swat_chief",
+          "name": "SWAT Chief",
+          "era": "modern",
+          "row": 1,
+          "features": [
+            "tactical visor",
+            "riot shield",
+            "heavy plate vest",
+            "shock baton"
+          ],
+          "anchor": {
+            "x": 24,
+            "y": 43
+          },
+          "bounds": {
+            "x": 2,
+            "y": 7,
+            "width": 45,
+            "height": 37
+          },
+          "frameBounds": [
+            {
+              "x": 7,
+              "y": 7,
+              "width": 34,
+              "height": 37
+            },
+            {
+              "x": 7,
+              "y": 7,
+              "width": 34,
+              "height": 37
+            },
+            {
+              "x": 7,
+              "y": 7,
+              "width": 34,
+              "height": 37
+            },
+            {
+              "x": 7,
+              "y": 7,
+              "width": 34,
+              "height": 37
+            },
+            {
+              "x": 7,
+              "y": 7,
+              "width": 34,
+              "height": 37
+            },
+            {
+              "x": 7,
+              "y": 7,
+              "width": 34,
+              "height": 37
+            },
+            {
+              "x": 7,
+              "y": 7,
+              "width": 33,
+              "height": 37
+            },
+            {
+              "x": 7,
+              "y": 7,
+              "width": 33,
+              "height": 37
+            },
+            {
+              "x": 7,
+              "y": 7,
+              "width": 33,
+              "height": 37
+            },
+            {
+              "x": 6,
+              "y": 7,
+              "width": 35,
+              "height": 37
+            },
+            {
+              "x": 6,
+              "y": 7,
+              "width": 35,
+              "height": 37
+            },
+            {
+              "x": 6,
+              "y": 7,
+              "width": 35,
+              "height": 37
+            },
+            {
+              "x": 7,
+              "y": 7,
+              "width": 37,
+              "height": 37
+            },
+            {
+              "x": 3,
+              "y": 7,
+              "width": 44,
+              "height": 37
+            },
+            {
+              "x": 3,
+              "y": 7,
+              "width": 37,
+              "height": 37
+            },
+            {
+              "x": 2,
+              "y": 22,
+              "width": 41,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "id": "alien_emperor",
+          "name": "Alien Emperor",
+          "era": "future",
+          "row": 2,
+          "features": [
+            "cosmic ruby",
+            "forked crest",
+            "imperial mantle",
+            "floating armor"
+          ],
+          "anchor": {
+            "x": 24,
+            "y": 43
+          },
+          "bounds": {
+            "x": 2,
+            "y": 2,
+            "width": 45,
+            "height": 42
+          },
+          "frameBounds": [
+            {
+              "x": 8,
+              "y": 2,
+              "width": 37,
+              "height": 42
+            },
+            {
+              "x": 8,
+              "y": 2,
+              "width": 37,
+              "height": 42
+            },
+            {
+              "x": 8,
+              "y": 2,
+              "width": 37,
+              "height": 42
+            },
+            {
+              "x": 8,
+              "y": 2,
+              "width": 37,
+              "height": 42
+            },
+            {
+              "x": 8,
+              "y": 2,
+              "width": 37,
+              "height": 42
+            },
+            {
+              "x": 8,
+              "y": 2,
+              "width": 37,
+              "height": 42
+            },
+            {
+              "x": 3,
+              "y": 2,
+              "width": 35,
+              "height": 42
+            },
+            {
+              "x": 3,
+              "y": 2,
+              "width": 35,
+              "height": 42
+            },
+            {
+              "x": 3,
+              "y": 2,
+              "width": 35,
+              "height": 42
+            },
+            {
+              "x": 8,
+              "y": 2,
+              "width": 37,
+              "height": 42
+            },
+            {
+              "x": 8,
+              "y": 2,
+              "width": 37,
+              "height": 42
+            },
+            {
+              "x": 8,
+              "y": 2,
+              "width": 37,
+              "height": 42
+            },
+            {
+              "x": 8,
+              "y": 2,
+              "width": 37,
+              "height": 42
+            },
+            {
+              "x": 8,
+              "y": 2,
+              "width": 39,
+              "height": 42
+            },
+            {
+              "x": 3,
+              "y": 2,
+              "width": 41,
+              "height": 42
+            },
+            {
+              "x": 2,
+              "y": 19,
+              "width": 42,
+              "height": 25
+            }
+          ]
+        }
+      ],
+      "sha256": "164f418d77bd207d01e84ee19f03713bd5fbb26b569a7d9fe0d83713403f2cae"
+    }
+  }
+}

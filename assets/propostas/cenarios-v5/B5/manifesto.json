@@ -1,0 +1,800 @@
+{
+  "id": "B5",
+  "name": "Trem de Carga",
+  "era": "modern",
+  "approvedDirection": "../CENARIOS-V5-folha.png",
+  "tileSize": 32,
+  "columns": 8,
+  "frameCount": 40,
+  "atlas": "tiles.png",
+  "preview": "cenario-1x.png",
+  "preview4x": "cenario-4x.png",
+  "distinctElement": "vagao e trilhos",
+  "distinctLight": "faixa clara do vagao",
+  "palette": {
+    "floor": "#94a5ac",
+    "floorLight": "#c4d1d0",
+    "floorDark": "#687e8d",
+    "wall": "#384b61",
+    "wallLight": "#73899a",
+    "wallDark": "#253445",
+    "accent": "#abd9df",
+    "glow": "#edf9ef",
+    "wood": "#557464",
+    "woodLight": "#92af88",
+    "woodDark": "#364c49",
+    "metal": "#a4b9bf"
+  },
+  "frames": [
+    {
+      "name": "ground_0",
+      "index": 0,
+      "x": 0,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "ground",
+      "edgeFamily": "B5-ground",
+      "sha256": "74ac53aa4c1ab904a0474aa7a2ebb1d96fd334916cf581abacb4bef2d0a4d7c1"
+    },
+    {
+      "name": "ground_1",
+      "index": 1,
+      "x": 32,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "ground",
+      "edgeFamily": "B5-ground",
+      "sha256": "74ac53aa4c1ab904a0474aa7a2ebb1d96fd334916cf581abacb4bef2d0a4d7c1"
+    },
+    {
+      "name": "ground_2",
+      "index": 2,
+      "x": 64,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "ground",
+      "edgeFamily": "B5-ground",
+      "sha256": "74ac53aa4c1ab904a0474aa7a2ebb1d96fd334916cf581abacb4bef2d0a4d7c1"
+    },
+    {
+      "name": "ground_3",
+      "index": 3,
+      "x": 96,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "ground",
+      "edgeFamily": "B5-ground",
+      "sha256": "74ac53aa4c1ab904a0474aa7a2ebb1d96fd334916cf581abacb4bef2d0a4d7c1"
+    },
+    {
+      "name": "wall_top",
+      "index": 4,
+      "x": 128,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "wall",
+      "sha256": "f04c6e3e49cd5c9f4eb5ff68e6cfb1841f14936e487347088ac3590829e64886"
+    },
+    {
+      "name": "wall_body",
+      "index": 5,
+      "x": 160,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "wall",
+      "sha256": "ea9f67319103919e8320a356ebd0c8cc59d88b3dce6c9ad297f2cb3158820a24"
+    },
+    {
+      "name": "wall_corner",
+      "index": 6,
+      "x": 192,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "wall",
+      "sha256": "70179442b1d12a8f92299f8beeb487678e78a2acde948caf221bbd564ee57199"
+    },
+    {
+      "name": "solid_block",
+      "index": 7,
+      "x": 224,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "2e2d975f3518fa07005fd3fe620eec41a994210cad8083f49f7f13f7cd57212e"
+    },
+    {
+      "name": "door_closed",
+      "index": 8,
+      "x": 0,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "dedbcf953aaa3b49fcbe23a90ea8959c5beb3e46a32a2a6d682c24bb15567238"
+    },
+    {
+      "name": "door_open",
+      "index": 9,
+      "x": 32,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "e2fbe68c25321ff3b42229f87e06d9124aebd3cd50aa1d6bbf1610fa65fe49c4"
+    },
+    {
+      "name": "vault_closed",
+      "index": 10,
+      "x": 64,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "daad636c4683d229c5cfd6f0fe1852956e4e0d01deb4763473b3aef9a9aac83c"
+    },
+    {
+      "name": "vault_open",
+      "index": 11,
+      "x": 96,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "f482a0f02cf88cafec6fd6313eb494ec9389f77b94f55a16c2eabcaacac40f2b"
+    },
+    {
+      "name": "crate",
+      "index": 12,
+      "x": 128,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "302ccf6b479557e449ae8a7874367f0a19ced5c09df28d6265a6f523b17738fa"
+    },
+    {
+      "name": "barrel",
+      "index": 13,
+      "x": 160,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "302ccf6b479557e449ae8a7874367f0a19ced5c09df28d6265a6f523b17738fa"
+    },
+    {
+      "name": "light",
+      "index": 14,
+      "x": 192,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "f972102608e397b94b67c34f8f14b857dbf44cfd1b6995bc3f991b70d3f97bca"
+    },
+    {
+      "name": "grille",
+      "index": 15,
+      "x": 224,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "ac36d255a449df8777bbfd8fc9e604796302d9241c08931b03814eaee28b49ec"
+    },
+    {
+      "name": "signature_0_0",
+      "index": 16,
+      "x": 0,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "assembly",
+      "sha256": "36b25a43fa8d87f4e8a1d205ff5e77d8189312fc13f9e07d96b7a3d0d49d581b"
+    },
+    {
+      "name": "signature_1_0",
+      "index": 17,
+      "x": 32,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "assembly",
+      "sha256": "5d128905d81d731392685e79ffd2dcd646cbb17ded2f696331e517eba58fe6ab"
+    },
+    {
+      "name": "signature_2_0",
+      "index": 18,
+      "x": 64,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "assembly",
+      "sha256": "5d128905d81d731392685e79ffd2dcd646cbb17ded2f696331e517eba58fe6ab"
+    },
+    {
+      "name": "signature_3_0",
+      "index": 19,
+      "x": 96,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "assembly",
+      "sha256": "dcc795577afdcf90d84513e2141ea7a0dadb185bc8a8994d130e403f18ce93f3"
+    },
+    {
+      "name": "signature_0_1",
+      "index": 20,
+      "x": 128,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "assembly",
+      "sha256": "f20a11a87fb71e7029a654c5794e7d353cba082e0c339ecb2f859002f8565edd"
+    },
+    {
+      "name": "signature_1_1",
+      "index": 21,
+      "x": 160,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "assembly",
+      "sha256": "82b0969687aa9e7299656181e93a33157b35f58634606161bd4d788fc1fe9b51"
+    },
+    {
+      "name": "signature_2_1",
+      "index": 22,
+      "x": 192,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "assembly",
+      "sha256": "ee9e48dc5db1eac48aa1dfbe0779614a85b7791cb2e3c887e542ca82aa88a1f7"
+    },
+    {
+      "name": "signature_3_1",
+      "index": 23,
+      "x": 224,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "assembly",
+      "sha256": "ad2259c4cf140372c545d267420a769c729b7172b31437584142c23ab1a73363"
+    },
+    {
+      "name": "detail_window",
+      "index": 24,
+      "x": 0,
+      "y": 96,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "674472d037239874f4589eb6cc27479927af3d14db9b98cffb0c0a5a9e20dabf"
+    },
+    {
+      "name": "detail_post",
+      "index": 25,
+      "x": 32,
+      "y": 96,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "3f050d98d02686dc14600eb7ae307f8df37bc11323a807975e6bd73b61b7b434"
+    },
+    {
+      "name": "detail_rail",
+      "index": 26,
+      "x": 64,
+      "y": 96,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "1f0fdfcacbee4a0f5b6a1b9b1eca35c565edc064f8b19ace171ba8eeba8b9d79"
+    },
+    {
+      "name": "detail_vent",
+      "index": 27,
+      "x": 96,
+      "y": 96,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "c7759bc5803ec0374223dc72b9b07fc792ffe6cdb01f91f209bae877dce728cf"
+    },
+    {
+      "name": "detail_drain",
+      "index": 28,
+      "x": 128,
+      "y": 96,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "c4d9497b024f48b1ca591d1ff45ef7dda5efd023802973f540940738ba2516c0"
+    },
+    {
+      "name": "detail_sign",
+      "index": 29,
+      "x": 160,
+      "y": 96,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "694f3a0db5182e557a7e624c1ecfc27f25c44fb03223e5d587fb0cf65c676553"
+    },
+    {
+      "name": "detail_umbrella",
+      "index": 30,
+      "x": 192,
+      "y": 96,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "1b78ab12925c6e58e16fb9c55857a15078e9f782d46c23de7ed7b5ad54ab68dd"
+    },
+    {
+      "name": "detail_traffic",
+      "index": 31,
+      "x": 224,
+      "y": 96,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "dc6f2a5f82bf854216d12115636e1d5d57367c2ca9c79ffd7e9fddaf626e2d55"
+    },
+    {
+      "name": "detail_trash",
+      "index": 32,
+      "x": 0,
+      "y": 128,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "f31092510f8669f169d50f3c85bc85053370ee6b0b0eb11e06e07a0dae4ae113"
+    },
+    {
+      "name": "detail_planks",
+      "index": 33,
+      "x": 32,
+      "y": 128,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "2077ee39c90532db3332bd6bad04fa4adf1b623452efee6948adceb9c71d3962"
+    },
+    {
+      "name": "detail_steps",
+      "index": 34,
+      "x": 64,
+      "y": 128,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "b796e82e31f86a0f3506fe080ac552ea7938f16d927977fc3adf32a45cc857fa"
+    },
+    {
+      "name": "detail_bench",
+      "index": 35,
+      "x": 96,
+      "y": 128,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "ceac26e02252f7d3f87f921d45a2f59fb7a9c9fa1baf8c0ea3c9306cb900faa4"
+    },
+    {
+      "name": "detail_window_worn",
+      "index": 36,
+      "x": 128,
+      "y": 128,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "ba504bc2a39de3eb65a3e91e44bac634c52cab8f224f18d8a092b13c73c1ecd6"
+    },
+    {
+      "name": "detail_post_worn",
+      "index": 37,
+      "x": 160,
+      "y": 128,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "dab88490ca7f49576e9c1ae6da54d7479c91b6c4e631780a93f6e70a267b1ba4"
+    },
+    {
+      "name": "detail_rail_worn",
+      "index": 38,
+      "x": 192,
+      "y": 128,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "b7febed4ca8364121364574b2fd332122d0af30bc179b45cc5f2112739487a7d"
+    },
+    {
+      "name": "detail_vent_worn",
+      "index": 39,
+      "x": 224,
+      "y": 128,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "abda32a60eb84ae72edacf95c58ee0429b67b7a0f0fa0bd5a7ae3ae1951d67cb"
+    }
+  ],
+  "assemblies": [
+    {
+      "name": "signature",
+      "description": "vagao e trilhos",
+      "size": [
+        128,
+        64
+      ],
+      "tiles": [
+        [
+          16,
+          17,
+          18,
+          19
+        ],
+        [
+          20,
+          21,
+          22,
+          23
+        ]
+      ],
+      "anchor": [
+        0,
+        64
+      ],
+      "lighting": "faixa clara do vagao"
+    }
+  ],
+  "previewRecipe": {
+    "kind": "illustrative-art-layout; no collision or gameplay data",
+    "size": [
+      13,
+      10
+    ],
+    "tileSize": 32,
+    "ground": [
+      [
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0
+      ],
+      [
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1
+      ],
+      [
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2
+      ],
+      [
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3
+      ],
+      [
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0
+      ],
+      [
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1
+      ],
+      [
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2
+      ],
+      [
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3
+      ],
+      [
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0
+      ],
+      [
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1
+      ]
+    ],
+    "overlays": [
+      {
+        "tile": 16,
+        "x": -9,
+        "y": 5
+      },
+      {
+        "tile": 17,
+        "x": 23,
+        "y": 5
+      },
+      {
+        "tile": 18,
+        "x": 55,
+        "y": 5
+      },
+      {
+        "tile": 19,
+        "x": 87,
+        "y": 5
+      },
+      {
+        "tile": 20,
+        "x": -9,
+        "y": 37
+      },
+      {
+        "tile": 21,
+        "x": 23,
+        "y": 37
+      },
+      {
+        "tile": 22,
+        "x": 55,
+        "y": 37
+      },
+      {
+        "tile": 23,
+        "x": 87,
+        "y": 37
+      },
+      {
+        "tile": 16,
+        "x": 134,
+        "y": 5
+      },
+      {
+        "tile": 17,
+        "x": 166,
+        "y": 5
+      },
+      {
+        "tile": 18,
+        "x": 198,
+        "y": 5
+      },
+      {
+        "tile": 19,
+        "x": 230,
+        "y": 5
+      },
+      {
+        "tile": 20,
+        "x": 134,
+        "y": 37
+      },
+      {
+        "tile": 21,
+        "x": 166,
+        "y": 37
+      },
+      {
+        "tile": 22,
+        "x": 198,
+        "y": 37
+      },
+      {
+        "tile": 23,
+        "x": 230,
+        "y": 37
+      },
+      {
+        "tile": 16,
+        "x": 277,
+        "y": 5
+      },
+      {
+        "tile": 17,
+        "x": 309,
+        "y": 5
+      },
+      {
+        "tile": 18,
+        "x": 341,
+        "y": 5
+      },
+      {
+        "tile": 19,
+        "x": 373,
+        "y": 5
+      },
+      {
+        "tile": 20,
+        "x": 277,
+        "y": 37
+      },
+      {
+        "tile": 21,
+        "x": 309,
+        "y": 37
+      },
+      {
+        "tile": 22,
+        "x": 341,
+        "y": 37
+      },
+      {
+        "tile": 23,
+        "x": 373,
+        "y": 37
+      },
+      {
+        "tile": 12,
+        "x": 21,
+        "y": 165
+      },
+      {
+        "tile": 12,
+        "x": 329,
+        "y": 172
+      },
+      {
+        "tile": 12,
+        "x": 41,
+        "y": 196
+      },
+      {
+        "tile": 10,
+        "x": 288,
+        "y": 250
+      },
+      {
+        "tile": 9,
+        "x": 58,
+        "y": 250
+      }
+    ],
+    "crew": [
+      {
+        "rank": 0,
+        "era": "modern",
+        "x": 166,
+        "y": 260
+      },
+      {
+        "rank": 2,
+        "era": "modern",
+        "x": 204,
+        "y": 260
+      },
+      {
+        "rank": 5,
+        "era": "modern",
+        "x": 242,
+        "y": 260
+      }
+    ],
+    "objective": {
+      "vault": [
+        288,
+        250
+      ],
+      "exit": [
+        58,
+        250
+      ]
+    }
+  }
+}

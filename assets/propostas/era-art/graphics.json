@@ -1,0 +1,178 @@
+{
+  "cell": 24,
+  "levels": {
+    "atari": {
+      "palette": [
+        "#15101f",
+        "#d9552c",
+        "#f4cc62",
+        "#55b187"
+      ],
+      "sheets": {
+        "characters": {
+          "image": "graphics-atari-characters.png",
+          "w": 480,
+          "h": 144,
+          "columns": 20,
+          "cell": 24
+        },
+        "scenario": {
+          "image": "graphics-atari-scenario.png",
+          "w": 192,
+          "h": 96,
+          "columns": 8,
+          "cell": 24
+        },
+        "items": {
+          "image": "graphics-atari-items.png",
+          "w": 192,
+          "h": 96,
+          "columns": 8,
+          "cell": 24
+        }
+      }
+    },
+    "8bit": {
+      "palette": [
+        "#17182d",
+        "#f8e7b6",
+        "#cba162",
+        "#9b563a",
+        "#583858",
+        "#8466b6",
+        "#e475b4",
+        "#fa984a",
+        "#fee16b",
+        "#4da662",
+        "#9fda78",
+        "#3a7795",
+        "#80cce2",
+        "#668ac6",
+        "#ee4d57",
+        "#f8f8e7"
+      ],
+      "sheets": {
+        "characters": {
+          "image": "graphics-8bit-characters.png",
+          "w": 480,
+          "h": 144,
+          "columns": 20,
+          "cell": 24
+        },
+        "scenario": {
+          "image": "graphics-8bit-scenario.png",
+          "w": 192,
+          "h": 96,
+          "columns": 8,
+          "cell": 24
+        },
+        "items": {
+          "image": "graphics-8bit-items.png",
+          "w": 192,
+          "h": 96,
+          "columns": 8,
+          "cell": 24
+        }
+      }
+    },
+    "16bit": {
+      "palette": [
+        "#17182d",
+        "#31314b",
+        "#535871",
+        "#9298ad",
+        "#d4dbea",
+        "#e9b684",
+        "#be7857",
+        "#714624",
+        "#ad713b",
+        "#e1a550",
+        "#ffcd78",
+        "#237249",
+        "#51bd67",
+        "#a4ec76",
+        "#275688",
+        "#38a5e5",
+        "#8de7fa",
+        "#603589",
+        "#a65adf",
+        "#e6a4ff",
+        "#b95826",
+        "#f6a139",
+        "#ffe077",
+        "#952f70",
+        "#e64c99",
+        "#ffaad2",
+        "#355e53",
+        "#4f9c89",
+        "#8cdec1",
+        "#f6c64e",
+        "#ffe695",
+        "#b88932"
+      ],
+      "sheets": {
+        "characters": {
+          "image": "graphics-16bit-characters.png",
+          "w": 480,
+          "h": 144,
+          "columns": 20,
+          "cell": 24
+        },
+        "scenario": {
+          "image": "graphics-16bit-scenario.png",
+          "w": 192,
+          "h": 96,
+          "columns": 8,
+          "cell": 24
+        },
+        "items": {
+          "image": "graphics-16bit-items.png",
+          "w": 192,
+          "h": 96,
+          "columns": 8,
+          "cell": 24
+        }
+      }
+    },
+    "arcade": {
+      "sheets": {
+        "characters": {
+          "image": "../arcade/characters.png",
+          "columns": 20,
+          "cell": 24
+        },
+        "scenario": {
+          "image": "../arcade/scenario.png",
+          "columns": 8,
+          "cell": 24
+        },
+        "items": {
+          "image": "../arcade/items.png",
+          "columns": 8,
+          "cell": 24
+        }
+      },
+      "lighting": false
+    },
+    "hd2d": {
+      "sheets": {
+        "characters": {
+          "image": "../arcade/characters.png",
+          "columns": 20,
+          "cell": 24
+        },
+        "scenario": {
+          "image": "../arcade/scenario.png",
+          "columns": 8,
+          "cell": 24
+        },
+        "items": {
+          "image": "../arcade/items.png",
+          "columns": 8,
+          "cell": 24
+        }
+      },
+      "lighting": true
+    }
+  }
+}

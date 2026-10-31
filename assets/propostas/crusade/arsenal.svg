@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="896" height="160" viewBox="0 0 224 40" shape-rendering="crispEdges">
+<title>Original OUTLAWS temporal arsenal pixel sprites</title>
+<defs><g id="outlaw"><path fill="#111217" d="M5 0h12v3H5zM3 29h8v3H3zM12 29h8v3h-8z"/><path fill="#3c2923" d="M3 3h16v11H3zM4 13h14v12H4z"/><path fill="#171418" d="M5 5h12v8H5z"/><path fill="#bd8d66" d="M8 6h6v3H8zM15 16h5v3h-5z"/><path fill="#efd496" d="M8 7h2v1H8zM12 7h2v1h-2z"/><path fill="#281c20" d="M7 9h8v4H7z"/><path fill="#594539" d="M3 16h4v9H3z"/><path fill="#1c1b24" d="M5 25h5v5H5zM12 25h5v5h-5z"/><path fill="#ae8e53" d="M5 22h12v2H5z"/><path fill="#e4be78" d="M10 21h3v3h-3z"/></g></defs>
+<g transform="translate(3 4)"><use href="#outlaw"/><path fill="#916235" d="M15 17h5v4h-5zM27 18h6v3h-6z"/><path fill="#48504e" d="M20 16h15v3H20z"/><path fill="#191c22" d="M35 17h7v1h-7z"/><path fill="#30353c" d="M23 19h3v6h-3zM24 24h4v2h-4z"/></g>
+<g transform="translate(59 4)"><use href="#outlaw"/><path fill="#424841" d="M15 18h7v5h-7z"/><path fill="#789071" d="M22 17h15v4H22z"/><path fill="#11151b" d="M37 18h12v2H37zM26 13h9v3h-9z"/><path fill="#a8ccb5" d="M33 14h2v1h-2z"/><path fill="#2e3834" d="M25 21h3v5h-3z"/></g>
+<g transform="translate(115 4)"><use href="#outlaw"/><path fill="#7d9762" d="M20 15h5v2h-5z"/><path fill="#a6ad82" d="M25 15h2v2h-2z"/><path fill="#2b332c" d="M18 17h9v9h-9z"/><path fill="#687d4a" d="M19 18h7v7h-7z"/><path fill="#9baa6e" d="M20 18h2v5h-2z"/><path fill="#333b2d" d="M19 21h7v1h-7z"/></g>
+<g transform="translate(171 4)"><use href="#outlaw"/><path fill="#222c37" d="M16 15h13v6H16zM18 21h4v6h-4z"/><path fill="#bd9553" d="M18 17h6v3h-6z"/><path fill="#c8edf0" d="M28 15h3v2h-3zM28 19h3v2h-3z"/><path fill="#7acfd9" d="M21 16h4v1h-4z"/></g>
+</svg>

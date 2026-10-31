@@ -1,0 +1,838 @@
+{
+  "id": "B6",
+  "name": "Cofre do Banco",
+  "era": "modern",
+  "approvedDirection": "../CENARIOS-V5-folha.png",
+  "tileSize": 32,
+  "columns": 8,
+  "frameCount": 28,
+  "atlas": "tiles.png",
+  "preview": "cenario-1x.png",
+  "preview4x": "cenario-4x.png",
+  "distinctElement": "porta circular do cofre",
+  "distinctLight": "luz de teto refletida no marmore",
+  "palette": {
+    "floor": "#94a5ac",
+    "floorLight": "#c4d1d0",
+    "floorDark": "#687e8d",
+    "wall": "#384b61",
+    "wallLight": "#73899a",
+    "wallDark": "#253445",
+    "accent": "#abd9df",
+    "glow": "#edf9ef",
+    "wood": "#557464",
+    "woodLight": "#92af88",
+    "woodDark": "#364c49",
+    "metal": "#a4b9bf"
+  },
+  "frames": [
+    {
+      "name": "ground_0",
+      "index": 0,
+      "x": 0,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "ground",
+      "edgeFamily": "B6-ground",
+      "sha256": "beef343d4e260e067c28097bac81fc33f57fec12fd50f32af85929e72ea3eb78"
+    },
+    {
+      "name": "ground_1",
+      "index": 1,
+      "x": 32,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "ground",
+      "edgeFamily": "B6-ground",
+      "sha256": "20b2ca1a31b31f996a1eaa4882f4d624f4401133bb6de03caf3edb443f0bf7a7"
+    },
+    {
+      "name": "ground_2",
+      "index": 2,
+      "x": 64,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "ground",
+      "edgeFamily": "B6-ground",
+      "sha256": "d512fd6aaa2e211834612813bb9aa29a6429787fb608a3079e314bf53a1104e9"
+    },
+    {
+      "name": "ground_3",
+      "index": 3,
+      "x": 96,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "ground",
+      "edgeFamily": "B6-ground",
+      "sha256": "cc780256620937a2c3d1ba07bfa8ccc8281ed946b8bc47b77421d1095093bec3"
+    },
+    {
+      "name": "wall_top",
+      "index": 4,
+      "x": 128,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "wall",
+      "sha256": "f04c6e3e49cd5c9f4eb5ff68e6cfb1841f14936e487347088ac3590829e64886"
+    },
+    {
+      "name": "wall_body",
+      "index": 5,
+      "x": 160,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "wall",
+      "sha256": "ea9f67319103919e8320a356ebd0c8cc59d88b3dce6c9ad297f2cb3158820a24"
+    },
+    {
+      "name": "wall_corner",
+      "index": 6,
+      "x": 192,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "wall",
+      "sha256": "70179442b1d12a8f92299f8beeb487678e78a2acde948caf221bbd564ee57199"
+    },
+    {
+      "name": "solid_block",
+      "index": 7,
+      "x": 224,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "2e2d975f3518fa07005fd3fe620eec41a994210cad8083f49f7f13f7cd57212e"
+    },
+    {
+      "name": "door_closed",
+      "index": 8,
+      "x": 0,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "dedbcf953aaa3b49fcbe23a90ea8959c5beb3e46a32a2a6d682c24bb15567238"
+    },
+    {
+      "name": "door_open",
+      "index": 9,
+      "x": 32,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "e2fbe68c25321ff3b42229f87e06d9124aebd3cd50aa1d6bbf1610fa65fe49c4"
+    },
+    {
+      "name": "vault_closed",
+      "index": 10,
+      "x": 64,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "daad636c4683d229c5cfd6f0fe1852956e4e0d01deb4763473b3aef9a9aac83c"
+    },
+    {
+      "name": "vault_open",
+      "index": 11,
+      "x": 96,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "f482a0f02cf88cafec6fd6313eb494ec9389f77b94f55a16c2eabcaacac40f2b"
+    },
+    {
+      "name": "crate",
+      "index": 12,
+      "x": 128,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "302ccf6b479557e449ae8a7874367f0a19ced5c09df28d6265a6f523b17738fa"
+    },
+    {
+      "name": "barrel",
+      "index": 13,
+      "x": 160,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "302ccf6b479557e449ae8a7874367f0a19ced5c09df28d6265a6f523b17738fa"
+    },
+    {
+      "name": "light",
+      "index": 14,
+      "x": 192,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "f972102608e397b94b67c34f8f14b857dbf44cfd1b6995bc3f991b70d3f97bca"
+    },
+    {
+      "name": "grille",
+      "index": 15,
+      "x": 224,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "ac36d255a449df8777bbfd8fc9e604796302d9241c08931b03814eaee28b49ec"
+    },
+    {
+      "name": "signature_0_0",
+      "index": 16,
+      "x": 0,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "assembly",
+      "sha256": "8f92cb8481fb76b842eb74165df06923f27cdaf15662672fb658771dd4c76df1"
+    },
+    {
+      "name": "signature_1_0",
+      "index": 17,
+      "x": 32,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "assembly",
+      "sha256": "095f83fa52601c5b6f1798cbb7ba7526cd1f35baadaf7cd9d8ca9e6666f4f0a9"
+    },
+    {
+      "name": "signature_2_0",
+      "index": 18,
+      "x": 64,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "assembly",
+      "sha256": "cdc9781dd7c7d61e3a4abf7632e767d87791d62b99668440b8ba4685dd811852"
+    },
+    {
+      "name": "signature_0_1",
+      "index": 19,
+      "x": 96,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "assembly",
+      "sha256": "7f17bb066e8479d1b15af4f63c651be911cc6f75e7019cdda4dd81ed347e9565"
+    },
+    {
+      "name": "signature_1_1",
+      "index": 20,
+      "x": 128,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "assembly",
+      "sha256": "c69a034082a9e98db6c362689cfc0168423983dc514d796270c68346426b6588"
+    },
+    {
+      "name": "signature_2_1",
+      "index": 21,
+      "x": 160,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "assembly",
+      "sha256": "0718d381cb1852e384a0fa4438f6fe6cf0c8093b7f16e9a9155dc892f78d8a09"
+    },
+    {
+      "name": "detail_window",
+      "index": 22,
+      "x": 192,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "674472d037239874f4589eb6cc27479927af3d14db9b98cffb0c0a5a9e20dabf"
+    },
+    {
+      "name": "detail_post",
+      "index": 23,
+      "x": 224,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "3f050d98d02686dc14600eb7ae307f8df37bc11323a807975e6bd73b61b7b434"
+    },
+    {
+      "name": "detail_rail",
+      "index": 24,
+      "x": 0,
+      "y": 96,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "1f0fdfcacbee4a0f5b6a1b9b1eca35c565edc064f8b19ace171ba8eeba8b9d79"
+    },
+    {
+      "name": "detail_vent",
+      "index": 25,
+      "x": 32,
+      "y": 96,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "c7759bc5803ec0374223dc72b9b07fc792ffe6cdb01f91f209bae877dce728cf"
+    },
+    {
+      "name": "detail_drain",
+      "index": 26,
+      "x": 64,
+      "y": 96,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "c4d9497b024f48b1ca591d1ff45ef7dda5efd023802973f540940738ba2516c0"
+    },
+    {
+      "name": "detail_sign",
+      "index": 27,
+      "x": 96,
+      "y": 96,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "694f3a0db5182e557a7e624c1ecfc27f25c44fb03223e5d587fb0cf65c676553"
+    }
+  ],
+  "assemblies": [
+    {
+      "name": "signature",
+      "description": "porta circular do cofre",
+      "size": [
+        96,
+        64
+      ],
+      "tiles": [
+        [
+          16,
+          17,
+          18
+        ],
+        [
+          19,
+          20,
+          21
+        ]
+      ],
+      "anchor": [
+        0,
+        64
+      ],
+      "lighting": "luz de teto refletida no marmore"
+    }
+  ],
+  "previewRecipe": {
+    "kind": "illustrative-art-layout; no collision or gameplay data",
+    "size": [
+      13,
+      10
+    ],
+    "tileSize": 32,
+    "ground": [
+      [
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0
+      ],
+      [
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1
+      ],
+      [
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2
+      ],
+      [
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3
+      ],
+      [
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0
+      ],
+      [
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1
+      ],
+      [
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2
+      ],
+      [
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3
+      ],
+      [
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0
+      ],
+      [
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1
+      ]
+    ],
+    "overlays": [
+      {
+        "tile": 4,
+        "x": 0,
+        "y": 0
+      },
+      {
+        "tile": 4,
+        "x": 32,
+        "y": 0
+      },
+      {
+        "tile": 4,
+        "x": 64,
+        "y": 0
+      },
+      {
+        "tile": 4,
+        "x": 96,
+        "y": 0
+      },
+      {
+        "tile": 4,
+        "x": 128,
+        "y": 0
+      },
+      {
+        "tile": 4,
+        "x": 160,
+        "y": 0
+      },
+      {
+        "tile": 4,
+        "x": 192,
+        "y": 0
+      },
+      {
+        "tile": 4,
+        "x": 224,
+        "y": 0
+      },
+      {
+        "tile": 4,
+        "x": 256,
+        "y": 0
+      },
+      {
+        "tile": 4,
+        "x": 288,
+        "y": 0
+      },
+      {
+        "tile": 4,
+        "x": 320,
+        "y": 0
+      },
+      {
+        "tile": 4,
+        "x": 352,
+        "y": 0
+      },
+      {
+        "tile": 4,
+        "x": 384,
+        "y": 0
+      },
+      {
+        "tile": 5,
+        "x": 0,
+        "y": 32
+      },
+      {
+        "tile": 5,
+        "x": 32,
+        "y": 32
+      },
+      {
+        "tile": 5,
+        "x": 64,
+        "y": 32
+      },
+      {
+        "tile": 5,
+        "x": 96,
+        "y": 32
+      },
+      {
+        "tile": 5,
+        "x": 128,
+        "y": 32
+      },
+      {
+        "tile": 5,
+        "x": 160,
+        "y": 32
+      },
+      {
+        "tile": 5,
+        "x": 192,
+        "y": 32
+      },
+      {
+        "tile": 5,
+        "x": 224,
+        "y": 32
+      },
+      {
+        "tile": 5,
+        "x": 256,
+        "y": 32
+      },
+      {
+        "tile": 5,
+        "x": 288,
+        "y": 32
+      },
+      {
+        "tile": 5,
+        "x": 320,
+        "y": 32
+      },
+      {
+        "tile": 5,
+        "x": 352,
+        "y": 32
+      },
+      {
+        "tile": 5,
+        "x": 384,
+        "y": 32
+      },
+      {
+        "tile": 5,
+        "x": 0,
+        "y": 64
+      },
+      {
+        "tile": 5,
+        "x": 32,
+        "y": 64
+      },
+      {
+        "tile": 5,
+        "x": 64,
+        "y": 64
+      },
+      {
+        "tile": 5,
+        "x": 96,
+        "y": 64
+      },
+      {
+        "tile": 5,
+        "x": 128,
+        "y": 64
+      },
+      {
+        "tile": 5,
+        "x": 160,
+        "y": 64
+      },
+      {
+        "tile": 5,
+        "x": 192,
+        "y": 64
+      },
+      {
+        "tile": 5,
+        "x": 224,
+        "y": 64
+      },
+      {
+        "tile": 5,
+        "x": 256,
+        "y": 64
+      },
+      {
+        "tile": 5,
+        "x": 288,
+        "y": 64
+      },
+      {
+        "tile": 5,
+        "x": 320,
+        "y": 64
+      },
+      {
+        "tile": 5,
+        "x": 352,
+        "y": 64
+      },
+      {
+        "tile": 5,
+        "x": 384,
+        "y": 64
+      },
+      {
+        "tile": 6,
+        "x": 0,
+        "y": 96
+      },
+      {
+        "tile": 6,
+        "x": 0,
+        "y": 128
+      },
+      {
+        "tile": 6,
+        "x": 0,
+        "y": 160
+      },
+      {
+        "tile": 6,
+        "x": 0,
+        "y": 192
+      },
+      {
+        "tile": 6,
+        "x": 0,
+        "y": 224
+      },
+      {
+        "tile": 5,
+        "x": 384,
+        "y": 96
+      },
+      {
+        "tile": 5,
+        "x": 384,
+        "y": 128
+      },
+      {
+        "tile": 5,
+        "x": 384,
+        "y": 160
+      },
+      {
+        "tile": 5,
+        "x": 384,
+        "y": 192
+      },
+      {
+        "tile": 5,
+        "x": 384,
+        "y": 224
+      },
+      {
+        "tile": 16,
+        "x": 160,
+        "y": 0
+      },
+      {
+        "tile": 17,
+        "x": 192,
+        "y": 0
+      },
+      {
+        "tile": 18,
+        "x": 224,
+        "y": 0
+      },
+      {
+        "tile": 19,
+        "x": 160,
+        "y": 32
+      },
+      {
+        "tile": 20,
+        "x": 192,
+        "y": 32
+      },
+      {
+        "tile": 21,
+        "x": 224,
+        "y": 32
+      },
+      {
+        "tile": 14,
+        "x": 64,
+        "y": 54
+      },
+      {
+        "tile": 15,
+        "x": 64,
+        "y": 102
+      },
+      {
+        "tile": 14,
+        "x": 320,
+        "y": 54
+      },
+      {
+        "tile": 15,
+        "x": 320,
+        "y": 102
+      },
+      {
+        "tile": 10,
+        "x": 288,
+        "y": 250
+      },
+      {
+        "tile": 9,
+        "x": 58,
+        "y": 250
+      }
+    ],
+    "crew": [
+      {
+        "rank": 0,
+        "era": "modern",
+        "x": 166,
+        "y": 260
+      },
+      {
+        "rank": 2,
+        "era": "modern",
+        "x": 204,
+        "y": 260
+      },
+      {
+        "rank": 5,
+        "era": "modern",
+        "x": 242,
+        "y": 260
+      }
+    ],
+    "objective": {
+      "vault": [
+        288,
+        250
+      ],
+      "exit": [
+        58,
+        250
+      ]
+    }
+  }
+}

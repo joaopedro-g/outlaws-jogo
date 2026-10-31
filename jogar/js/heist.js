@@ -360,13 +360,14 @@
     const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
     const frames = o.iso.rank.rarity.map((color) => {
       const rc = hex(color);
+      const edge = [false, true].map((lit) => rc.map((c, i) => Math.round(c * (lit ? 0.78 : 0.38) + [18, 23, 18][i] * (lit ? 0.22 : 0.62))));
       const img = bitmap(SP.W + 2, SP.H + 2, (px) => {
         for (let y = -1; y <= SP.H; y++)
           for (let x = -1; x <= SP.W; x++) {
             const i = ((y + 1) * (SP.W + 2) + x + 1) * 4;
             let c = null;
             if (on(x, y)) c = pal[grid[y][x]];
-            else if (on(x - 1, y) || on(x + 1, y) || on(x, y - 1) || on(x, y + 1)) c = rc;
+            else if (on(x - 1, y) || on(x + 1, y) || on(x, y - 1) || on(x, y + 1)) c = edge[on(x + 1, y) || on(x, y + 1) ? 1 : 0];
             if (!c) continue;
             [px[i], px[i + 1], px[i + 2]] = c;
             px[i + 3] = 255;
@@ -396,6 +397,7 @@
     const gold = MAP.paintProp('gold', m.terrain, room.seed);
     art = {
       seed: room.seed, base: img(painted), lights: painted.lights, water: painted.water, dark: m.terrain.id === 5,
+      terrain: m.terrain.id, phase: (parseInt(room.seed.slice(-6), 16) || 1) % 997, atmosphere: null, clouds: null,
       crate: img(MAP.paintProp('o', m.terrain, room.seed)), chest: img(MAP.paintProp('$', m.terrain, room.seed)),
       gold: img(gold), goldFace: gold.face, mood: null,
     };
@@ -404,6 +406,11 @@
       WH = m.h * CELL;
       fit();
     }
+    art.motes = Array.from({ length: art.terrain === 2 ? 14 : 10 }, (_, i) => ({
+      x: 18 + ((art.phase * 19 + i * 97) % (painted.w - 36)),
+      y: 30 + ((art.phase * 11 + i * 61) % (painted.h - 48)),
+      phase: i * 1.73 + art.phase / 10, firefly: art.terrain === 2 && i < 7,
+    }));
     return art;
   }
 
@@ -487,7 +494,7 @@
   /** Brilho do cofre: halo que pulsa, um reflexo que atravessa a cada ~2 s e faísca em volta. */
   function drawGold(x, y, ox, k, now) {
     const cx = center(x) + ox, cy = center(y);
-    const pulse = 0.3 + 0.2 * Math.sin(now / 260 + k);
+    const pulse = calm.matches ? 0.4 : 0.3 + 0.2 * Math.sin(now / 260 + k);
     const halo = ctx.createRadialGradient(cx, cy, 4, cx, cy, CELL * 0.95);
     halo.addColorStop(0, `rgba(255,214,102,${pulse})`);
     halo.addColorStop(1, 'rgba(255,214,102,0)');
@@ -589,6 +596,93 @@
     return (a.mood = c);
   }
 
+  /** Visual-only layers, cached once per room. The JP tile painting remains intact. */
+  function atmosphere(a) {
+    if (a.atmosphere) return a.atmosphere;
+    const c = document.createElement('canvas');
+    c.width = WW;
+    c.height = WH;
+    const x = c.getContext('2d');
+    const outdoors = a.terrain <= 3;
+    const edge = x.createRadialGradient(WW * 0.48, WH * 0.42, Math.min(WW, WH) * 0.2, WW * 0.5, WH * 0.5, Math.max(WW, WH) * 0.68);
+    edge.addColorStop(0, 'rgba(12,21,17,0)');
+    edge.addColorStop(0.65, 'rgba(12,21,17,.025)');
+    edge.addColorStop(1, `rgba(12,21,17,${a.dark ? 0.13 : 0.28})`);
+    x.fillStyle = edge;
+    x.fillRect(0, 0, WW, WH);
+    if (outdoors) {
+      const daylight = x.createLinearGradient(0, 0, WW * 0.7, WH);
+      daylight.addColorStop(0, a.terrain === 3 ? 'rgba(194,216,205,.10)' : 'rgba(245,219,152,.115)');
+      daylight.addColorStop(0.55, 'rgba(230,212,167,.025)');
+      daylight.addColorStop(1, 'rgba(230,212,167,0)');
+      x.fillStyle = daylight;
+      x.fillRect(0, 0, WW, WH);
+      if (a.terrain !== 3) {
+        x.fillStyle = a.terrain === 2 ? 'rgba(239,221,158,.048)' : 'rgba(245,221,168,.035)';
+        for (let i = 0; i < 3; i++) {
+          const left = Math.round(WW * (0.05 + i * 0.32));
+          x.beginPath();
+          x.moveTo(left, 0);
+          x.lineTo(left + 18, 0);
+          x.lineTo(left + Math.round(WH * 0.45) + 62, WH);
+          x.lineTo(left + Math.round(WH * 0.45), WH);
+          x.closePath();
+          x.fill();
+        }
+      }
+      const cloud = document.createElement('canvas');
+      cloud.width = WW;
+      cloud.height = WH;
+      const q = cloud.getContext('2d');
+      for (const [cx, cy, radius] of [[WW * 0.18, WH * 0.3, WW * 0.23], [WW * 0.69, WH * 0.64, WW * 0.29]]) {
+        const g = q.createRadialGradient(cx, cy, radius * 0.1, cx, cy, radius);
+        g.addColorStop(0, 'rgba(19,34,27,.065)');
+        g.addColorStop(1, 'rgba(19,34,27,0)');
+        q.fillStyle = g;
+        q.fillRect(cx - radius, cy - radius, radius * 2, radius * 2);
+      }
+      a.clouds = cloud;
+    }
+    return (a.atmosphere = c);
+  }
+
+  /** Bounded ambient particles. Only performance time is read, never the simulation RNG. */
+  function drawAir(now) {
+    const a = art, tm = calm.matches ? 0 : now / 1000;
+    ctx.drawImage(atmosphere(a), 0, 0);
+    if (a.clouds) {
+      const offset = Math.round(calm.matches ? -WW * 0.2 : ((now / 650 + a.phase) % WW) - WW);
+      ctx.drawImage(a.clouds, offset, 0);
+      ctx.drawImage(a.clouds, offset + WW, 0);
+    }
+    for (const p of a.motes) {
+      const x = Math.round(p.x + Math.sin(tm * 0.32 + p.phase) * (p.firefly ? 8 : 4));
+      const y = Math.round(p.y + Math.cos(tm * 0.24 + p.phase) * (p.firefly ? 5 : 3));
+      const pulse = calm.matches ? 0.5 : (Math.sin(tm * (p.firefly ? 1.3 : 0.6) + p.phase) + 1) / 2;
+      if (p.firefly) {
+        ctx.fillStyle = `rgba(224,225,147,${0.025 + pulse * 0.07})`;
+        ctx.fillRect(x - 2, y - 1, 5, 3);
+        ctx.fillRect(x - 1, y - 2, 3, 5);
+        ctx.fillStyle = `rgba(246,235,167,${0.12 + pulse * 0.6})`;
+      } else ctx.fillStyle = `rgba(231,210,162,${(a.dark ? 0.035 : 0.06) + pulse * 0.17})`;
+      ctx.fillRect(x, y, 1, 1);
+    }
+    for (const l of a.lights) {
+      if (l.kind !== 'fire' && l.kind !== 'torch') continue;
+      for (let i = 0; i < 3; i++) {
+        const rise = (tm * 4 + i * 6 + l.x * 0.17) % 19;
+        const x = Math.round(l.x + Math.sin(tm + i * 2 + l.y) * 2);
+        const y = Math.round(l.y - rise - 4);
+        ctx.fillStyle = `rgba(160,159,143,${(1 - rise / 19) * 0.13})`;
+        ctx.fillRect(x, y, 2, 2);
+        if (i === 0 && rise < 12) {
+          ctx.fillStyle = `rgba(251,194,102,${(1 - rise / 12) * 0.6})`;
+          ctx.fillRect(x + 1, y + 3, 1, 1);
+        }
+      }
+    }
+  }
+
   function drawRoom(now) {
     const r = sim.room, a = roomArt(r);
     ctx.drawImage(a.base, 0, 0);
@@ -621,7 +715,7 @@
         } else {
           const b = born.get(k);
           const p = b === undefined ? 1 : Math.min(1, (now - b) / 350);
-          const oy = -Math.round(Math.sin(p * Math.PI) * 10);
+          const oy = calm.matches ? 0 : -Math.round(Math.sin(p * Math.PI) * 10);
           ctx.drawImage(a.chest, x * CELL, y * CELL + oy);
           if (!calm.matches && Math.sin(now / 330 + x + y) > 0.85) { //  brilho de vez em quando
             ctx.fillStyle = '#FFF6D0';
@@ -643,21 +737,33 @@
   function drawOutlaw(o, x, y, st) {
     const px = x * CELL, py = y * CELL;
     const frames = look(o), v = vis.get(o.id);
-    const lk = frames[frames.length > 1 ? Math.floor(performance.now() / 700) % frames.length : 0];
+    const lk = frames[frames.length > 1 && !calm.matches ? Math.floor(performance.now() / 1100) % frames.length : 0];
     const moving = st.working && st.a.state === 'walk' && st.a.stun <= 0;
-    const bob = moving ? -Math.abs(Math.sin(v.t * 12)) * 3 : Math.sin(v.t * 2.2);
+    const bob = calm.matches ? 0 : moving ? -Math.round(Math.abs(Math.sin(v.t * 12)) * 3) : -Math.round((Math.sin(v.t * 1.7) + 1) * 0.5);
     let lx = 0, ly = 0;
     if (v.swing > 0 && st.a?.target) { //         avança no golpe
       const p = v.swing / 0.14;
       lx = Math.sign(st.a.target.x - st.a.cx) * 4 * p;
       ly = Math.sign(st.a.target.y - st.a.cy) * 4 * p;
     }
-    ctx.fillStyle = 'rgba(0,0,0,.35)';
+    ctx.fillStyle = 'rgba(8,13,10,.16)';
+    ctx.beginPath();
+    ctx.ellipse(px + CELL / 2 + 2, py + CELL - 2, 13, 4.5, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(8,13,10,.40)';
     ctx.beginPath();
     ctx.ellipse(px + CELL / 2, py + CELL - 3, 10, 3.5, 0, 0, Math.PI * 2);
     ctx.fill();
-    ctx.globalAlpha = st.working ? 1 : 0.55;
-    ctx.drawImage(st.a && st.a.face < 0 ? lk.flip : lk.img, Math.round(px - 1 + lx), Math.round(py - 6 + bob + ly)); // -1: o contorno
+    ctx.globalAlpha = st.working ? 1 : 0.68;
+    const image = st.a && st.a.face < 0 ? lk.flip : lk.img;
+    const dx = Math.round(px - 1 + lx), dy = Math.round(py - 6 + ly);
+    if (!moving && v.swing <= 0 && !calm.matches) {
+      const sway = Math.round(Math.sin(v.t * 1.2 + o.id) * 0.55);
+      // Reuse JP's exact pixels in three overlapping strips: head, coat, anchored boots.
+      ctx.drawImage(image, 0, 0, image.width, 21, dx, dy + bob, image.width, 21);
+      ctx.drawImage(image, 0, 20, image.width, 10, dx + sway, dy + 20 + bob, image.width, 10);
+      ctx.drawImage(image, 0, 29, image.width, image.height - 29, dx, dy + 29, image.width, image.height - 29);
+    } else ctx.drawImage(image, dx, dy + bob);
     ctx.globalAlpha = 1;
 
     // barra de vida sobre a cabeça
@@ -741,6 +847,7 @@
     list.sort((p, q) => p.y - q.y);
     for (const st of list) drawOutlaw(st.o, st.x, st.y, st);
     if (art.dark) ctx.drawImage(mood(art), 0, 0); //  o véu do castelo cobre o bando também; o letreiro fica claro
+    drawAir(now);
     for (const f of fx) drawFx(f);
 
     // letreiro de cima: faixa que some pra baixo, pra não tapar a bandeira e a tocha do muro
@@ -767,7 +874,7 @@
     requestAnimationFrame(frame);
     const dt = last ? Math.min(0.1, (now - last) / 1000) : 0;
     last = now;
-    if (!data || !cv.isConnected || cv.closest('[hidden]')) return;
+    if (!data || document.hidden || !cv.isConnected || cv.closest('[hidden]')) return;
 
     // que época é agora, pelo relógio, e quem trabalha nela
     const clock = Date.now() / 1000;

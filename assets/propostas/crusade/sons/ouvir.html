@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; media-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'">
+  <title>OUTLAWS · Arsenal sound desk</title>
+  <style>
+    *{box-sizing:border-box}html{color-scheme:dark}body{margin:0;background:#18140f;color:#eddbb5;font:15px/1.5 ui-monospace,monospace;background-image:repeating-linear-gradient(90deg,transparent 0 110px,#211910 110px 114px)}main{max-width:1050px;margin:auto;padding:32px 22px 56px}header{border-bottom:3px solid #806033;padding-bottom:24px;display:flex;gap:22px;justify-content:space-between;align-items:start}.brand{font-size:11px;letter-spacing:4px;color:#e8bc68}h1{margin:9px 0;font-size:clamp(25px,5vw,42px);line-height:1.15}p{font:15px/1.65 system-ui,sans-serif;color:#baaa8b;max-width:680px;margin:12px 0}.controls{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin:22px 0;padding:14px;background:#251c12;border:2px solid #755532}.controls label{display:flex;align-items:center;gap:9px;font-size:12px}.controls input[type=range]{accent-color:#d5b06f;width:145px}.controls input[type=checkbox]{accent-color:#d5b06f;min-width:17px;min-height:17px}.controls button,select,.actions button{font:12px ui-monospace,monospace;color:inherit;background:#302317;border:2px solid #806033;padding:8px 10px;min-height:36px;cursor:pointer}.controls button{min-width:125px}button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid #f1ca77;outline-offset:4px}a{color:#d9b675}.bar{margin-bottom:18px;min-height:36px;display:flex;justify-content:space-between;gap:15px;font-size:11px;align-items:start}.badge{color:#b6c390}.status{color:#ebc87f;font:13px/1.5 system-ui,sans-serif}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px}.card{border:2px solid #755532;background:#251c12;box-shadow:3px 3px 0 #0a0805;padding:18px;position:relative}.card::before{content:'';position:absolute;top:-2px;left:16px;width:28px;height:2px;background:#c8a566}.card h2{font-size:16px;margin:0 0 9px;color:#f2d6a2}.card p{font-size:13px;min-height:85px;margin:0 0 10px}.card small{font-size:11px;display:block;color:#b39a74;margin-bottom:13px}.actions{display:flex;gap:7px;flex-wrap:wrap}.actions button:first-child{background:#d3ad66;color:#21160c;border-color:#e3c589;box-shadow:0 3px 0 #684923}.actions button:active{transform:translateY(2px)}.actions a{font:11px/1.4 system-ui,sans-serif;align-self:center}.card[data-chaos]{border-color:#746496}.card[data-chaos]::before{background:#bea5df}footer{margin-top:25px;border-top:1px solid #61492c;padding-top:17px;font:12px/1.75 system-ui,sans-serif;color:#b39a74}footer code{color:#d6b87f}.outlaws-sfx{display:none!important}@media(max-width:920px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.card p{min-height:44px}}@media(max-width:540px){main{padding:24px 14px 45px}.grid{grid-template-columns:1fr}.card p{min-height:0}.controls{gap:12px}header{gap:12px}header select{max-width:96px}.bar{flex-direction:column;gap:9px}}
+  </style>
+<style>
+.desk-nav{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}.desk-nav a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;padding:10px 12px;border:2px solid #806033;background:#271d13;color:#f0be5e;font:12px/1.4 ui-monospace,monospace;text-decoration:none}main button,main select,main input[type=range],.controls label,.actions a{min-height:44px;min-width:44px}.actions a{display:inline-flex;align-items:center;padding:8px}
+</style>
+</head>
+<body>
+<main data-sfx="off">
+  <nav class="desk-nav" aria-label="Preview navigation"><a href="../../../../" data-nav="back">Back to OUTLAWS</a><a href="../../../../jogar/?demo" data-nav="demo">Try the demo</a></nav>
+  <header><div><div class="brand">OUTLAWS · CRUSADE</div><h1 data-text="title">Arsenal sound desk</h1><p data-text="intro">Short, original cues for the western arsenal and optional Chaos scenes. Listen to live synthesis and the matching WAV.</p></div><select id="arsenal-language" aria-label="Language"><option value="en">English</option><option value="pt">Português</option><option value="es">Español</option><option value="ph">Filipino</option></select></header>
+  <div class="controls"><button type="button" id="arsenal-mute" aria-pressed="false">Sound on</button><label><span data-text="volume">Volume</span><input id="arsenal-volume" type="range" min="0" max="0.65" step="0.01" value="0.28"></label><label><input id="arsenal-effects" type="checkbox" checked><span data-text="effects">Special effects</span></label></div>
+  <div class="bar"><span class="badge" data-text="quiet">LOW VOLUME · ORIGINAL SYNTHESIS · CLICK TO LISTEN</span><span class="status" id="arsenal-status" role="status" aria-live="polite"></span></div>
+  <section class="grid" id="arsenal-grid" aria-label="Arsenal sound previews"></section>
+  <footer><span data-text="footer">Mute and volume use the same preferences as the game. Special effects can be switched off. No sound before your first real click. No downloaded audio.</span><br><span data-text="generate">Generate or verify WAVs:</span> <code>node assets/propostas/crusade/sons/generate.cjs [--check]</code></footer>
+</main>
+<script src="../../../../jogar/js/i18n.js"></script>
+<script src="../../../../jogar/js/sfx.js"></script>
+<script src="../../../../jogar/js/arsenal-sfx.js"></script>
+<script src="review.js"></script>
+</body>
+</html>

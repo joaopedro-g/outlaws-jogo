@@ -1,0 +1,73 @@
+{
+  "format": "PCM mono 44100Hz 16-bit",
+  "defaultVolume": 0.28,
+  "maximumVolume": 0.65,
+  "maximumVoices": 4,
+  "description": "Original short western/chiptune synthesis, shared with jogar/js/arsenal-sfx.js. No downloaded media. No sub-bass.",
+  "sounds": [
+    {
+      "name": "ak",
+      "file": "ak.wav",
+      "durationSeconds": 0.22,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "sha256": "b514ba2fff73eac126bc8ea9819b5eeeedbd80addb682360546ca690fa2c801d"
+    },
+    {
+      "name": "awp",
+      "file": "awp.wav",
+      "durationSeconds": 0.39,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "sha256": "097935474df1ce165da9e62606637d4b9c5f12381f1e98a7d698efc009980815"
+    },
+    {
+      "name": "grenade",
+      "file": "grenade.wav",
+      "durationSeconds": 0.6,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "sha256": "d1ef6bdb2a02bda854688798e7c2cdd20339d129b6600f678d8c36c5897b8331"
+    },
+    {
+      "name": "taser",
+      "file": "taser.wav",
+      "durationSeconds": 0.3,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "sha256": "8b5b0c5cef2fa197876605432fae1e65c6d0d2bb569c54e2aad32860c532833e"
+    },
+    {
+      "name": "laser",
+      "file": "laser.wav",
+      "durationSeconds": 0.29,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "sha256": "b533ef4c44a2ca162de525bb499cc4e65b7162e670b4bd17e947383cd9e985be"
+    },
+    {
+      "name": "rift",
+      "file": "rift.wav",
+      "durationSeconds": 0.64,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "sha256": "250f6f4c7de00c2abb9fbfacf3eefb7ab11641caec7a37737438ddf4d2421ed9"
+    },
+    {
+      "name": "abduction",
+      "file": "abduction.wav",
+      "durationSeconds": 0.76,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "sha256": "a54d7ce215d3d3ab224d3f98b7f2fad885a2c53693979f1511f0f3adb7a54ed5"
+    },
+    {
+      "name": "jetpack",
+      "file": "jetpack.wav",
+      "durationSeconds": 0.44,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "sha256": "1d4ef9816908483c438babf8ca17c400917291aa83b24f5d439f44f32dd7599f"
+    }
+  ]
+}

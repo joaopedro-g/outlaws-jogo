@@ -22,9 +22,61 @@
 
   const cenas = new Map(); //                    id -> { cv, ctx, fundo, vulto, prog, ready, t }
   let rodando = false;
+  const calm = root.matchMedia ? root.matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
+  const castelos = new Map(); // visual states, painted once instead of every frame
 
   const seedDe = (texto) => '0x' + [...sha256(new TextEncoder().encode(texto))]
     .map((b) => b.toString(16).padStart(2, '0')).join('');
+
+  /** Pixel silhouettes in separate planes; no asset or game state is changed. */
+  function paisagemDe(id) {
+    const seed = seedDe(`paisagem:${id}`), phase = parseInt(seed.slice(2, 8), 16) / 1000;
+    const rnd = RNG.stream(seed, 'arte:estrada');
+    const plano = (pinta) => {
+      const c = document.createElement('canvas');
+      c.width = LARG + 32;
+      c.height = ALT;
+      pinta(c.getContext('2d'), c.width);
+      return c;
+    };
+    const distante = plano((x, w) => {
+      x.fillStyle = '#3C5048';
+      for (let i = 0; i < w; i += 3) {
+        const topo = 16 + Math.round(Math.sin(i * 0.055 + phase) * 3 + Math.sin(i * 0.11) * 2);
+        x.fillRect(i, topo, 3, 13);
+      }
+    });
+    const copas = plano((x, w) => {
+      for (let i = 0; i < w; i += 7) {
+        const h = 7 + Math.floor(rnd.float() * 9), base = 29, top = base - h;
+        x.fillStyle = i % 3 ? '#273F32' : '#2E4737';
+        x.fillRect(i + 3, top, 2, h);
+        x.fillRect(i + 1, top + 3, 6, h - 3);
+        x.fillRect(i - 1, top + 7, 10, Math.max(2, h - 7));
+        x.fillStyle = '#39543B';
+        x.fillRect(i + 2, top + 3, 2, 1);
+      }
+    });
+    return { distante, copas };
+  }
+
+  function ceu(ctx, agora) {
+    const faixas = ['#1D2C2E', '#293C37', '#3A4B3B', '#526044', '#7E7950'];
+    for (let i = 0; i < faixas.length; i++) {
+      ctx.fillStyle = faixas[i];
+      ctx.fillRect(0, i * 6, LARG, 6);
+    }
+    // Small stepped sunset disk and cloud bands, all in art pixels.
+    ctx.fillStyle = '#D8BC75';
+    for (const [row, left, width] of [[0, 3, 2], [1, 1, 6], [2, 0, 8], [3, 0, 8], [4, 1, 6], [5, 3, 2]]) ctx.fillRect(17 + left, 7 + row, width, 1);
+    const drift = calm.matches ? 0 : Math.floor(agora / 3400) % (LARG + 36);
+    ctx.fillStyle = 'rgba(198,205,171,.14)';
+    for (let i = 0; i < 3; i++) {
+      const x = ((i * 61 + drift) % (LARG + 36)) - 24, y = 4 + i * 4;
+      ctx.fillRect(x, y, 23, 1);
+      ctx.fillRect(x + 4, y - 1, 11, 1);
+    }
+  }
 
   function bitmap(w, h, pinta) {
     const c = document.createElement('canvas');
@@ -57,6 +109,7 @@
    * bandeira da Coroa. Desenhado à mão porque é o destino da cena inteira.
    */
   function castelo(acesa) {
+    if (castelos.has(acesa)) return castelos.get(acesa);
     const c = document.createElement('canvas');
     c.width = 34;
     c.height = ALT;
@@ -87,6 +140,7 @@
     x.fillStyle = acesa ? '#D9A441' : '#8C6A29'; //  a bandeira
     x.fillRect(30, base - 36, 1, 7);
     x.fillRect(31, base - 36, 3, 3);
+    castelos.set(acesa, c);
     return c;
   }
 
@@ -122,13 +176,32 @@
     const passo = cena.ready ? 1 : Math.max(0, Math.min(1, cena.prog));
     const x = 6 + (PORTAO - 6) * passo;
     //                                           o balanço do passo (parado quando chegou)
-    const balanco = cena.ready || root.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const balanco = cena.ready || calm.matches
       ? 0 : Math.round(Math.sin(agora / 140) * 1.5);
 
     ctx.imageSmoothingEnabled = false;
     ctx.clearRect(0, 0, LARG, ALT);
-    ctx.drawImage(cena.fundo, 0, 0);
+    ceu(ctx, agora);
+    ctx.drawImage(cena.paisagem.distante, -Math.round(passo * 3), 0);
+    ctx.drawImage(cena.paisagem.copas, -Math.round(passo * 9), 0);
+    ctx.drawImage(cena.fundo, 0, 27, LARG, ALT - 27, 0, 27, LARG, ALT - 27);
+    ctx.fillStyle = '#34402C';
+    ctx.fillRect(0, 27, LARG, 1);
+    ctx.fillStyle = 'rgba(231,195,113,.17)';
+    ctx.fillRect(0, 28, LARG, 1);
+    const shade = ctx.createLinearGradient(0, 27, 0, ALT);
+    shade.addColorStop(0, 'rgba(20,36,28,.14)');
+    shade.addColorStop(1, 'rgba(12,22,19,.30)');
+    ctx.fillStyle = shade;
+    ctx.fillRect(0, 29, LARG, ALT - 29);
     ctx.drawImage(castelo(cena.ready), LARG - 34, 0);
+    if (cena.ready) {
+      const glow = ctx.createRadialGradient(LARG - 17, 26, 1, LARG - 17, 26, 19);
+      glow.addColorStop(0, 'rgba(242,194,95,.18)');
+      glow.addColorStop(1, 'rgba(242,194,95,0)');
+      ctx.fillStyle = glow;
+      ctx.fillRect(LARG - 36, 7, 38, 38);
+    }
 
     const arte = cena.ready ? cena.vulto.chegou : cena.vulto.andando;
     ctx.globalAlpha = 0.28; //                   a sombra no chão
@@ -136,9 +209,18 @@
     ctx.fillRect(x + 4, CHAO + 1, 12, 2);
     ctx.globalAlpha = 1;
     ctx.drawImage(arte, Math.round(x), CHAO - SP.H + 2 + balanco);
+    const tm = calm.matches ? 0 : agora / 1000;
+    for (let i = 0; i < 5; i++) {
+      const px = Math.round(13 + i * 24 + Math.sin(tm * 0.35 + i * 2) * 3);
+      const py = Math.round(22 + (i % 3) * 6 + Math.cos(tm * 0.25 + i) * 2);
+      ctx.fillStyle = `rgba(230,207,140,${0.13 + (Math.sin(tm + i) + 1) * 0.08})`;
+      ctx.fillRect(px, py, 1, 1);
+    }
   }
 
   function quadro() {
+    if (calm.matches) { rodando = false; return; }
+    if (document.hidden) { requestAnimationFrame(quadro); return; }
     const agora = performance.now();
     let faltaAlguem = false;
     for (const cena of cenas.values()) {
@@ -159,7 +241,7 @@
     const ctx = cv.getContext('2d');
     ctx.scale(ESCALA, ESCALA);
     ctx.imageSmoothingEnabled = false;
-    const cena = { cv, ctx, fundo: fundoDe(id), vulto: vultoDe(id), prog: 0, ready: false };
+    const cena = { cv, ctx, fundo: fundoDe(id), paisagem: paisagemDe(id), vulto: vultoDe(id), prog: 0, ready: false };
     cenas.set(id, cena);
     desenha(cena, performance.now());
     return cena;
@@ -175,9 +257,9 @@
       if (!cena) continue;
       cena.prog = progress;
       cena.ready = ready;
-      if (ready) desenha(cena, performance.now()); //  parado: um quadro basta
+      if (ready || calm.matches) desenha(cena, performance.now()); //  parado: um quadro basta
     }
-    if (!rodando && lista.some((s) => !s.ready)) {
+    if (!rodando && !calm.matches && lista.some((s) => !s.ready)) {
       rodando = true;
       requestAnimationFrame(quadro);
     }

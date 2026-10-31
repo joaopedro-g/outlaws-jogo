@@ -1,0 +1,834 @@
+{
+  "schema": "outlaws.sprite-v4.1",
+  "status": "proposal-to-port",
+  "provenance": "Original integer pixel drawings; no borrowed sprites; Node built-ins only.",
+  "alpha": [
+    0,
+    255
+  ],
+  "ink": "#141c2c",
+  "light": "upper-left",
+  "crew": {
+    "image": "crew.png",
+    "cell": [
+      24,
+      24
+    ],
+    "columns": 52,
+    "rows": 18,
+    "anchor": [
+      12,
+      22
+    ],
+    "eras": [
+      "medieval",
+      "modern",
+      "future"
+    ],
+    "ranks": [
+      {
+        "key": "common",
+        "main": "#9aa8bc",
+        "shade": "#4f637d",
+        "light": "#e0ebed",
+        "skin": "#e7b383",
+        "dark": "#a3684c",
+        "mark": "satchel"
+      },
+      {
+        "key": "uncommon",
+        "main": "#5fd85a",
+        "shade": "#246c45",
+        "light": "#bdf27c",
+        "skin": "#d59866",
+        "dark": "#915038",
+        "mark": "dagger"
+      },
+      {
+        "key": "rare",
+        "main": "#45b5ef",
+        "shade": "#225e92",
+        "light": "#abe8ff",
+        "skin": "#f3c188",
+        "dark": "#b9784d",
+        "mark": "quiver"
+      },
+      {
+        "key": "epic",
+        "main": "#b482f4",
+        "shade": "#613d94",
+        "light": "#ead1ff",
+        "skin": "#dfaa76",
+        "dark": "#9d6048",
+        "mark": "feather"
+      },
+      {
+        "key": "legendary",
+        "main": "#ffb43e",
+        "shade": "#aa5931",
+        "light": "#ffe990",
+        "skin": "#e7ad6d",
+        "dark": "#a96742",
+        "mark": "key"
+      },
+      {
+        "key": "mythic",
+        "main": "#fa6397",
+        "shade": "#93374f",
+        "light": "#ffc1d6",
+        "skin": "#f0c991",
+        "dark": "#b27c50",
+        "mark": "ruby"
+      }
+    ],
+    "animations": {
+      "idle": [
+        0,
+        1
+      ],
+      "walkDown": [
+        2,
+        3,
+        4
+      ],
+      "walkLeft": [
+        5,
+        6,
+        7
+      ],
+      "walkRight": [
+        8,
+        9,
+        10
+      ],
+      "walkUp": [
+        11,
+        12,
+        13
+      ],
+      "celebrate": [
+        14,
+        15,
+        16
+      ],
+      "fall": [
+        17,
+        18,
+        19
+      ],
+      "attackRight": [
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27
+      ],
+      "attackDown": [
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35
+      ],
+      "attackLeft": [
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43
+      ],
+      "attackUp": [
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51
+      ]
+    },
+    "states": [
+      [
+        "idle",
+        "down",
+        0
+      ],
+      [
+        "idle",
+        "down",
+        1
+      ],
+      [
+        "walk",
+        "down",
+        0
+      ],
+      [
+        "walk",
+        "down",
+        1
+      ],
+      [
+        "walk",
+        "down",
+        2
+      ],
+      [
+        "walk",
+        "left",
+        0
+      ],
+      [
+        "walk",
+        "left",
+        1
+      ],
+      [
+        "walk",
+        "left",
+        2
+      ],
+      [
+        "walk",
+        "right",
+        0
+      ],
+      [
+        "walk",
+        "right",
+        1
+      ],
+      [
+        "walk",
+        "right",
+        2
+      ],
+      [
+        "walk",
+        "up",
+        0
+      ],
+      [
+        "walk",
+        "up",
+        1
+      ],
+      [
+        "walk",
+        "up",
+        2
+      ],
+      [
+        "celebrate",
+        "down",
+        0
+      ],
+      [
+        "celebrate",
+        "down",
+        1
+      ],
+      [
+        "celebrate",
+        "down",
+        2
+      ],
+      [
+        "fall",
+        "right",
+        0
+      ],
+      [
+        "fall",
+        "right",
+        1
+      ],
+      [
+        "fall",
+        "right",
+        2
+      ],
+      [
+        "attack",
+        "right",
+        0
+      ],
+      [
+        "attack",
+        "right",
+        1
+      ],
+      [
+        "attack",
+        "right",
+        2
+      ],
+      [
+        "attack",
+        "right",
+        3
+      ],
+      [
+        "attack",
+        "right",
+        4
+      ],
+      [
+        "attack",
+        "right",
+        5
+      ],
+      [
+        "attack",
+        "right",
+        6
+      ],
+      [
+        "attack",
+        "right",
+        7
+      ],
+      [
+        "attack",
+        "down",
+        0
+      ],
+      [
+        "attack",
+        "down",
+        1
+      ],
+      [
+        "attack",
+        "down",
+        2
+      ],
+      [
+        "attack",
+        "down",
+        3
+      ],
+      [
+        "attack",
+        "down",
+        4
+      ],
+      [
+        "attack",
+        "down",
+        5
+      ],
+      [
+        "attack",
+        "down",
+        6
+      ],
+      [
+        "attack",
+        "down",
+        7
+      ],
+      [
+        "attack",
+        "left",
+        0
+      ],
+      [
+        "attack",
+        "left",
+        1
+      ],
+      [
+        "attack",
+        "left",
+        2
+      ],
+      [
+        "attack",
+        "left",
+        3
+      ],
+      [
+        "attack",
+        "left",
+        4
+      ],
+      [
+        "attack",
+        "left",
+        5
+      ],
+      [
+        "attack",
+        "left",
+        6
+      ],
+      [
+        "attack",
+        "left",
+        7
+      ],
+      [
+        "attack",
+        "up",
+        0
+      ],
+      [
+        "attack",
+        "up",
+        1
+      ],
+      [
+        "attack",
+        "up",
+        2
+      ],
+      [
+        "attack",
+        "up",
+        3
+      ],
+      [
+        "attack",
+        "up",
+        4
+      ],
+      [
+        "attack",
+        "up",
+        5
+      ],
+      [
+        "attack",
+        "up",
+        6
+      ],
+      [
+        "attack",
+        "up",
+        7
+      ]
+    ],
+    "identity": "same six rank IDs, faces, skin colors and signatures in every era"
+  },
+  "held": {
+    "image": "held.png",
+    "cell": [
+      48,
+      48
+    ],
+    "columns": 8,
+    "rows": 13,
+    "anchor": [
+      14,
+      32
+    ],
+    "ids": [
+      "sword",
+      "flamesword",
+      "bow",
+      "staff",
+      "ak",
+      "awp",
+      "grenade",
+      "taser",
+      "laser",
+      "beam",
+      "energyblade",
+      "kamikaze",
+      "combatdrone"
+    ]
+  },
+  "attacks": {
+    "image": "attacks.png",
+    "basic": "attacks-basic.png",
+    "cell": [
+      80,
+      64
+    ],
+    "columns": 8,
+    "rows": [
+      {
+        "id": "sword",
+        "variant": "normal",
+        "index": 0
+      },
+      {
+        "id": "flamesword",
+        "variant": "normal",
+        "index": 1
+      },
+      {
+        "id": "bow",
+        "variant": "normal",
+        "index": 2
+      },
+      {
+        "id": "bow",
+        "variant": "explosive",
+        "index": 3
+      },
+      {
+        "id": "bow",
+        "variant": "fire",
+        "index": 4
+      },
+      {
+        "id": "bow",
+        "variant": "triple",
+        "index": 5
+      },
+      {
+        "id": "bow",
+        "variant": "lightning",
+        "index": 6
+      },
+      {
+        "id": "staff",
+        "variant": "fire",
+        "index": 7
+      },
+      {
+        "id": "staff",
+        "variant": "lightning",
+        "index": 8
+      },
+      {
+        "id": "staff",
+        "variant": "ice",
+        "index": 9
+      },
+      {
+        "id": "staff",
+        "variant": "heal",
+        "index": 10
+      },
+      {
+        "id": "staff",
+        "variant": "frog",
+        "index": 11
+      },
+      {
+        "id": "ak",
+        "variant": "normal",
+        "index": 12
+      },
+      {
+        "id": "awp",
+        "variant": "normal",
+        "index": 13
+      },
+      {
+        "id": "grenade",
+        "variant": "normal",
+        "index": 14
+      },
+      {
+        "id": "taser",
+        "variant": "normal",
+        "index": 15
+      },
+      {
+        "id": "laser",
+        "variant": "normal",
+        "index": 16
+      },
+      {
+        "id": "beam",
+        "variant": "normal",
+        "index": 17
+      },
+      {
+        "id": "energyblade",
+        "variant": "normal",
+        "index": 18
+      },
+      {
+        "id": "kamikaze",
+        "variant": "normal",
+        "index": 19
+      },
+      {
+        "id": "combatdrone",
+        "variant": "normal",
+        "index": 20
+      }
+    ],
+    "anchor": [
+      20,
+      56
+    ],
+    "hand": [
+      28,
+      44
+    ],
+    "target": [
+      69,
+      40
+    ],
+    "phase": [
+      "ready",
+      "anticipate",
+      "strike",
+      "impact",
+      "follow-through",
+      "settle",
+      "recover",
+      "rest"
+    ],
+    "timings": {
+      "sword": [
+        90,
+        80,
+        60,
+        70,
+        80,
+        100,
+        100,
+        120
+      ],
+      "flamesword": [
+        90,
+        80,
+        60,
+        70,
+        90,
+        100,
+        100,
+        120
+      ],
+      "bow": [
+        100,
+        100,
+        65,
+        65,
+        80,
+        80,
+        80,
+        80
+      ],
+      "staff": [
+        110,
+        90,
+        80,
+        70,
+        70,
+        90,
+        90,
+        100
+      ],
+      "ak": [
+        75,
+        55,
+        45,
+        55,
+        65,
+        70,
+        75,
+        90
+      ],
+      "awp": [
+        110,
+        100,
+        50,
+        65,
+        75,
+        80,
+        80,
+        100
+      ],
+      "grenade": [
+        100,
+        90,
+        70,
+        70,
+        75,
+        90,
+        100,
+        110
+      ],
+      "taser": [
+        100,
+        70,
+        60,
+        60,
+        80,
+        90,
+        90,
+        100
+      ],
+      "laser": [
+        85,
+        65,
+        50,
+        65,
+        75,
+        80,
+        90,
+        100
+      ],
+      "beam": [
+        110,
+        90,
+        60,
+        70,
+        75,
+        80,
+        90,
+        100
+      ],
+      "energyblade": [
+        90,
+        80,
+        60,
+        70,
+        80,
+        100,
+        100,
+        120
+      ],
+      "kamikaze": [
+        100,
+        80,
+        70,
+        75,
+        75,
+        90,
+        100,
+        100
+      ],
+      "combatdrone": [
+        90,
+        80,
+        60,
+        70,
+        80,
+        90,
+        90,
+        100
+      ]
+    }
+  },
+  "aliases": {
+    "fire_sword": "flamesword",
+    "fire-sword": "flamesword",
+    "fireSword": "flamesword",
+    "ak-47": "ak",
+    "ak47": "ak",
+    "sniper": "awp",
+    "laser_pistol": "laser",
+    "laser-pistol": "laser",
+    "ray_gun": "beam",
+    "ray-gun": "beam",
+    "energy_saber": "energyblade",
+    "energy-saber": "energyblade",
+    "drone": "combatdrone"
+  },
+  "rules": [
+    "draw-only API: no enemy state, health, RNG, cooldown, rewards or transactions",
+    "callers own time and choose phase; timings are preview durations only",
+    "Motion off/reduced-motion uses a representative static frame",
+    "Special effects off uses attacks-basic.png; projectiles and weapon shape remain visible"
+  ],
+  "world": {
+    "image": "world.png",
+    "cell": [
+      32,
+      32
+    ],
+    "columns": 8,
+    "rows": 9,
+    "eras": [
+      "medieval",
+      "modern",
+      "future"
+    ],
+    "names": [
+      "floor_a",
+      "floor_b",
+      "floor_c",
+      "wall_center",
+      "wall_edge",
+      "window",
+      "door_closed",
+      "door_open",
+      "crate",
+      "barrel",
+      "chest_closed",
+      "chest_open",
+      "vault_closed",
+      "vault_open",
+      "lamp",
+      "road_center",
+      "road_edge",
+      "castle",
+      "hay",
+      "terminal",
+      "grille",
+      "light_strip",
+      "arrival",
+      "stairs"
+    ],
+    "eraStride": 24,
+    "light": "upper-left",
+    "palettes": {
+      "medieval": {
+        "floor": "#81705a",
+        "floorLight": "#a18c69",
+        "floorDark": "#655345",
+        "wall": "#594c43",
+        "wallLight": "#91765b",
+        "wallDark": "#342d2c",
+        "accent": "#e5b657",
+        "glow": "#fff0b0",
+        "wood": "#9a5d35",
+        "woodLight": "#cf9351",
+        "woodDark": "#633d2c",
+        "metal": "#929ca5"
+      },
+      "modern": {
+        "floor": "#94a5ac",
+        "floorLight": "#c4d1d0",
+        "floorDark": "#687e8d",
+        "wall": "#384b61",
+        "wallLight": "#73899a",
+        "wallDark": "#253445",
+        "accent": "#abd9df",
+        "glow": "#edf9ef",
+        "wood": "#557464",
+        "woodLight": "#92af88",
+        "woodDark": "#364c49",
+        "metal": "#a4b9bf"
+      },
+      "future": {
+        "floor": "#41566b",
+        "floorLight": "#617b8c",
+        "floorDark": "#2b3c51",
+        "wall": "#304358",
+        "wallLight": "#677e91",
+        "wallDark": "#1e2c40",
+        "accent": "#6dd6d1",
+        "glow": "#c9efde",
+        "wood": "#4f6480",
+        "woodLight": "#879bb4",
+        "woodDark": "#30435c",
+        "metal": "#b4c2cb"
+      }
+    },
+    "windowRule": "Planet, stars and passing ship are behind the station window only",
+    "anchor": [
+      16,
+      28
+    ]
+  }
+}

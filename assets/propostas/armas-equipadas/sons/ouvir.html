@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; media-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'">
+<title>OUTLAWS · Equipped sounds</title>
+<style>
+*{box-sizing:border-box}html{color-scheme:dark}body{margin:0;background:#19150f;color:#ecdcb8;font:15px/1.5 ui-monospace,monospace}main{max-width:1000px;margin:auto;padding:32px 24px 56px}header{display:flex;gap:20px;justify-content:space-between;border-bottom:3px solid #806037;padding-bottom:23px}.brand{font-size:11px;letter-spacing:3px;color:#deb369}h1{font-size:clamp(24px,4.7vw,38px);margin:10px 0;line-height:1.2}p{font:15px/1.65 system-ui,sans-serif;color:#bbaa8b;margin:10px 0;max-width:660px}.controls{display:flex;gap:17px;flex-wrap:wrap;align-items:center;padding:14px;margin:22px 0;background:#281f14;border:2px solid #755633}.controls label{display:flex;gap:9px;align-items:center;font-size:12px}button,select{border:2px solid #806037;color:inherit;background:#302417;font:12px ui-monospace,monospace;padding:9px 11px;cursor:pointer;min-height:37px}input{accent-color:#d9b671}input[type=range]{width:140px}input[type=checkbox]{min-width:17px;min-height:17px}.bar{display:flex;justify-content:space-between;gap:16px;min-height:33px;margin-bottom:15px;font-size:11px;color:#b9c592}.status{color:#dfbb73;font:13px/1.4 system-ui,sans-serif}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.card{border:2px solid #755633;background:#281f14;padding:18px;box-shadow:3px 3px 0 #0c0906;position:relative}.card::before{content:'';position:absolute;top:-2px;left:15px;width:28px;height:2px;background:#cbaa68}.card h2{font-size:16px;margin:0 0 9px}.card p{font-size:13px;min-height:62px;margin:0 0 12px}.card small{display:block;color:#b2976e;font-size:11px;margin-bottom:14px}.actions{display:flex;gap:7px;flex-wrap:wrap}.actions button:first-child{background:#d0aa64;border-color:#e2c087;color:#24190d;box-shadow:0 3px 0 #6a4823}.actions button:active{transform:translateY(2px)}a{color:#d7b575}.actions a{font:11px/1.4 system-ui,sans-serif;align-self:center}button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid #f0ca7f;outline-offset:4px}footer{border-top:1px solid #63472a;margin-top:26px;padding-top:17px;color:#b39873;font:12px/1.7 system-ui,sans-serif}footer code{color:#d8b875}.outlaws-sfx{display:none!important}@media(max-width:780px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:520px){main{padding:24px 14px 45px}.grid{grid-template-columns:1fr}.card p{min-height:0}header{gap:12px}header select{max-width:94px}.bar{flex-direction:column;gap:9px}}
+</style>
+<style>
+.desk-nav{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}.desk-nav a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;padding:10px 12px;border:2px solid #806037;background:#271d13;color:#f0be5e;font:12px/1.4 ui-monospace,monospace;text-decoration:none}main button,main select,main input[type=range],.controls label,.actions a{min-height:44px;min-width:44px}.actions a{display:inline-flex;align-items:center;padding:8px}
+</style>
+</head>
+<body><main data-sfx="off">
+<nav class="desk-nav" aria-label="Preview navigation"><a href="../../../../" data-nav="back">Back to OUTLAWS</a><a href="../../../../jogar/?demo" data-nav="demo">Try the demo</a></nav>
+<header><div><div class="brand">OUTLAWS · EQUIPPED ACTOR</div><h1 data-word="title">Equipped sounds</h1><p data-word="intro">Firm pixel-action hits with quiet peaks. Compare live synthesis with the same PCM rendered as WAV.</p></div><select id="equipped-language" aria-label="Language"><option value="en">English</option><option value="pt">Português</option><option value="es">Español</option><option value="fil">Filipino</option></select></header>
+<div class="controls"><button id="equipped-mute" type="button" aria-pressed="false">Sound on</button><label><span data-word="volume">Volume</span><input id="equipped-volume" type="range" min="0" max="0.65" step="0.01" value="0.28"></label><label><input id="equipped-effects" type="checkbox" checked><span data-word="effects">Special effects</span></label></div>
+<div class="bar"><span data-word="quiet">LOW VOLUME · ORIGINAL SYNTHESIS · CLICK TO LISTEN</span><span class="status" id="equipped-status" role="status" aria-live="polite"></span></div>
+<section class="grid" id="equipped-grid" aria-label="Equipped sound previews"></section>
+<footer><span data-word="footer">Uses the game's mute, volume and effects preferences. No sound before a real click. No downloaded media.</span><br><code>node assets/propostas/armas-equipadas/sons/generate.cjs [--check]</code></footer>
+</main>
+<script src="../../../../jogar/js/i18n.js"></script>
+<script src="../../../../jogar/js/sfx.js"></script>
+<script src="../../../../jogar/js/equipped-sfx.js"></script>
+<script src="review.js"></script>
+</body></html>

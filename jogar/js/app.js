@@ -399,7 +399,7 @@
 
     const dlg = $('#reveal');
     dlg.innerHTML = `<h3 id="reveal-title" class="rv-title">${esc(canAnimate ? suspense : title)}</h3>
-      <p class="rv-lead">${canAnimate ? `<small class="muted">${esc(t('p.rv.skip'))}</small>` : esc(lead)}</p>
+      <p class="rv-lead">${canAnimate ? `<button type="button" class="btn rv-skip">${esc(t('p.rv.skip'))}</button>` : esc(lead)}</p>
       ${canAnimate ? '<canvas class="rv-stage" aria-hidden="true"></canvas>' : ''}
       <div class="rv-row" ${canAnimate ? 'hidden' : ''}>${body}</div>
       <form method="dialog" class="rv-actions"><button class="btn btn-gold">${esc(t('p.rv.ok'))}</button></form>`;
@@ -414,16 +414,20 @@
     stage.show = show;
     stage.onClose = () => { if (!dlg.open) show.stop(); };
     dlg.addEventListener('close', stage.onClose);
+    $('.rv-skip', dlg).addEventListener('click', () => show.skip());
+    $('.rv-skip', dlg).focus({ preventScroll: true });
     $('.rv-stage', dlg).addEventListener('click', () => show.skip());
     await show.revealed;
     if (!dlg.open) return;
     const h = $('#reveal-title', dlg);
     h.textContent = title;
     h.classList.toggle('bad', bad);
+    const skippedWithKeyboard = document.activeElement === $('.rv-skip', dlg);
     $('.rv-lead', dlg).textContent = lead;
     const row = $('.rv-row', dlg);
     row.hidden = false;
     row.classList.add('rv-in');
+    if (skippedWithKeyboard) $('.rv-actions button', dlg).focus({ preventScroll: true });
   }
 
   /* -------------------------------------------------------------- ações */
@@ -1479,7 +1483,7 @@
       todos.disabled = S.busy;
       todos.textContent = t('p.batch.openAll', { n: prontos });
     }
-    const sig = u.sacks.map((k) => `${k.id}:${block > k.target}`).join(',');
+    const sig = I18N.lang() + ':' + S.busy + ':' + u.sacks.map((k) => `${k.id}:${block > k.target}:${block > k.target + drawWindow()}`).join(',');
     if (list.dataset.sig !== sig) { //            só redesenha quando muda de verdade: a cena é animada
       list.dataset.sig = sig;
       list.innerHTML = u.sacks.map((k) => {
@@ -1557,15 +1561,18 @@
       acts.push(`<button class="btn" data-act="work" data-id="${o.id}"${full ? ` disabled title="${esc(t('p.card.capFull', { max: c.maxActive }))}"` : ''}>${esc(t('p.card.work'))}</button>`);
     }
     if (o.status === 0 && o.repair !== undefined) acts.push(`<button class="btn" data-act="repair" data-id="${o.id}" title="${esc(t('p.card.repair.title'))}">${esc(t('p.card.repair', { cost: fmtB(o.repair) }))}</button>`);
-    if (o.status === 1 && S.glob.epoch >= o.shiftStart) acts.push(`<span class="accrue-chip" data-accrue="${o.id}" title="${esc(t('p.bar.accrue.title'))}">${esc(t('p.card.accrue', { amount: dec(accruing(o.id)) }))}</span>`);
     if (o.status === 1) acts.push(`<button class="btn" data-act="stop" data-id="${o.id}">${esc(t('p.card.stop'))}</button>`);
     if (o.status === 2 && o.ransom !== undefined) acts.push(`<button class="btn btn-danger" data-act="ransom" data-id="${o.id}">${esc(t('p.card.ransom', { cost: fmtB(o.ransom) }))}</button>`);
 
     return `<article class="card ${rarityClass(o.rank)} ${sel ? 'is-sel' : ''} st-${STATUS_KEY[o.status]}" style="${rarityStyle(o.rank)}">
-      <label class="pick" title="${esc(t('p.card.select'))}"><input type="checkbox" data-act="select" data-id="${o.id}" ${sel ? 'checked' : ''}></label>
+      <label class="pick" title="${esc(t('p.card.selectNamed', { id: o.id, name: TITLE[o.rank] }))}"><input type="checkbox" data-act="select" data-id="${o.id}" aria-label="${esc(t('p.card.selectNamed', { id: o.id, name: TITLE[o.rank] }))}" ${sel ? 'checked' : ''}></label>
       <img src="${url}" alt="${esc(t('p.card.alt', { id: o.id }))}" width="96" height="96">
       <div class="c-id">#${o.id}</div>
       <div class="c-rank">${gem}${esc(RANK[o.rank])}</div>
+      <div class="c-status"><span class="chip chip-${STATUS_KEY[o.status]}">${
+        o.status === 1 && o.shiftEnd === S.glob.epoch + 1 ? esc(t('p.st.leaving')) : STATUS[o.status]}</span></div>
+      <div class="c-acts">${acts.join('')}</div>
+      <details class="c-details" data-id="${o.id}"><summary>${esc(t('p.card.details'))}</summary>
       <div class="c-title">${esc(TITLE[o.rank])}</div>
       <div class="c-bounty">${bounty} $BOUNTY</div>
       <dl class="c-stats">
@@ -1578,14 +1585,18 @@
         <span style="width:${(o.lifeLeft / c.maxLife) * 100}%"></span>
         <em>${esc(t('p.card.lifeN', { n: o.lifeLeft, max: c.maxLife }))}</em>
       </div>
-      <div class="c-status"><span class="chip chip-${STATUS_KEY[o.status]}">${
-        o.status === 1 && o.shiftEnd === S.glob.epoch + 1 ? esc(t('p.st.leaving')) : STATUS[o.status]}</span><small>${info}</small></div>
-      <div class="c-acts">${acts.join('')}</div>
+      <small class="c-info">${info}</small>
+      ${o.status === 1 && S.glob.epoch >= o.shiftStart ? `<span class="accrue-chip" data-accrue="${o.id}" title="${esc(t('p.bar.accrue.title'))}">${esc(t('p.card.accrue', { amount: dec(accruing(o.id)) }))}</span>` : ''}
+      </details>
     </article>`;
   }
 
   function renderBand() {
     const u = S.user, box = $('#band');
+    const active = box.contains(document.activeElement) ? document.activeElement : null;
+    const focus = active ? { act: active.dataset.act, id: active.dataset.id, summary: active.matches('summary') } : null;
+    if (focus?.summary) focus.id = active.closest('details').dataset.id;
+    const expanded = new Set([...box.querySelectorAll('.c-details[open]')].map(el => el.dataset.id));
     if (!S.view) {
       box.innerHTML = `<div class="empty"><p>${esc(t('p.band.connect'))}</p>
         <button class="btn btn-gold" data-act="connect">${esc(t('p.connect'))}</button></div>`;
@@ -1609,6 +1620,13 @@
       .sort((a, b) => ORDEM[a.status] - ORDEM[b.status] || b.weight - a.weight || a.id - b.id);
     box.innerHTML = shown.length ? shown.map(card).join('')
       : `<div class="empty"><p>${esc(t('p.filter.none'))}</p></div>`;
+    for (const details of box.querySelectorAll('.c-details')) details.open = expanded.has(details.dataset.id);
+    if (focus) {
+      const target = focus.summary
+        ? [...box.querySelectorAll('.c-details')].find(el => el.dataset.id === focus.id)?.querySelector('summary')
+        : [...box.querySelectorAll('[data-act]')].find(el => el.dataset.act === focus.act && el.dataset.id === focus.id);
+      target?.focus({ preventScroll: true });
+    }
 
     const sel = selectedOutlaws();
     const free = sel.filter((o) => o.status === 0 && o.lifeLeft > 0);

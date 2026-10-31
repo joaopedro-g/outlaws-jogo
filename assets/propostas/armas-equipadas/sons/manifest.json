@@ -1,0 +1,72 @@
+{
+  "format": "PCM mono 44100Hz 16-bit",
+  "defaultVolume": 0.28,
+  "maximumVolume": 0.65,
+  "maximumVoices": 4,
+  "synthesis": "Original local pixel-action/western cues. Shared recipes, 240Hz high-pass, soft saturation, peak ceiling .055.",
+  "sounds": [
+    {
+      "name": "equip",
+      "file": "equip.wav",
+      "durationSeconds": 0.21,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "rms": 0.014112,
+      "sha256": "806ed017e78f8483b06e092ee6c7c8c44ff72ed360e740e3713f697bd82ad3ec"
+    },
+    {
+      "name": "ak",
+      "file": "ak.wav",
+      "durationSeconds": 0.29,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "rms": 0.009027,
+      "sha256": "165828481119aadd1308f8fcdc28095ac7565380762af4104c5edd38f2e47f90"
+    },
+    {
+      "name": "awp",
+      "file": "awp.wav",
+      "durationSeconds": 0.42,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "rms": 0.006439,
+      "sha256": "c0402b93826528d76b0fd129027a7ba0bb17e52c2e64540b78d93f8019e6b3db"
+    },
+    {
+      "name": "grenade",
+      "file": "grenade.wav",
+      "durationSeconds": 0.53,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "rms": 0.006605,
+      "sha256": "1c4224d0508585e4dc256a33115fcb7ecc27f0da4171aa8b4033754eb16fe7f4"
+    },
+    {
+      "name": "taser",
+      "file": "taser.wav",
+      "durationSeconds": 0.33,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "rms": 0.008293,
+      "sha256": "5b8fc5b843bcb18f66ab03e0929c5151bebbdf8171e579420664bdeaf8ba5257"
+    },
+    {
+      "name": "poof",
+      "file": "poof.wav",
+      "durationSeconds": 0.25,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "rms": 0.010548,
+      "sha256": "3ec1a7e7f3ab1ccdc58598a84f1af18cf67398ee3d4e993e7d5e96f2ba524918"
+    },
+    {
+      "name": "escape",
+      "file": "escape.wav",
+      "durationSeconds": 0.58,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "rms": 0.014279,
+      "sha256": "4840341b454092d60854470ce00e4f7a6a98a640d2baf50ca9bdd2d274d0fb88"
+    }
+  ]
+}

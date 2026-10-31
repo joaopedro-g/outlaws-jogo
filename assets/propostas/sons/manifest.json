@@ -1,0 +1,166 @@
+{
+  "format": "PCM mono, 16-bit little-endian; effects 44100Hz, ambient 11025Hz",
+  "browserDefaultVolume": 0.28,
+  "synthesis": "Original deterministic chiptune/western recipes in jogar/js/sfx.js; no external media.",
+  "sounds": [
+    {
+      "name": "click",
+      "file": "click.wav",
+      "sampleRate": 44100,
+      "durationSeconds": 0.065,
+      "peak": 0.112979,
+      "peakAtDefaultVolume": 0.031634,
+      "sha256": "66dd429103a564c0359c3f59559634084bd77aad9c1d76e2117d09fcc595eb73"
+    },
+    {
+      "name": "hover",
+      "file": "hover.wav",
+      "sampleRate": 44100,
+      "durationSeconds": 0.048,
+      "peak": 0.043668,
+      "peakAtDefaultVolume": 0.012227,
+      "sha256": "823c32dbd91c731f66fd90ac951465fe8fdf5968e24366ea2e593ab88e16f185"
+    },
+    {
+      "name": "coin",
+      "file": "coin.wav",
+      "sampleRate": 44100,
+      "durationSeconds": 0.29,
+      "peak": 0.121901,
+      "peakAtDefaultVolume": 0.034132,
+      "sha256": "68d8eafaf116cf74fd36357c6f479df23266f6fb23dcaa70c40fd351585020aa"
+    },
+    {
+      "name": "count",
+      "file": "count.wav",
+      "sampleRate": 44100,
+      "durationSeconds": 0.16,
+      "peak": 0.066658,
+      "peakAtDefaultVolume": 0.018664,
+      "sha256": "75b4a479dd49d2c86f27a1d3ce27d4838ae5137aa820ff170840dd3a3c5b88c3"
+    },
+    {
+      "name": "heist",
+      "file": "heist.wav",
+      "sampleRate": 44100,
+      "durationSeconds": 0.48,
+      "peak": 0.139187,
+      "peakAtDefaultVolume": 0.038972,
+      "sha256": "e03d1055e99420b9e105db87316b858ee133bc8502ba151979691451532c720e"
+    },
+    {
+      "name": "success",
+      "file": "success.wav",
+      "sampleRate": 44100,
+      "durationSeconds": 0.43,
+      "peak": 0.161798,
+      "peakAtDefaultVolume": 0.045304,
+      "sha256": "6a65bd65547227a1b7f5a4fb3d512f31fd4a92d4d9283ac9cd401d7a7730d163"
+    },
+    {
+      "name": "fail",
+      "file": "fail.wav",
+      "sampleRate": 44100,
+      "durationSeconds": 0.37,
+      "peak": 0.114142,
+      "peakAtDefaultVolume": 0.03196,
+      "sha256": "3bc2d5bc3bd5048ce784f7a39e716ececddf2211756dc428f2ffaa3b3dbff3f3"
+    },
+    {
+      "name": "rank",
+      "file": "rank.wav",
+      "sampleRate": 44100,
+      "durationSeconds": 0.74,
+      "peak": 0.152898,
+      "peakAtDefaultVolume": 0.042811,
+      "sha256": "395777ebba8f098c470572dd5461991d727ff8db1413c04ae178edf922eb54ab"
+    },
+    {
+      "name": "unlock",
+      "file": "unlock.wav",
+      "sampleRate": 44100,
+      "durationSeconds": 0.48,
+      "peak": 0.135601,
+      "peakAtDefaultVolume": 0.037968,
+      "sha256": "937ebccc4faeb7271fb6f8fd92603af3f207de4e8d26d1e31a864557fcb09e7c"
+    },
+    {
+      "name": "combo",
+      "file": "combo.wav",
+      "streak": 1,
+      "sampleRate": 44100,
+      "durationSeconds": 0.23,
+      "peak": 0.138598,
+      "peakAtDefaultVolume": 0.038807,
+      "sha256": "a638a4055b3e5b47604f3764ba0fe0376b45a1406bd2c906659ba9b4ba9971e0"
+    },
+    {
+      "name": "milestone",
+      "file": "milestone.wav",
+      "sampleRate": 44100,
+      "durationSeconds": 0.8,
+      "peak": 0.205444,
+      "peakAtDefaultVolume": 0.057524,
+      "sha256": "b603e9ca877661b9a45d43f51361fba8d74b3c613fa87d6619b47082174e7a4c"
+    },
+    {
+      "name": "ambient",
+      "file": "ambient.wav",
+      "sampleRate": 11025,
+      "durationSeconds": 8,
+      "peak": 0.030173,
+      "peakAtDefaultVolume": 0.008448,
+      "sha256": "3a6ff5e61dd58fc8d377b2975b8b10f44e3ede47c07a27017acee6fd9d86cea4"
+    },
+    {
+      "name": "combo",
+      "file": "combo-2.wav",
+      "streak": 2,
+      "sampleRate": 44100,
+      "durationSeconds": 0.23,
+      "peak": 0.137654,
+      "peakAtDefaultVolume": 0.038543,
+      "sha256": "92de10833da9713ec1fcb7e740718d6d41fc82439748388525e65737d38c9f89"
+    },
+    {
+      "name": "combo",
+      "file": "combo-3.wav",
+      "streak": 3,
+      "sampleRate": 44100,
+      "durationSeconds": 0.23,
+      "peak": 0.141282,
+      "peakAtDefaultVolume": 0.039559,
+      "sha256": "6825fa06b689b7a06edeca4d5b0adb926e4014036d060ef9421d8364c9bf8c85"
+    },
+    {
+      "name": "combo",
+      "file": "combo-4.wav",
+      "streak": 4,
+      "sampleRate": 44100,
+      "durationSeconds": 0.23,
+      "peak": 0.135096,
+      "peakAtDefaultVolume": 0.037827,
+      "sha256": "75aa9fc46e71d87c05035343be6573ceb6006a7bda1ebf81da20f701e9a0e015"
+    },
+    {
+      "name": "combo",
+      "file": "combo-5.wav",
+      "streak": 5,
+      "sampleRate": 44100,
+      "durationSeconds": 0.23,
+      "peak": 0.132187,
+      "peakAtDefaultVolume": 0.037012,
+      "sha256": "b507fa84d44cf478c295a4efccada46a7d892f0ccfe6d10a09d13f8af8658248"
+    },
+    {
+      "name": "combo",
+      "file": "combo-6.wav",
+      "streak": 6,
+      "sampleRate": 44100,
+      "durationSeconds": 0.23,
+      "peak": 0.128491,
+      "peakAtDefaultVolume": 0.035977,
+      "sha256": "cdbad36b62bca289345d04f095d67a5793c96735a264cc3a6391408e23dfd0ac"
+    }
+  ]
+}

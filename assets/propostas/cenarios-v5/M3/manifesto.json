@@ -1,0 +1,893 @@
+{
+  "id": "M3",
+  "name": "Caverna dos Barris",
+  "era": "medieval",
+  "approvedDirection": "../CENARIOS-V5-folha.png",
+  "tileSize": 32,
+  "columns": 8,
+  "frameCount": 36,
+  "atlas": "tiles.png",
+  "preview": "cenario-1x.png",
+  "preview4x": "cenario-4x.png",
+  "distinctElement": "arco de rocha e estalactites",
+  "distinctLight": "lanterna na rocha",
+  "palette": {
+    "floor": "#81705a",
+    "floorLight": "#a18c69",
+    "floorDark": "#655345",
+    "wall": "#594c43",
+    "wallLight": "#91765b",
+    "wallDark": "#342d2c",
+    "accent": "#e5b657",
+    "glow": "#fff0b0",
+    "wood": "#9a5d35",
+    "woodLight": "#cf9351",
+    "woodDark": "#633d2c",
+    "metal": "#929ca5"
+  },
+  "frames": [
+    {
+      "name": "ground_0",
+      "index": 0,
+      "x": 0,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "ground",
+      "edgeFamily": "M3-ground",
+      "sha256": "56a4cfde3a2878c834cbf1c3e8d20112598b5be7cb0510faae96ddc3d25bcc41"
+    },
+    {
+      "name": "ground_1",
+      "index": 1,
+      "x": 32,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "ground",
+      "edgeFamily": "M3-ground",
+      "sha256": "cc09846cdb81751a1e992dca2f5c8c6f54a97d6ec8c3cc0fda3d860177132a66"
+    },
+    {
+      "name": "ground_2",
+      "index": 2,
+      "x": 64,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "ground",
+      "edgeFamily": "M3-ground",
+      "sha256": "c55e9a41eb2debaee1e862e76ca5038a4ab7c672d2a65478f37187680ca49c79"
+    },
+    {
+      "name": "ground_3",
+      "index": 3,
+      "x": 96,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "ground",
+      "edgeFamily": "M3-ground",
+      "sha256": "00be4f66ca0050dd764ca3a807b50889d8ec42bdb52411c56470c67699979d51"
+    },
+    {
+      "name": "wall_top",
+      "index": 4,
+      "x": 128,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "wall",
+      "sha256": "9a33a9521b54683ba384e36727ea317d16e2de4670cda6e2132338876ecfdab6"
+    },
+    {
+      "name": "wall_body",
+      "index": 5,
+      "x": 160,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "wall",
+      "sha256": "bdeab0247279621e38cf78ed0ea0abc9c4e34a1f6340e336e110e88af47aefe6"
+    },
+    {
+      "name": "wall_corner",
+      "index": 6,
+      "x": 192,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "wall",
+      "sha256": "adb35dbb30608a5aee7c7f433fb52d4fb6aa3699cd769585d49185bc6c9bdada"
+    },
+    {
+      "name": "solid_block",
+      "index": 7,
+      "x": 224,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "386826d79185ed5cb93aca3587c29296c9bd1ade02667c4f5daf301ada18be78"
+    },
+    {
+      "name": "door_closed",
+      "index": 8,
+      "x": 0,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "92522e2ecee537e3bd23049362624fe96addf7d2b6e66a91f4755a85956e347b"
+    },
+    {
+      "name": "door_open",
+      "index": 9,
+      "x": 32,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "7371040da407e8332298aca446c698885b329cef3cf71418ab33465ade863c00"
+    },
+    {
+      "name": "vault_closed",
+      "index": 10,
+      "x": 64,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "b7ef25f40dde50dff0ea1bdb7fc2d675381081a9fc2cb1da16deb969c76be8ae"
+    },
+    {
+      "name": "vault_open",
+      "index": 11,
+      "x": 96,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "d2effa0742dcb07a8ba3d33af2edf9882187b404a11bdc4cf4482a145ffb3650"
+    },
+    {
+      "name": "crate",
+      "index": 12,
+      "x": 128,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "4c32970d3a93597521160255da44a66a7bb00416b3a45ef4ac14a3902c24234d"
+    },
+    {
+      "name": "barrel",
+      "index": 13,
+      "x": 160,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "a7ff3880fd30b7208cd0a51786f6929d41a0d11ede9cded474b4c2c563e324e1"
+    },
+    {
+      "name": "light",
+      "index": 14,
+      "x": 192,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "00cba608a73b34ba51f9e0fbbfaed6533b5d1416be89d860b3f71e10cfb32839"
+    },
+    {
+      "name": "grille",
+      "index": 15,
+      "x": 224,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "b9a784bd76626313073a976d56a6c35c1823dc418b51476a62b07c1a547507c8"
+    },
+    {
+      "name": "signature_0_0",
+      "index": 16,
+      "x": 0,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "assembly",
+      "sha256": "405402f479d46e08d8fda3afc6c4e452dbf259b3d0e568d264e376b62876c6c9"
+    },
+    {
+      "name": "signature_1_0",
+      "index": 17,
+      "x": 32,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "assembly",
+      "sha256": "0c1760b3faa158b47d083aee075ec5ea58d70cfb3a398ec76468901016e22470"
+    },
+    {
+      "name": "signature_2_0",
+      "index": 18,
+      "x": 64,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "assembly",
+      "sha256": "ab4eb4d7296cec98ba1a61fa07cd0870d58c8a2c861603f7da8c9f8b11153219"
+    },
+    {
+      "name": "signature_0_1",
+      "index": 19,
+      "x": 96,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "assembly",
+      "sha256": "1ef9d09f3890774d9134356d134afb51ef9c0bd5c084fba1e3e5b44c55d9528b"
+    },
+    {
+      "name": "signature_1_1",
+      "index": 20,
+      "x": 128,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "assembly",
+      "sha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7"
+    },
+    {
+      "name": "signature_2_1",
+      "index": 21,
+      "x": 160,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "assembly",
+      "sha256": "47ba5d5eed4cc8b894f745a7f6622aec654789975ecbd342eb13f3f7ff33490a"
+    },
+    {
+      "name": "signature_0_2",
+      "index": 22,
+      "x": 192,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "assembly",
+      "sha256": "4ac0796cf13feaecf33e3130f53b7dee6cd657f1f3948174d5d042440bc9a8c2"
+    },
+    {
+      "name": "signature_1_2",
+      "index": 23,
+      "x": 224,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "assembly",
+      "sha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7"
+    },
+    {
+      "name": "signature_2_2",
+      "index": 24,
+      "x": 0,
+      "y": 96,
+      "w": 32,
+      "h": 32,
+      "group": "assembly",
+      "sha256": "d807281b5c6de0e4c8f5b6d6ce0fb99afaa1dca69199189deb4270dfddd0f0a7"
+    },
+    {
+      "name": "detail_window",
+      "index": 25,
+      "x": 32,
+      "y": 96,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "e950ccb1020ed0b2d6056bfbf0da5ac06f1d86093d23b381b1e3f2dba16e9345"
+    },
+    {
+      "name": "detail_torch",
+      "index": 26,
+      "x": 64,
+      "y": 96,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "8ffe9fa66987a227361a8ea9b2b0be305181a72ab3e1490d7734d3a62e8953fb"
+    },
+    {
+      "name": "detail_fence",
+      "index": 27,
+      "x": 96,
+      "y": 96,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "e6e611b185561d17899ce534662798409897553b4cf8851d6ad0d481da88c83d"
+    },
+    {
+      "name": "detail_hay",
+      "index": 28,
+      "x": 128,
+      "y": 96,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "4e2e48884f52ccb36d40ffc7f4e6903ce76e27bb0f3f1cf7a95800daf3119577"
+    },
+    {
+      "name": "detail_planks",
+      "index": 29,
+      "x": 160,
+      "y": 96,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "5bcdc086371a4aa24131411e591d868f72338aea3cc5e1703940f92249d83ffa"
+    },
+    {
+      "name": "detail_stones",
+      "index": 30,
+      "x": 192,
+      "y": 96,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "cad7cc04e69c35e5c89af4003ad08de4c8d8c6428a1df28409c4bb8d41a9f9a0"
+    },
+    {
+      "name": "detail_banner",
+      "index": 31,
+      "x": 224,
+      "y": 96,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "0c3cbf00a2ba6219642163aa1d407780c2bcff72de40abcc0ad763858000a317"
+    },
+    {
+      "name": "detail_steps",
+      "index": 32,
+      "x": 0,
+      "y": 128,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "d195962668cc6ee2e49eae878b13c71829890470b08e4ceb40a545129e93931c"
+    },
+    {
+      "name": "detail_grate",
+      "index": 33,
+      "x": 32,
+      "y": 128,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "8e7af835de717e7509af1548b61bf73763638aa049cac9f28b16b758af9c2d43"
+    },
+    {
+      "name": "detail_rope",
+      "index": 34,
+      "x": 64,
+      "y": 128,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "1a396ec771e5e1843d1c5e79fbf2092c0d47b00d91cd19563925b3349585da7c"
+    },
+    {
+      "name": "detail_grass",
+      "index": 35,
+      "x": 96,
+      "y": 128,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "e273bb572eadb831ea4da1824c8aa569228c296ebfbbe1ee42f6cc9e34f047bf"
+    }
+  ],
+  "assemblies": [
+    {
+      "name": "signature",
+      "description": "arco de rocha e estalactites",
+      "size": [
+        96,
+        96
+      ],
+      "tiles": [
+        [
+          16,
+          17,
+          18
+        ],
+        [
+          19,
+          20,
+          21
+        ],
+        [
+          22,
+          23,
+          24
+        ]
+      ],
+      "anchor": [
+        0,
+        96
+      ],
+      "lighting": "lanterna na rocha"
+    }
+  ],
+  "previewRecipe": {
+    "kind": "illustrative-art-layout; no collision or gameplay data",
+    "size": [
+      13,
+      10
+    ],
+    "tileSize": 32,
+    "ground": [
+      [
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0
+      ],
+      [
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1
+      ],
+      [
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2
+      ],
+      [
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3
+      ],
+      [
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0
+      ],
+      [
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1
+      ],
+      [
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2
+      ],
+      [
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3
+      ],
+      [
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0
+      ],
+      [
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1
+      ]
+    ],
+    "overlays": [
+      {
+        "tile": 5,
+        "x": 0,
+        "y": 0
+      },
+      {
+        "tile": 5,
+        "x": 32,
+        "y": 0
+      },
+      {
+        "tile": 5,
+        "x": 64,
+        "y": 0
+      },
+      {
+        "tile": 5,
+        "x": 96,
+        "y": 0
+      },
+      {
+        "tile": 5,
+        "x": 128,
+        "y": 0
+      },
+      {
+        "tile": 5,
+        "x": 160,
+        "y": 0
+      },
+      {
+        "tile": 5,
+        "x": 192,
+        "y": 0
+      },
+      {
+        "tile": 5,
+        "x": 224,
+        "y": 0
+      },
+      {
+        "tile": 5,
+        "x": 256,
+        "y": 0
+      },
+      {
+        "tile": 5,
+        "x": 288,
+        "y": 0
+      },
+      {
+        "tile": 5,
+        "x": 320,
+        "y": 0
+      },
+      {
+        "tile": 5,
+        "x": 352,
+        "y": 0
+      },
+      {
+        "tile": 5,
+        "x": 384,
+        "y": 0
+      },
+      {
+        "tile": 5,
+        "x": 0,
+        "y": 32
+      },
+      {
+        "tile": 5,
+        "x": 32,
+        "y": 32
+      },
+      {
+        "tile": 5,
+        "x": 64,
+        "y": 32
+      },
+      {
+        "tile": 5,
+        "x": 96,
+        "y": 32
+      },
+      {
+        "tile": 5,
+        "x": 128,
+        "y": 32
+      },
+      {
+        "tile": 5,
+        "x": 160,
+        "y": 32
+      },
+      {
+        "tile": 5,
+        "x": 192,
+        "y": 32
+      },
+      {
+        "tile": 5,
+        "x": 224,
+        "y": 32
+      },
+      {
+        "tile": 5,
+        "x": 256,
+        "y": 32
+      },
+      {
+        "tile": 5,
+        "x": 288,
+        "y": 32
+      },
+      {
+        "tile": 5,
+        "x": 320,
+        "y": 32
+      },
+      {
+        "tile": 5,
+        "x": 352,
+        "y": 32
+      },
+      {
+        "tile": 5,
+        "x": 384,
+        "y": 32
+      },
+      {
+        "tile": 7,
+        "x": 0,
+        "y": 64
+      },
+      {
+        "tile": 7,
+        "x": 32,
+        "y": 64
+      },
+      {
+        "tile": 7,
+        "x": 64,
+        "y": 64
+      },
+      {
+        "tile": 7,
+        "x": 320,
+        "y": 64
+      },
+      {
+        "tile": 7,
+        "x": 352,
+        "y": 64
+      },
+      {
+        "tile": 7,
+        "x": 384,
+        "y": 64
+      },
+      {
+        "tile": 16,
+        "x": 160,
+        "y": 0
+      },
+      {
+        "tile": 17,
+        "x": 192,
+        "y": 0
+      },
+      {
+        "tile": 18,
+        "x": 224,
+        "y": 0
+      },
+      {
+        "tile": 19,
+        "x": 160,
+        "y": 32
+      },
+      {
+        "tile": 20,
+        "x": 192,
+        "y": 32
+      },
+      {
+        "tile": 21,
+        "x": 224,
+        "y": 32
+      },
+      {
+        "tile": 22,
+        "x": 160,
+        "y": 64
+      },
+      {
+        "tile": 23,
+        "x": 192,
+        "y": 64
+      },
+      {
+        "tile": 24,
+        "x": 224,
+        "y": 64
+      },
+      {
+        "tile": 6,
+        "x": 0,
+        "y": 96
+      },
+      {
+        "tile": 6,
+        "x": 0,
+        "y": 128
+      },
+      {
+        "tile": 6,
+        "x": 0,
+        "y": 160
+      },
+      {
+        "tile": 6,
+        "x": 0,
+        "y": 192
+      },
+      {
+        "tile": 5,
+        "x": 384,
+        "y": 96
+      },
+      {
+        "tile": 5,
+        "x": 384,
+        "y": 128
+      },
+      {
+        "tile": 5,
+        "x": 384,
+        "y": 160
+      },
+      {
+        "tile": 5,
+        "x": 384,
+        "y": 192
+      },
+      {
+        "tile": 13,
+        "x": 34,
+        "y": 92
+      },
+      {
+        "tile": 13,
+        "x": 62,
+        "y": 181
+      },
+      {
+        "tile": 13,
+        "x": 341,
+        "y": 91
+      },
+      {
+        "tile": 13,
+        "x": 355,
+        "y": 205
+      },
+      {
+        "tile": 10,
+        "x": 288,
+        "y": 250
+      },
+      {
+        "tile": 9,
+        "x": 58,
+        "y": 250
+      }
+    ],
+    "crew": [
+      {
+        "rank": 0,
+        "era": "medieval",
+        "x": 166,
+        "y": 260
+      },
+      {
+        "rank": 2,
+        "era": "medieval",
+        "x": 204,
+        "y": 260
+      },
+      {
+        "rank": 5,
+        "era": "medieval",
+        "x": 242,
+        "y": 260
+      }
+    ],
+    "objective": {
+      "vault": [
+        288,
+        250
+      ],
+      "exit": [
+        58,
+        250
+      ]
+    }
+  }
+}

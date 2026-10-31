@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src https://rpc.testnet.chain.robinhood.com https://robinhood-sepolia-rpc.publicnode.com https://46630.rpc.thirdweb.com; object-src 'none'; base-uri 'none'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://rpc.testnet.chain.robinhood.com https://robinhood-sepolia-rpc.publicnode.com https://46630.rpc.thirdweb.com; object-src 'none'; base-uri 'none'; form-action 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title data-i18n="p.title">OUTLAWS · Game</title>
 <link rel="icon" href="../assets/crest.png">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Holtwood+One+SC&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Archivo:wght@400;500;600;700&display=swap">
+<script src="js/ui-fonts.js?v=af40a009"></script>
 <style>
   /* HUD de jogo: parede de tábuas, painéis com moldura de madeira, barra de
      recursos no topo e barra de abas embaixo — a mesma língua visual do mural
@@ -486,6 +486,8 @@
   footer { padding: 18px 20px 26px; text-align: center; font-size: 12px; color: var(--text-dim); }
   footer a { margin: 0 6px; }
 </style>
+<link rel="stylesheet" href="../assets/propostas/characters.css?v=visual-v1">
+<link rel="stylesheet" href="ui-v4b.css">
 </head>
 <body>
 
@@ -501,6 +503,7 @@
   </div>
   <div class="langs" data-flags aria-label="Language" data-i18n-aria-label="lang.label"></div>
   <button class="btn" data-act="ajustes" data-i18n="p.settings">Settings</button>
+  <small class="ui-version">UI v4b</small>
   <div id="wallet"></div>
 </header>
 <p id="banner" class="banner" hidden></p>
@@ -538,11 +541,12 @@
   </aside>
 
   <section id="assalto" class="panel" aria-labelledby="t-assalto">
-      <h2 id="t-assalto"><span data-i18n="p.heist.title">The heist</span> <small data-i18n="p.heist.sub">who is on duty, working live</small></h2>
+      <h2 id="t-assalto"><span data-i18n="p.heist.title">Your crew is on the job</span></h2>
       <div class="pbody">
         <div id="heist" class="heist" hidden>
           <canvas id="heist-map" width="544" height="416" role="img" aria-label="Heist map: outlaws on duty breaking crates and opening chests" data-i18n-aria-label="p.heist.aria"></canvas>
-          <p class="note" data-i18n="p.heist.note">Stealth = speed. Strength = hit. Aim = arrows. Clear a room to reach the next terrain. A gold strongbox is worth 10 chests.</p>
+          <div id="game-tools" class="game-tools"></div>
+          <details class="heist-rules"><summary data-i18n="p.heist.rules">How the heist works</summary><p class="note" data-i18n="p.heist.note">Stealth = speed. Strength = hit. Aim = arrows. Clear a room to reach the next terrain. A gold strongbox is worth 10 chests.</p></details>
         </div>
       </div>
   </section>
@@ -634,8 +638,8 @@
 <dialog id="wallets" class="wallets"></dialog>
 <dialog id="note" class="note"></dialog>
 
-<dialog id="ajustes" class="wallets">
-  <h3 data-i18n="p.settings">Settings</h3>
+<dialog id="ajustes" class="wallets" aria-labelledby="settings-title">
+  <h3 id="settings-title" data-i18n="p.settings">Settings</h3>
   <p class="muted" data-i18n="p.alarm.help">Claims always need your signature. We just call you when it pays off.</p>
   <label class="alarm" for="alarm-at">
     <span data-i18n="p.alarm.a">Call me when I have</span>
@@ -657,11 +661,18 @@
 
 <script src="js/abi.js?v=fb5f1921"></script>
 <script src="js/lib.js?v=5ecaecf7"></script>
-<script src="js/i18n.js?v=8a376289"></script>
+<script src="js/i18n.js?v=f2cf951c"></script>
+<script src="../assets/propostas/arcade/manifest.js"></script>
+<script src="js/estilo-arcade.js?v=1af7b960"></script>
+<script src="js/arte-v3-loader.js?v=ffb96508"></script>
 <script src="js/chain.js?v=396bc465"></script>
-<script src="js/heist.js?v=1df686a1"></script>
-<script src="js/road.js?v=0c6cf2d9"></script>
+<script src="js/heist.js?v=7ae61f43"></script>
+<script src="js/road.js?v=7e30c177"></script>
 <script src="js/reveal-fx.js?v=02281b66"></script>
-<script src="js/app.js?v=6c42f5b7"></script>
+<!-- Observe original portrait/actor identity before the demo's first Heist.update. -->
+<script src="js/equipped-adapter.js?v=34cd412f"></script>
+<script src="js/app.js?v=44a04f22"></script>
+<script src="../assets/propostas/characters.js?v=visual-v1"></script>
+<script src="js/feel.js?v=e3221efb"></script>
 </body>
 </html>

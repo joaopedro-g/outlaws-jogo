@@ -5,7 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
-<title>OUTLAWS</title>
+<title>OUTLAWS · A life outside the law</title>
+<meta name="description" content="Recruit pixel outlaws. Send them to rob. Collect the loot. Explore the free OUTLAWS demo with no wallet, on Robinhood Chain testnet.">
+<meta name="theme-color" content="#20180f">
+<meta property="og:type" content="website">
+<meta property="og:title" content="OUTLAWS · A life outside the law">
+<meta property="og:description" content="Recruit your crew. Explore the pixel world. Try the free demo with no wallet.">
+<meta property="og:url" content="https://joaopedro-g.github.io/outlaws-jogo/">
+<meta property="og:image" content="https://joaopedro-g.github.io/outlaws-jogo/assets/propostas/site/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="OUTLAWS wanted poster with the original hooded pixel outlaw and a red wax seal.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="OUTLAWS · A life outside the law">
+<meta name="twitter:description" content="Recruit pixel outlaws. Send them to rob. Collect the loot. Demo with no wallet.">
+<meta name="twitter:image" content="https://joaopedro-g.github.io/outlaws-jogo/assets/propostas/site/og-image.png">
+<link rel="icon" type="image/png" href="assets/crest.png">
+<link rel="apple-touch-icon" href="assets/crest.png">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Holtwood+One+SC&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Archivo:wght@400;500;600;700&family=Press+Start+2P&display=swap">
 <style>
@@ -286,6 +302,15 @@
     .mug:hover .frame img { transform: translateY(-5px) scale(1.03); }
   }
 </style>
+<link rel="stylesheet" href="assets/propostas/site/site.css">
+<style id="outlaws-touch-51">
+  .topbar a[href],a.ribbon-btn,footer a[href],a[href$="ouvir.html"],[data-flags] :is(button,a){min-width:44px!important;min-height:44px!important;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center}
+  footer a[href],a[href$="ouvir.html"]{padding:8px;max-width:100%;white-space:normal}
+  #owj-controls :is(button,summary),#owj-controls .owj-switches label{min-width:44px!important;min-height:44px!important;box-sizing:border-box}
+  #owj-controls>summary{display:flex;align-items:center}
+  .topbar [data-flags],.footnote{flex-wrap:wrap}
+  @media(max-width:420px){.topbar{gap:8px;flex-wrap:wrap}.topbar [data-flags]{gap:4px}}
+</style>
 </head>
 <body id="top">
 
@@ -319,12 +344,47 @@
 </header>
 
 <main>
-  <section class="hero">
+  <!-- VISUAL PROPOSAL: portable landing hero, using only JP's existing sprites. -->
+  <section class="entry" aria-labelledby="entry-title">
+    <div class="entry-copy">
+      <p class="entry-kicker"><span class="entry-dot" aria-hidden="true"></span><span data-i18n="v.site.kicker">PIXEL IDLE ADVENTURE</span></p>
+      <h1 id="entry-title">OUTLAWS</h1>
+      <p class="entry-tagline" data-i18n="v.site.tagline">A life outside the law.</p>
+      <p class="entry-lede" data-i18n="s.lede">Recruit pixel outlaws. Send them to rob. Collect the loot.</p>
+      <div class="entry-actions">
+        <a class="entry-cta entry-cta-demo" href="jogar/?demo"><span class="entry-play" aria-hidden="true"></span><span data-i18n="v.site.demo">Try the demo</span><span class="entry-arrow" aria-hidden="true">→</span></a>
+        <a class="entry-cta entry-cta-testnet" href="jogar/" data-i18n="v.site.testnet">Play on testnet</a>
+      </div>
+      <p class="entry-note" data-i18n="v.site.note">Demo needs no wallet. Test tokens have no real value.</p>
+      <a class="entry-discover" href="#crew"><span data-i18n="v.site.discover">Meet your crew</span><span aria-hidden="true">↓</span></a>
+    </div>
+    <div class="entry-scene" aria-hidden="true">
+      <div class="entry-halo"></div>
+      <div class="entry-trees"></div>
+      <div class="entry-ground"></div>
+      <img class="entry-companion entry-companion-left" src="assets/rank-1.png" alt="" width="256" height="256">
+      <img class="entry-companion entry-companion-right" src="assets/rank-2.png" alt="" width="256" height="256">
+      <div class="entry-sheet-back"></div>
+      <div class="entry-wanted paper">
+        <i class="nail tl"></i><i class="nail tr"></i>
+        <p class="entry-wanted-heading">WANTED</p>
+        <p class="entry-wanted-sub" data-i18n="s.hero.alive">Dead or alive</p>
+        <img class="entry-outlaw" src="assets/rank-5.png" alt="" width="256" height="256">
+        <p class="entry-rank"><span class="entry-rank-star">✦</span><span data-i18n="rank.5">Mythic</span><span class="entry-rank-star">✦</span></p>
+        <p class="entry-name" data-i18n="title.5">Legend</p>
+        <img class="entry-seal" src="assets/seal.png" alt="" width="160" height="160">
+      </div>
+      <i class="entry-ember ember-one"></i><i class="entry-ember ember-two"></i><i class="entry-ember ember-three"></i><i class="entry-ember ember-four"></i>
+      <span class="entry-world-note">ROBINHOOD CHAIN <b>·</b> TESTNET</span>
+    </div>
+  </section>
+
+  <section class="hero" id="crew">
     <article class="poster paper" aria-labelledby="wanted">
       <i class="nail tl"></i><i class="nail tr"></i><i class="nail bl"></i><i class="nail br"></i>
 
       <div class="divider"><span class="dia"></span><svg><use href="#crown"/></svg><span class="dia"></span></div>
-      <h1 id="wanted" class="wanted">Wanted</h1>
+      <h2 id="wanted" class="wanted">Wanted</h2>
       <div class="banner">
         <svg class="fl"><use href="#flourish"/></svg>
         <strong class="ribbon">OUTLAWS</strong>
@@ -439,7 +499,7 @@
         <article class="station">
           <div class="medal"><span class="num ribbon">IV</span><img src="assets/icon-gem.png" alt="" width="96" height="96"></div>
           <h3 data-i18n="s.loop.4.h">Fuse</h3>
-          <p data-i18n="s.loop.4.p">Two of the same rarity become one stronger. You see the odds first.</p>
+          <p data-i18n="s.loop.4.p">Try to fuse two matching ranks. Success upgrades one; failure can lose one or both. Check the odds and fee first.</p>
         </article>
       </div>
       <div class="again" aria-hidden="true">
@@ -453,7 +513,7 @@
     <header class="board-head">
       <h2 data-i18n="s.ranks.h">The six ranks</h2>
       <div class="divider gold"><span class="dia"></span><svg><use href="#crown"/></svg><span class="dia"></span></div>
-      <p data-i18n="s.ranks.lede">The rarer the outlaw, the bigger the bounty — and the pay.</p>
+      <p data-i18n="s.ranks.lede">Rarity changes your share of a shared vault. It does not set a fixed income.</p>
     </header>
     <div class="ledger paper">
       <div class="ledger-scroll">
@@ -461,7 +521,7 @@
           <caption class="sr" data-i18n="s.ledger.h">The Sheriff's ledger</caption>
           <thead><tr>
             <th scope="col" data-i18n="s.ledger.rank">Rank</th>
-            <th scope="col" data-i18n="s.ledger.bounty">Bounty</th>
+            <th scope="col" data-i18n="s.ledger.bounty">Poster bounty</th>
             <th scope="col" data-i18n="s.rank.appears">Appears in</th>
             <th scope="col" data-i18n="s.rank.weight">Weight</th>
             <th scope="col" data-i18n="s.rank.repair">Repair</th>
@@ -502,7 +562,7 @@
     <header class="board-head">
       <h2 data-i18n="s.terr.h">The five terrains</h2>
       <div class="divider gold"><span class="dia"></span><svg><use href="#crown"/></svg><span class="dia"></span></div>
-      <p data-i18n="s.terr.lede">From the road to the castle. The deeper you go, the more crates, chests — and traps.</p>
+      <p data-i18n="s.terr.lede">From the road to the castle. The deeper you go, the more crates, chests and traps.</p>
     </header>
     <div class="route">
       <figure class="photo paper" style="margin:0"><i class="nail"></i><img src="assets/terrain-1.png" alt="" width="480" height="416">
@@ -567,5 +627,7 @@
 
 <script src="jogar/js/i18n.js"></script>
 <script src="jogar/js/i18n-site.js"></script>
+<script src="assets/propostas/site/site.js"></script>
+<script src="jogar/js/feel.js"></script>
 </body>
 </html>

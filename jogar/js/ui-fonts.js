@@ -1,0 +1,2 @@
+/* Training uses the existing local font fallbacks; the ordinary game retains its font stylesheet. */
+(function(){'use strict';if(new URLSearchParams(location.search).has('demo'))return;const link=document.createElement('link');link.rel='stylesheet';link.href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Holtwood+One+SC&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Archivo:wght@400;500;600;700&display=swap";document.head.append(link);})();

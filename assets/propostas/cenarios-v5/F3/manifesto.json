@@ -1,0 +1,865 @@
+{
+  "id": "F3",
+  "name": "Beco Neon",
+  "era": "future",
+  "approvedDirection": "../CENARIOS-V5-folha.png",
+  "tileSize": 32,
+  "columns": 8,
+  "frameCount": 28,
+  "atlas": "tiles.png",
+  "preview": "cenario-1x.png",
+  "preview4x": "cenario-4x.png",
+  "distinctElement": "escada em zigue-zague e cabos no beco estreito",
+  "distinctLight": "tubos verticais turquesa com reflexo curto",
+  "palette": {
+    "floor": "#41566b",
+    "floorLight": "#617b8c",
+    "floorDark": "#2b3c51",
+    "wall": "#304358",
+    "wallLight": "#677e91",
+    "wallDark": "#1e2c40",
+    "accent": "#6dd6d1",
+    "glow": "#c9efde",
+    "wood": "#4f6480",
+    "woodLight": "#879bb4",
+    "woodDark": "#30435c",
+    "metal": "#b4c2cb"
+  },
+  "frames": [
+    {
+      "name": "ground_0",
+      "index": 0,
+      "x": 0,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "ground",
+      "edgeFamily": "F3-ground",
+      "sha256": "38b0fb6fa238b9141d26180968eebd274908017e57aa909a3a59be4ece71c273"
+    },
+    {
+      "name": "ground_1",
+      "index": 1,
+      "x": 32,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "ground",
+      "edgeFamily": "F3-ground",
+      "sha256": "6c6dc59eab1cf68e5676b8b3729d34f16f5afa70681d5e221af332f8f37d7bdf"
+    },
+    {
+      "name": "ground_2",
+      "index": 2,
+      "x": 64,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "ground",
+      "edgeFamily": "F3-ground",
+      "sha256": "72c590aae0465dbcecfea0bb92570be026a2b8de28a5cc39f5273854a7e81926"
+    },
+    {
+      "name": "ground_3",
+      "index": 3,
+      "x": 96,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "ground",
+      "edgeFamily": "F3-ground",
+      "sha256": "199f8650a3caacaf071224a11c1dd7c17b0cf51d4f9544ca8d27c248dd964c4b"
+    },
+    {
+      "name": "wall_top",
+      "index": 4,
+      "x": 128,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "wall",
+      "sha256": "b2ea04f6d1a4db5516b6bfd1a6dafaefa11da0dd643e6073f790bc010616dbca"
+    },
+    {
+      "name": "wall_body",
+      "index": 5,
+      "x": 160,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "wall",
+      "sha256": "45842fc92bdff2ae69205242f5d2106dad38ece6796e6f952090d32c30b8742e"
+    },
+    {
+      "name": "wall_corner",
+      "index": 6,
+      "x": 192,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "wall",
+      "sha256": "e0b62b191df3782d04e71a1480341609c3a9b4dc88ae4fc85f2215d8f3e9679e"
+    },
+    {
+      "name": "solid_block",
+      "index": 7,
+      "x": 224,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "1b4cc0fd175487be2fc809c84ba0b95338fada475a59b37de06fb5fe7e156c48"
+    },
+    {
+      "name": "door_closed",
+      "index": 8,
+      "x": 0,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "3df8cd2e3997958da97ea40ceb1250eb207f97585b79a84cdd94df981392f7a9"
+    },
+    {
+      "name": "door_open",
+      "index": 9,
+      "x": 32,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "b01db914833384570f997df6101250e0360f45db4e0244880820784a0c51f99c"
+    },
+    {
+      "name": "vault_closed",
+      "index": 10,
+      "x": 64,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "4caae8579ef6b758bf74990b2c89233132c8bca410dcd7443c7022acbfbd8fd1"
+    },
+    {
+      "name": "vault_open",
+      "index": 11,
+      "x": 96,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "e7d72bccec4097d65af5a857cc3f8a964d2e755dc47f057c5a7556b35841dc36"
+    },
+    {
+      "name": "crate",
+      "index": 12,
+      "x": 128,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "9094ba6ac6eb86dfa3bb565c6012c641576d2c7d80ebe11de43bb4c46d9e4d49"
+    },
+    {
+      "name": "barrel",
+      "index": 13,
+      "x": 160,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "9094ba6ac6eb86dfa3bb565c6012c641576d2c7d80ebe11de43bb4c46d9e4d49"
+    },
+    {
+      "name": "light",
+      "index": 14,
+      "x": 192,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "ba74c5fed5ab5917a7d5c6d3dc5e34af69b8d12548fd8c4b276c63fa52ac6cfa"
+    },
+    {
+      "name": "grille",
+      "index": 15,
+      "x": 224,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "67482b9eaa34c87330d23cad6eeee29143349a56f06576546cd39fe806aa9c2a"
+    },
+    {
+      "name": "signature_0_0",
+      "index": 16,
+      "x": 0,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "assembly",
+      "sha256": "4b13fa2413a7ca37ab783bd268db3d0eaa52d410da1a82dc7db49469b083f950"
+    },
+    {
+      "name": "signature_1_0",
+      "index": 17,
+      "x": 32,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "assembly",
+      "sha256": "add2f9530524a736db9e2e48a11c301ca540980bdf54c9e48b65e379fa7200f4"
+    },
+    {
+      "name": "signature_0_1",
+      "index": 18,
+      "x": 64,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "assembly",
+      "sha256": "0395ab3664b541cb9b98c25978435e5b4fb48830db5465fecb93c8d59acde71e"
+    },
+    {
+      "name": "signature_1_1",
+      "index": 19,
+      "x": 96,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "assembly",
+      "sha256": "6e275a2bed5f45e6d2c245af87de240859d66bef1d5b49943286d629d9cc377e"
+    },
+    {
+      "name": "signature_0_2",
+      "index": 20,
+      "x": 128,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "assembly",
+      "sha256": "db125c14108c7b5d261719a34a993c07ef786a98e7bedee31c1813323de97681"
+    },
+    {
+      "name": "signature_1_2",
+      "index": 21,
+      "x": 160,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "assembly",
+      "sha256": "36fbca62ff99ff501414aff8dfc19a5432bf4b191ceb25df7b04441ab97fe2f8"
+    },
+    {
+      "name": "detail_window",
+      "index": 22,
+      "x": 192,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "b9ad11733844bce0c1a4533100e4e2ab711063c28d11d3b81ca0fadc3d9f846f"
+    },
+    {
+      "name": "detail_beacon",
+      "index": 23,
+      "x": 224,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "eb4627ff251ba2bd76c62e222f5aef8e581d5af8e90104a35e33c030cac4b0b2"
+    },
+    {
+      "name": "detail_rail",
+      "index": 24,
+      "x": 0,
+      "y": 96,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "b34eab53aa5ee89bab5a79d34efcb2239ff39c1ddce855cf30abf4b59645311d"
+    },
+    {
+      "name": "detail_vent",
+      "index": 25,
+      "x": 32,
+      "y": 96,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "3e25c7c276933cc803084ee35a4961834a4f60a8097c3e2f5b71c3e3f52d78ed"
+    },
+    {
+      "name": "detail_grate",
+      "index": 26,
+      "x": 64,
+      "y": 96,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "ddf42e1e68e80140dc8129307c99c122a4471d009007108553db64410baa36c3"
+    },
+    {
+      "name": "detail_terminal",
+      "index": 27,
+      "x": 96,
+      "y": 96,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "03edf7becb678eaaa971d3bd8ee42bdea9994e0b05149f679beff02956c15c28"
+    }
+  ],
+  "assemblies": [
+    {
+      "name": "signature",
+      "description": "escada em zigue-zague e cabos no beco estreito",
+      "size": [
+        64,
+        96
+      ],
+      "tiles": [
+        [
+          16,
+          17
+        ],
+        [
+          18,
+          19
+        ],
+        [
+          20,
+          21
+        ]
+      ],
+      "anchor": [
+        0,
+        96
+      ],
+      "lighting": "tubos verticais turquesa com reflexo curto"
+    }
+  ],
+  "previewRecipe": {
+    "kind": "illustrative-art-layout; no collision or gameplay data",
+    "size": [
+      13,
+      10
+    ],
+    "tileSize": 32,
+    "ground": [
+      [
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0
+      ],
+      [
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1
+      ],
+      [
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2
+      ],
+      [
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3
+      ],
+      [
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0
+      ],
+      [
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1
+      ],
+      [
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2
+      ],
+      [
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3
+      ],
+      [
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0
+      ],
+      [
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1
+      ]
+    ],
+    "overlays": [
+      {
+        "tile": 5,
+        "x": 0,
+        "y": 0
+      },
+      {
+        "tile": 5,
+        "x": 32,
+        "y": 0
+      },
+      {
+        "tile": 5,
+        "x": 64,
+        "y": 0
+      },
+      {
+        "tile": 5,
+        "x": 320,
+        "y": 0
+      },
+      {
+        "tile": 5,
+        "x": 352,
+        "y": 0
+      },
+      {
+        "tile": 5,
+        "x": 384,
+        "y": 0
+      },
+      {
+        "tile": 5,
+        "x": 0,
+        "y": 32
+      },
+      {
+        "tile": 5,
+        "x": 32,
+        "y": 32
+      },
+      {
+        "tile": 5,
+        "x": 64,
+        "y": 32
+      },
+      {
+        "tile": 5,
+        "x": 320,
+        "y": 32
+      },
+      {
+        "tile": 5,
+        "x": 352,
+        "y": 32
+      },
+      {
+        "tile": 5,
+        "x": 384,
+        "y": 32
+      },
+      {
+        "tile": 5,
+        "x": 0,
+        "y": 64
+      },
+      {
+        "tile": 5,
+        "x": 32,
+        "y": 64
+      },
+      {
+        "tile": 5,
+        "x": 64,
+        "y": 64
+      },
+      {
+        "tile": 5,
+        "x": 320,
+        "y": 64
+      },
+      {
+        "tile": 5,
+        "x": 352,
+        "y": 64
+      },
+      {
+        "tile": 5,
+        "x": 384,
+        "y": 64
+      },
+      {
+        "tile": 5,
+        "x": 0,
+        "y": 96
+      },
+      {
+        "tile": 5,
+        "x": 32,
+        "y": 96
+      },
+      {
+        "tile": 5,
+        "x": 64,
+        "y": 96
+      },
+      {
+        "tile": 5,
+        "x": 320,
+        "y": 96
+      },
+      {
+        "tile": 5,
+        "x": 352,
+        "y": 96
+      },
+      {
+        "tile": 5,
+        "x": 384,
+        "y": 96
+      },
+      {
+        "tile": 5,
+        "x": 0,
+        "y": 128
+      },
+      {
+        "tile": 5,
+        "x": 32,
+        "y": 128
+      },
+      {
+        "tile": 5,
+        "x": 64,
+        "y": 128
+      },
+      {
+        "tile": 5,
+        "x": 320,
+        "y": 128
+      },
+      {
+        "tile": 5,
+        "x": 352,
+        "y": 128
+      },
+      {
+        "tile": 5,
+        "x": 384,
+        "y": 128
+      },
+      {
+        "tile": 5,
+        "x": 0,
+        "y": 160
+      },
+      {
+        "tile": 5,
+        "x": 32,
+        "y": 160
+      },
+      {
+        "tile": 5,
+        "x": 64,
+        "y": 160
+      },
+      {
+        "tile": 5,
+        "x": 320,
+        "y": 160
+      },
+      {
+        "tile": 5,
+        "x": 352,
+        "y": 160
+      },
+      {
+        "tile": 5,
+        "x": 384,
+        "y": 160
+      },
+      {
+        "tile": 5,
+        "x": 0,
+        "y": 192
+      },
+      {
+        "tile": 5,
+        "x": 32,
+        "y": 192
+      },
+      {
+        "tile": 5,
+        "x": 64,
+        "y": 192
+      },
+      {
+        "tile": 5,
+        "x": 320,
+        "y": 192
+      },
+      {
+        "tile": 5,
+        "x": 352,
+        "y": 192
+      },
+      {
+        "tile": 5,
+        "x": 384,
+        "y": 192
+      },
+      {
+        "tile": 5,
+        "x": 0,
+        "y": 224
+      },
+      {
+        "tile": 5,
+        "x": 32,
+        "y": 224
+      },
+      {
+        "tile": 5,
+        "x": 64,
+        "y": 224
+      },
+      {
+        "tile": 5,
+        "x": 320,
+        "y": 224
+      },
+      {
+        "tile": 5,
+        "x": 352,
+        "y": 224
+      },
+      {
+        "tile": 5,
+        "x": 384,
+        "y": 224
+      },
+      {
+        "tile": 16,
+        "x": 0,
+        "y": 17
+      },
+      {
+        "tile": 17,
+        "x": 32,
+        "y": 17
+      },
+      {
+        "tile": 18,
+        "x": 0,
+        "y": 49
+      },
+      {
+        "tile": 19,
+        "x": 32,
+        "y": 49
+      },
+      {
+        "tile": 20,
+        "x": 0,
+        "y": 81
+      },
+      {
+        "tile": 21,
+        "x": 32,
+        "y": 81
+      },
+      {
+        "tile": 16,
+        "x": 352,
+        "y": 38
+      },
+      {
+        "tile": 17,
+        "x": 384,
+        "y": 38
+      },
+      {
+        "tile": 18,
+        "x": 352,
+        "y": 70
+      },
+      {
+        "tile": 19,
+        "x": 384,
+        "y": 70
+      },
+      {
+        "tile": 20,
+        "x": 352,
+        "y": 102
+      },
+      {
+        "tile": 21,
+        "x": 384,
+        "y": 102
+      },
+      {
+        "tile": 8,
+        "x": 192,
+        "y": 15
+      },
+      {
+        "tile": 12,
+        "x": 47,
+        "y": 184
+      },
+      {
+        "tile": 12,
+        "x": 337,
+        "y": 214
+      },
+      {
+        "tile": 14,
+        "x": 101,
+        "y": 35
+      },
+      {
+        "tile": 10,
+        "x": 288,
+        "y": 250
+      },
+      {
+        "tile": 9,
+        "x": 58,
+        "y": 250
+      }
+    ],
+    "crew": [
+      {
+        "rank": 0,
+        "era": "future",
+        "x": 166,
+        "y": 260
+      },
+      {
+        "rank": 2,
+        "era": "future",
+        "x": 204,
+        "y": 260
+      },
+      {
+        "rank": 5,
+        "era": "future",
+        "x": 242,
+        "y": 260
+      }
+    ],
+    "objective": {
+      "vault": [
+        288,
+        250
+      ],
+      "exit": [
+        58,
+        250
+      ]
+    }
+  }
+}

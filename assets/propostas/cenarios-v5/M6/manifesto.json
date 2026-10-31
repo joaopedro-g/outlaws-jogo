@@ -1,0 +1,851 @@
+{
+  "id": "M6",
+  "name": "Trilha da Mata",
+  "era": "medieval",
+  "approvedDirection": "../CENARIOS-V5-folha.png",
+  "tileSize": 32,
+  "columns": 8,
+  "frameCount": 36,
+  "atlas": "tiles.png",
+  "preview": "cenario-1x.png",
+  "preview4x": "cenario-4x.png",
+  "distinctElement": "copas e passarela de madeira",
+  "distinctLight": "clareiras entre arvores",
+  "palette": {
+    "floor": "#81705a",
+    "floorLight": "#a18c69",
+    "floorDark": "#655345",
+    "wall": "#594c43",
+    "wallLight": "#91765b",
+    "wallDark": "#342d2c",
+    "accent": "#e5b657",
+    "glow": "#fff0b0",
+    "wood": "#9a5d35",
+    "woodLight": "#cf9351",
+    "woodDark": "#633d2c",
+    "metal": "#929ca5"
+  },
+  "frames": [
+    {
+      "name": "ground_0",
+      "index": 0,
+      "x": 0,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "ground",
+      "edgeFamily": "M6-ground",
+      "sha256": "0c6036dc2033465e9884e33f81be7d31a9e60ddaee92842bec69655d67d82028"
+    },
+    {
+      "name": "ground_1",
+      "index": 1,
+      "x": 32,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "ground",
+      "edgeFamily": "M6-ground",
+      "sha256": "31d7893ff47f0a34a3adf34d52288d0c688a5f57fd28d0397b66b47f496f0f95"
+    },
+    {
+      "name": "ground_2",
+      "index": 2,
+      "x": 64,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "ground",
+      "edgeFamily": "M6-ground",
+      "sha256": "90b027680afc7dd051d153045ea57f1665f4fe44facbeb40aaaf10ca72f7ff09"
+    },
+    {
+      "name": "ground_3",
+      "index": 3,
+      "x": 96,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "ground",
+      "edgeFamily": "M6-ground",
+      "sha256": "fd34c55bf7b7d6fc307cd2cb6bd4e36890d70e69585c894128cc3d26a45fe3e5"
+    },
+    {
+      "name": "wall_top",
+      "index": 4,
+      "x": 128,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "wall",
+      "sha256": "fe4a1df67123211acfa9d27d6dc9b9c03757dcf9b7466d214aace5d8700410df"
+    },
+    {
+      "name": "wall_body",
+      "index": 5,
+      "x": 160,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "wall",
+      "sha256": "d2ed672e4f27849664d817d52f59b36b192878d3fccee083d1533230b3e5536f"
+    },
+    {
+      "name": "wall_corner",
+      "index": 6,
+      "x": 192,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "wall",
+      "sha256": "21ae469cbc0df0743a03ae8e8193faf9107e7614b15330a83cc0b98ca7052a2a"
+    },
+    {
+      "name": "solid_block",
+      "index": 7,
+      "x": 224,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "df712b6694e381013f6d77cfdec00dd3454ba22a57da1e39c5d3b670891d63d8"
+    },
+    {
+      "name": "door_closed",
+      "index": 8,
+      "x": 0,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "92522e2ecee537e3bd23049362624fe96addf7d2b6e66a91f4755a85956e347b"
+    },
+    {
+      "name": "door_open",
+      "index": 9,
+      "x": 32,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "7371040da407e8332298aca446c698885b329cef3cf71418ab33465ade863c00"
+    },
+    {
+      "name": "vault_closed",
+      "index": 10,
+      "x": 64,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "b7ef25f40dde50dff0ea1bdb7fc2d675381081a9fc2cb1da16deb969c76be8ae"
+    },
+    {
+      "name": "vault_open",
+      "index": 11,
+      "x": 96,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "d2effa0742dcb07a8ba3d33af2edf9882187b404a11bdc4cf4482a145ffb3650"
+    },
+    {
+      "name": "crate",
+      "index": 12,
+      "x": 128,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "4c32970d3a93597521160255da44a66a7bb00416b3a45ef4ac14a3902c24234d"
+    },
+    {
+      "name": "barrel",
+      "index": 13,
+      "x": 160,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "a7ff3880fd30b7208cd0a51786f6929d41a0d11ede9cded474b4c2c563e324e1"
+    },
+    {
+      "name": "light",
+      "index": 14,
+      "x": 192,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "00cba608a73b34ba51f9e0fbbfaed6533b5d1416be89d860b3f71e10cfb32839"
+    },
+    {
+      "name": "grille",
+      "index": 15,
+      "x": 224,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "group": "prop",
+      "sha256": "b9a784bd76626313073a976d56a6c35c1823dc418b51476a62b07c1a547507c8"
+    },
+    {
+      "name": "signature_0_0",
+      "index": 16,
+      "x": 0,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "assembly",
+      "sha256": "6d7dab653ea7af949fc5cf0467dd0cc45d63d39b6e3cc7e1450536f92e674085"
+    },
+    {
+      "name": "signature_1_0",
+      "index": 17,
+      "x": 32,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "assembly",
+      "sha256": "606e03f40179ccd3c7dcd70480678e6cfc92fe0459d06cfae904f2142fa09fd8"
+    },
+    {
+      "name": "signature_0_1",
+      "index": 18,
+      "x": 64,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "assembly",
+      "sha256": "d006614f39dbe53ebf23b04f0a2c831a4e9715c58b8e5db72fa87dc35492bdce"
+    },
+    {
+      "name": "signature_1_1",
+      "index": 19,
+      "x": 96,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "assembly",
+      "sha256": "7ff595afa3edfaf3dbc621356eab291e9dac2ec0ae107d0a09b89ff371288594"
+    },
+    {
+      "name": "detail_planks",
+      "index": 20,
+      "x": 128,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "5bcdc086371a4aa24131411e591d868f72338aea3cc5e1703940f92249d83ffa"
+    },
+    {
+      "name": "detail_grass",
+      "index": 21,
+      "x": 160,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "e273bb572eadb831ea4da1824c8aa569228c296ebfbbe1ee42f6cc9e34f047bf"
+    },
+    {
+      "name": "detail_steps",
+      "index": 22,
+      "x": 192,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "d195962668cc6ee2e49eae878b13c71829890470b08e4ceb40a545129e93931c"
+    },
+    {
+      "name": "detail_flowers",
+      "index": 23,
+      "x": 224,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "d1597dd62606d8f6fac30f742f30aadd4a61beda3a88b7e1a616b9ed6699c25c"
+    },
+    {
+      "name": "detail_stones",
+      "index": 24,
+      "x": 0,
+      "y": 96,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "cad7cc04e69c35e5c89af4003ad08de4c8d8c6428a1df28409c4bb8d41a9f9a0"
+    },
+    {
+      "name": "detail_banner",
+      "index": 25,
+      "x": 32,
+      "y": 96,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "0c3cbf00a2ba6219642163aa1d407780c2bcff72de40abcc0ad763858000a317"
+    },
+    {
+      "name": "detail_grate",
+      "index": 26,
+      "x": 64,
+      "y": 96,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "8e7af835de717e7509af1548b61bf73763638aa049cac9f28b16b758af9c2d43"
+    },
+    {
+      "name": "detail_rope",
+      "index": 27,
+      "x": 96,
+      "y": 96,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "1a396ec771e5e1843d1c5e79fbf2092c0d47b00d91cd19563925b3349585da7c"
+    },
+    {
+      "name": "detail_window_worn",
+      "index": 28,
+      "x": 128,
+      "y": 96,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "e0a33c62278f7ffb335642eb7b36ba57ea7044c7daa9a3a9735dc1601c426473"
+    },
+    {
+      "name": "detail_torch_worn",
+      "index": 29,
+      "x": 160,
+      "y": 96,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "9eae0c95b999f0bd948811635cb81d0cfef5051115c21d980f806d838b36321c"
+    },
+    {
+      "name": "detail_fence_worn",
+      "index": 30,
+      "x": 192,
+      "y": 96,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "96816ceaf36d7e67fad902b4676ef247332161ebb267cda101a515c11dfe5a71"
+    },
+    {
+      "name": "detail_hay_worn",
+      "index": 31,
+      "x": 224,
+      "y": 96,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "4134c436dc80b6deef78b99b54a8c1b96bbc5a4b76bd0594de1afa7da86fd25f"
+    },
+    {
+      "name": "detail_planks_worn",
+      "index": 32,
+      "x": 0,
+      "y": 128,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "c6b93186dd18505b721918b47b21eac4ec34b6d751ce20d41f3226a6362a9bbe"
+    },
+    {
+      "name": "detail_stones_worn",
+      "index": 33,
+      "x": 32,
+      "y": 128,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "fa6fbb5491ca18404cbb1385c15994db02a4f4e36494fdd3317bfd3ded27d6ad"
+    },
+    {
+      "name": "detail_banner_worn",
+      "index": 34,
+      "x": 64,
+      "y": 128,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "7fccf065a36e5cb21688f74415fe5046f52eaf93dd963008cd287ed1ef83f1a1"
+    },
+    {
+      "name": "detail_steps_worn",
+      "index": 35,
+      "x": 96,
+      "y": 128,
+      "w": 32,
+      "h": 32,
+      "group": "detail",
+      "sha256": "fe3ba5b347f2a65d3928d0d8b63a1699079fd193ff83ed0757673bca4601d63c"
+    }
+  ],
+  "assemblies": [
+    {
+      "name": "signature",
+      "description": "copas e passarela de madeira",
+      "size": [
+        64,
+        64
+      ],
+      "tiles": [
+        [
+          16,
+          17
+        ],
+        [
+          18,
+          19
+        ]
+      ],
+      "anchor": [
+        0,
+        64
+      ],
+      "lighting": "clareiras entre arvores"
+    }
+  ],
+  "previewRecipe": {
+    "kind": "illustrative-art-layout; no collision or gameplay data",
+    "size": [
+      13,
+      10
+    ],
+    "tileSize": 32,
+    "ground": [
+      [
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0
+      ],
+      [
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1
+      ],
+      [
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2
+      ],
+      [
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3
+      ],
+      [
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0
+      ],
+      [
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1
+      ],
+      [
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2
+      ],
+      [
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3
+      ],
+      [
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0
+      ],
+      [
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1
+      ]
+    ],
+    "overlays": [
+      {
+        "tile": 16,
+        "x": 0,
+        "y": 0
+      },
+      {
+        "tile": 17,
+        "x": 32,
+        "y": 0
+      },
+      {
+        "tile": 18,
+        "x": 0,
+        "y": 32
+      },
+      {
+        "tile": 19,
+        "x": 32,
+        "y": 32
+      },
+      {
+        "tile": 16,
+        "x": 66,
+        "y": 5
+      },
+      {
+        "tile": 17,
+        "x": 98,
+        "y": 5
+      },
+      {
+        "tile": 18,
+        "x": 66,
+        "y": 37
+      },
+      {
+        "tile": 19,
+        "x": 98,
+        "y": 37
+      },
+      {
+        "tile": 16,
+        "x": 128,
+        "y": -17
+      },
+      {
+        "tile": 17,
+        "x": 160,
+        "y": -17
+      },
+      {
+        "tile": 18,
+        "x": 128,
+        "y": 15
+      },
+      {
+        "tile": 19,
+        "x": 160,
+        "y": 15
+      },
+      {
+        "tile": 16,
+        "x": 285,
+        "y": 0
+      },
+      {
+        "tile": 17,
+        "x": 317,
+        "y": 0
+      },
+      {
+        "tile": 18,
+        "x": 285,
+        "y": 32
+      },
+      {
+        "tile": 19,
+        "x": 317,
+        "y": 32
+      },
+      {
+        "tile": 16,
+        "x": 353,
+        "y": 3
+      },
+      {
+        "tile": 17,
+        "x": 385,
+        "y": 3
+      },
+      {
+        "tile": 18,
+        "x": 353,
+        "y": 35
+      },
+      {
+        "tile": 19,
+        "x": 385,
+        "y": 35
+      },
+      {
+        "tile": 16,
+        "x": 0,
+        "y": 90
+      },
+      {
+        "tile": 17,
+        "x": 32,
+        "y": 90
+      },
+      {
+        "tile": 18,
+        "x": 0,
+        "y": 122
+      },
+      {
+        "tile": 19,
+        "x": 32,
+        "y": 122
+      },
+      {
+        "tile": 16,
+        "x": 352,
+        "y": 94
+      },
+      {
+        "tile": 17,
+        "x": 384,
+        "y": 94
+      },
+      {
+        "tile": 18,
+        "x": 352,
+        "y": 126
+      },
+      {
+        "tile": 19,
+        "x": 384,
+        "y": 126
+      },
+      {
+        "tile": 16,
+        "x": 1,
+        "y": 198
+      },
+      {
+        "tile": 17,
+        "x": 33,
+        "y": 198
+      },
+      {
+        "tile": 18,
+        "x": 1,
+        "y": 230
+      },
+      {
+        "tile": 19,
+        "x": 33,
+        "y": 230
+      },
+      {
+        "tile": 16,
+        "x": 352,
+        "y": 207
+      },
+      {
+        "tile": 17,
+        "x": 384,
+        "y": 207
+      },
+      {
+        "tile": 18,
+        "x": 352,
+        "y": 239
+      },
+      {
+        "tile": 19,
+        "x": 384,
+        "y": 239
+      },
+      {
+        "tile": 20,
+        "x": 176,
+        "y": 64
+      },
+      {
+        "tile": 20,
+        "x": 208,
+        "y": 64
+      },
+      {
+        "tile": 20,
+        "x": 176,
+        "y": 96
+      },
+      {
+        "tile": 20,
+        "x": 208,
+        "y": 96
+      },
+      {
+        "tile": 20,
+        "x": 176,
+        "y": 128
+      },
+      {
+        "tile": 20,
+        "x": 208,
+        "y": 128
+      },
+      {
+        "tile": 20,
+        "x": 176,
+        "y": 160
+      },
+      {
+        "tile": 20,
+        "x": 208,
+        "y": 160
+      },
+      {
+        "tile": 20,
+        "x": 176,
+        "y": 192
+      },
+      {
+        "tile": 20,
+        "x": 208,
+        "y": 192
+      },
+      {
+        "tile": 10,
+        "x": 288,
+        "y": 250
+      },
+      {
+        "tile": 9,
+        "x": 58,
+        "y": 250
+      }
+    ],
+    "crew": [
+      {
+        "rank": 0,
+        "era": "medieval",
+        "x": 166,
+        "y": 260
+      },
+      {
+        "rank": 2,
+        "era": "medieval",
+        "x": 204,
+        "y": 260
+      },
+      {
+        "rank": 5,
+        "era": "medieval",
+        "x": 242,
+        "y": 260
+      }
+    ],
+    "objective": {
+      "vault": [
+        288,
+        250
+      ],
+      "exit": [
+        58,
+        250
+      ]
+    }
+  }
+}

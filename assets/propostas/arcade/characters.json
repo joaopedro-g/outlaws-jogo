@@ -1,0 +1,2286 @@
+{
+  "schema": "outlaws.arcade.characters.v1",
+  "status": "proposal-only",
+  "image": "characters.png",
+  "generator": "tools/draw-arcade-characters.cjs",
+  "licenseNote": "Original geometric pixel drawings for this proposal; no source art copied.",
+  "width": 480,
+  "height": 144,
+  "grid": {
+    "cellWidth": 24,
+    "cellHeight": 24,
+    "columns": 20,
+    "rows": 6
+  },
+  "anchor": {
+    "x": 12,
+    "y": 21
+  },
+  "antialias": false,
+  "ink": "#17182d",
+  "palette": [
+    "#17182d",
+    "#237249",
+    "#275688",
+    "#322d55",
+    "#38a5e5",
+    "#49264d",
+    "#51bd67",
+    "#555c78",
+    "#5b4140",
+    "#603589",
+    "#617a9b",
+    "#8a5e44",
+    "#8de7fa",
+    "#9298ad",
+    "#952f70",
+    "#9d5c43",
+    "#a4ec76",
+    "#a65adf",
+    "#a8d8e5",
+    "#aa6a52",
+    "#ae694b",
+    "#b58136",
+    "#b7d8eb",
+    "#b95826",
+    "#bd856b",
+    "#be7857",
+    "#c78956",
+    "#d4dbea",
+    "#d69766",
+    "#dfaa7d",
+    "#e3a775",
+    "#e64c99",
+    "#e6a4ff",
+    "#e9b684",
+    "#effaff",
+    "#f4c78d",
+    "#f5c85a",
+    "#f5cf9c",
+    "#f6a139",
+    "#ff5e68",
+    "#ff78c7",
+    "#ffaad2",
+    "#ffd6ed",
+    "#ffe077",
+    "#fff0b0"
+  ],
+  "alphaValues": [
+    0,
+    255
+  ],
+  "ranks": [
+    {
+      "id": 0,
+      "key": "common",
+      "name": "Common",
+      "main": "#9298ad",
+      "shade": "#555c78",
+      "light": "#d4dbea",
+      "skin": "#e9b684",
+      "skinShade": "#be7857",
+      "mask": "#555c78",
+      "gear": "kerchief"
+    },
+    {
+      "id": 1,
+      "key": "uncommon",
+      "name": "Uncommon",
+      "main": "#51bd67",
+      "shade": "#237249",
+      "light": "#a4ec76",
+      "skin": "#d69766",
+      "skinShade": "#9d5c43",
+      "mask": "#237249",
+      "gear": "dagger"
+    },
+    {
+      "id": 2,
+      "key": "rare",
+      "name": "Rare",
+      "main": "#38a5e5",
+      "shade": "#275688",
+      "light": "#8de7fa",
+      "skin": "#f4c78d",
+      "skinShade": "#c78956",
+      "mask": "#275688",
+      "gear": "bow"
+    },
+    {
+      "id": 3,
+      "key": "epic",
+      "name": "Epic",
+      "main": "#a65adf",
+      "shade": "#603589",
+      "light": "#e6a4ff",
+      "skin": "#dfaa7d",
+      "skinShade": "#aa6a52",
+      "mask": "#322d55",
+      "gear": "plume"
+    },
+    {
+      "id": 4,
+      "key": "legendary",
+      "name": "Legendary",
+      "main": "#f6a139",
+      "shade": "#b95826",
+      "light": "#ffe077",
+      "skin": "#e3a775",
+      "skinShade": "#ae694b",
+      "mask": "#b95826",
+      "gear": "safe-key"
+    },
+    {
+      "id": 5,
+      "key": "mythic",
+      "name": "Mythic",
+      "main": "#e64c99",
+      "shade": "#952f70",
+      "light": "#ffaad2",
+      "skin": "#f5cf9c",
+      "skinShade": "#bd856b",
+      "mask": "#49264d",
+      "gear": "ruby-cape"
+    }
+  ],
+  "animations": {
+    "idle": {
+      "facing": "down",
+      "frames": [
+        0,
+        1
+      ],
+      "durationMs": [
+        480,
+        480
+      ],
+      "loop": true
+    },
+    "walkDown": {
+      "facing": "down",
+      "frames": [
+        2,
+        3,
+        4
+      ],
+      "durationMs": [
+        150,
+        150,
+        150
+      ],
+      "loop": true
+    },
+    "walkLeft": {
+      "facing": "left",
+      "frames": [
+        5,
+        6,
+        7
+      ],
+      "durationMs": [
+        150,
+        150,
+        150
+      ],
+      "loop": true
+    },
+    "walkRight": {
+      "facing": "right",
+      "frames": [
+        8,
+        9,
+        10
+      ],
+      "durationMs": [
+        150,
+        150,
+        150
+      ],
+      "loop": true
+    },
+    "walkUp": {
+      "facing": "up",
+      "frames": [
+        11,
+        12,
+        13
+      ],
+      "durationMs": [
+        150,
+        150,
+        150
+      ],
+      "loop": true
+    },
+    "celebrate": {
+      "facing": "down",
+      "frames": [
+        14,
+        15,
+        16
+      ],
+      "durationMs": [
+        180,
+        220,
+        260
+      ],
+      "loop": false
+    },
+    "fall": {
+      "facing": "right",
+      "frames": [
+        17,
+        18,
+        19
+      ],
+      "durationMs": [
+        160,
+        220,
+        500
+      ],
+      "loop": false
+    }
+  },
+  "frames": [
+    {
+      "rank": 0,
+      "rankKey": "common",
+      "column": 0,
+      "animation": "idle",
+      "step": 0,
+      "facing": "down",
+      "x": 0,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "durationMs": 480,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 0,
+      "rankKey": "common",
+      "column": 1,
+      "animation": "idle",
+      "step": 1,
+      "facing": "down",
+      "x": 24,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "durationMs": 480,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 0,
+      "rankKey": "common",
+      "column": 2,
+      "animation": "walkDown",
+      "step": 0,
+      "facing": "down",
+      "x": 48,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 0,
+      "rankKey": "common",
+      "column": 3,
+      "animation": "walkDown",
+      "step": 1,
+      "facing": "down",
+      "x": 72,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 0,
+      "rankKey": "common",
+      "column": 4,
+      "animation": "walkDown",
+      "step": 2,
+      "facing": "down",
+      "x": 96,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 0,
+      "rankKey": "common",
+      "column": 5,
+      "animation": "walkLeft",
+      "step": 0,
+      "facing": "left",
+      "x": 120,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 0,
+      "rankKey": "common",
+      "column": 6,
+      "animation": "walkLeft",
+      "step": 1,
+      "facing": "left",
+      "x": 144,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 0,
+      "rankKey": "common",
+      "column": 7,
+      "animation": "walkLeft",
+      "step": 2,
+      "facing": "left",
+      "x": 168,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 0,
+      "rankKey": "common",
+      "column": 8,
+      "animation": "walkRight",
+      "step": 0,
+      "facing": "right",
+      "x": 192,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 0,
+      "rankKey": "common",
+      "column": 9,
+      "animation": "walkRight",
+      "step": 1,
+      "facing": "right",
+      "x": 216,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 0,
+      "rankKey": "common",
+      "column": 10,
+      "animation": "walkRight",
+      "step": 2,
+      "facing": "right",
+      "x": 240,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 0,
+      "rankKey": "common",
+      "column": 11,
+      "animation": "walkUp",
+      "step": 0,
+      "facing": "up",
+      "x": 264,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 0,
+      "rankKey": "common",
+      "column": 12,
+      "animation": "walkUp",
+      "step": 1,
+      "facing": "up",
+      "x": 288,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 0,
+      "rankKey": "common",
+      "column": 13,
+      "animation": "walkUp",
+      "step": 2,
+      "facing": "up",
+      "x": 312,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 0,
+      "rankKey": "common",
+      "column": 14,
+      "animation": "celebrate",
+      "step": 0,
+      "facing": "down",
+      "x": 336,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "durationMs": 180,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 0,
+      "rankKey": "common",
+      "column": 15,
+      "animation": "celebrate",
+      "step": 1,
+      "facing": "down",
+      "x": 360,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "durationMs": 220,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 0,
+      "rankKey": "common",
+      "column": 16,
+      "animation": "celebrate",
+      "step": 2,
+      "facing": "down",
+      "x": 384,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "durationMs": 260,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 0,
+      "rankKey": "common",
+      "column": 17,
+      "animation": "fall",
+      "step": 0,
+      "facing": "right",
+      "x": 408,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "durationMs": 160,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 0,
+      "rankKey": "common",
+      "column": 18,
+      "animation": "fall",
+      "step": 1,
+      "facing": "right",
+      "x": 432,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "durationMs": 220,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 0,
+      "rankKey": "common",
+      "column": 19,
+      "animation": "fall",
+      "step": 2,
+      "facing": "right",
+      "x": 456,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "durationMs": 500,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 1,
+      "rankKey": "uncommon",
+      "column": 0,
+      "animation": "idle",
+      "step": 0,
+      "facing": "down",
+      "x": 0,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "durationMs": 480,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 1,
+      "rankKey": "uncommon",
+      "column": 1,
+      "animation": "idle",
+      "step": 1,
+      "facing": "down",
+      "x": 24,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "durationMs": 480,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 1,
+      "rankKey": "uncommon",
+      "column": 2,
+      "animation": "walkDown",
+      "step": 0,
+      "facing": "down",
+      "x": 48,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 1,
+      "rankKey": "uncommon",
+      "column": 3,
+      "animation": "walkDown",
+      "step": 1,
+      "facing": "down",
+      "x": 72,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 1,
+      "rankKey": "uncommon",
+      "column": 4,
+      "animation": "walkDown",
+      "step": 2,
+      "facing": "down",
+      "x": 96,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 1,
+      "rankKey": "uncommon",
+      "column": 5,
+      "animation": "walkLeft",
+      "step": 0,
+      "facing": "left",
+      "x": 120,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 1,
+      "rankKey": "uncommon",
+      "column": 6,
+      "animation": "walkLeft",
+      "step": 1,
+      "facing": "left",
+      "x": 144,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 1,
+      "rankKey": "uncommon",
+      "column": 7,
+      "animation": "walkLeft",
+      "step": 2,
+      "facing": "left",
+      "x": 168,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 1,
+      "rankKey": "uncommon",
+      "column": 8,
+      "animation": "walkRight",
+      "step": 0,
+      "facing": "right",
+      "x": 192,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 1,
+      "rankKey": "uncommon",
+      "column": 9,
+      "animation": "walkRight",
+      "step": 1,
+      "facing": "right",
+      "x": 216,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 1,
+      "rankKey": "uncommon",
+      "column": 10,
+      "animation": "walkRight",
+      "step": 2,
+      "facing": "right",
+      "x": 240,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 1,
+      "rankKey": "uncommon",
+      "column": 11,
+      "animation": "walkUp",
+      "step": 0,
+      "facing": "up",
+      "x": 264,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 1,
+      "rankKey": "uncommon",
+      "column": 12,
+      "animation": "walkUp",
+      "step": 1,
+      "facing": "up",
+      "x": 288,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 1,
+      "rankKey": "uncommon",
+      "column": 13,
+      "animation": "walkUp",
+      "step": 2,
+      "facing": "up",
+      "x": 312,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 1,
+      "rankKey": "uncommon",
+      "column": 14,
+      "animation": "celebrate",
+      "step": 0,
+      "facing": "down",
+      "x": 336,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "durationMs": 180,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 1,
+      "rankKey": "uncommon",
+      "column": 15,
+      "animation": "celebrate",
+      "step": 1,
+      "facing": "down",
+      "x": 360,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "durationMs": 220,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 1,
+      "rankKey": "uncommon",
+      "column": 16,
+      "animation": "celebrate",
+      "step": 2,
+      "facing": "down",
+      "x": 384,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "durationMs": 260,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 1,
+      "rankKey": "uncommon",
+      "column": 17,
+      "animation": "fall",
+      "step": 0,
+      "facing": "right",
+      "x": 408,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "durationMs": 160,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 1,
+      "rankKey": "uncommon",
+      "column": 18,
+      "animation": "fall",
+      "step": 1,
+      "facing": "right",
+      "x": 432,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "durationMs": 220,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 1,
+      "rankKey": "uncommon",
+      "column": 19,
+      "animation": "fall",
+      "step": 2,
+      "facing": "right",
+      "x": 456,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "durationMs": 500,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 2,
+      "rankKey": "rare",
+      "column": 0,
+      "animation": "idle",
+      "step": 0,
+      "facing": "down",
+      "x": 0,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "durationMs": 480,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 2,
+      "rankKey": "rare",
+      "column": 1,
+      "animation": "idle",
+      "step": 1,
+      "facing": "down",
+      "x": 24,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "durationMs": 480,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 2,
+      "rankKey": "rare",
+      "column": 2,
+      "animation": "walkDown",
+      "step": 0,
+      "facing": "down",
+      "x": 48,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 2,
+      "rankKey": "rare",
+      "column": 3,
+      "animation": "walkDown",
+      "step": 1,
+      "facing": "down",
+      "x": 72,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 2,
+      "rankKey": "rare",
+      "column": 4,
+      "animation": "walkDown",
+      "step": 2,
+      "facing": "down",
+      "x": 96,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 2,
+      "rankKey": "rare",
+      "column": 5,
+      "animation": "walkLeft",
+      "step": 0,
+      "facing": "left",
+      "x": 120,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 2,
+      "rankKey": "rare",
+      "column": 6,
+      "animation": "walkLeft",
+      "step": 1,
+      "facing": "left",
+      "x": 144,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 2,
+      "rankKey": "rare",
+      "column": 7,
+      "animation": "walkLeft",
+      "step": 2,
+      "facing": "left",
+      "x": 168,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 2,
+      "rankKey": "rare",
+      "column": 8,
+      "animation": "walkRight",
+      "step": 0,
+      "facing": "right",
+      "x": 192,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 2,
+      "rankKey": "rare",
+      "column": 9,
+      "animation": "walkRight",
+      "step": 1,
+      "facing": "right",
+      "x": 216,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 2,
+      "rankKey": "rare",
+      "column": 10,
+      "animation": "walkRight",
+      "step": 2,
+      "facing": "right",
+      "x": 240,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 2,
+      "rankKey": "rare",
+      "column": 11,
+      "animation": "walkUp",
+      "step": 0,
+      "facing": "up",
+      "x": 264,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 2,
+      "rankKey": "rare",
+      "column": 12,
+      "animation": "walkUp",
+      "step": 1,
+      "facing": "up",
+      "x": 288,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 2,
+      "rankKey": "rare",
+      "column": 13,
+      "animation": "walkUp",
+      "step": 2,
+      "facing": "up",
+      "x": 312,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 2,
+      "rankKey": "rare",
+      "column": 14,
+      "animation": "celebrate",
+      "step": 0,
+      "facing": "down",
+      "x": 336,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "durationMs": 180,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 2,
+      "rankKey": "rare",
+      "column": 15,
+      "animation": "celebrate",
+      "step": 1,
+      "facing": "down",
+      "x": 360,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "durationMs": 220,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 2,
+      "rankKey": "rare",
+      "column": 16,
+      "animation": "celebrate",
+      "step": 2,
+      "facing": "down",
+      "x": 384,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "durationMs": 260,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 2,
+      "rankKey": "rare",
+      "column": 17,
+      "animation": "fall",
+      "step": 0,
+      "facing": "right",
+      "x": 408,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "durationMs": 160,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 2,
+      "rankKey": "rare",
+      "column": 18,
+      "animation": "fall",
+      "step": 1,
+      "facing": "right",
+      "x": 432,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "durationMs": 220,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 2,
+      "rankKey": "rare",
+      "column": 19,
+      "animation": "fall",
+      "step": 2,
+      "facing": "right",
+      "x": 456,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "durationMs": 500,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 3,
+      "rankKey": "epic",
+      "column": 0,
+      "animation": "idle",
+      "step": 0,
+      "facing": "down",
+      "x": 0,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "durationMs": 480,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 3,
+      "rankKey": "epic",
+      "column": 1,
+      "animation": "idle",
+      "step": 1,
+      "facing": "down",
+      "x": 24,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "durationMs": 480,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 3,
+      "rankKey": "epic",
+      "column": 2,
+      "animation": "walkDown",
+      "step": 0,
+      "facing": "down",
+      "x": 48,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 3,
+      "rankKey": "epic",
+      "column": 3,
+      "animation": "walkDown",
+      "step": 1,
+      "facing": "down",
+      "x": 72,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 3,
+      "rankKey": "epic",
+      "column": 4,
+      "animation": "walkDown",
+      "step": 2,
+      "facing": "down",
+      "x": 96,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 3,
+      "rankKey": "epic",
+      "column": 5,
+      "animation": "walkLeft",
+      "step": 0,
+      "facing": "left",
+      "x": 120,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 3,
+      "rankKey": "epic",
+      "column": 6,
+      "animation": "walkLeft",
+      "step": 1,
+      "facing": "left",
+      "x": 144,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 3,
+      "rankKey": "epic",
+      "column": 7,
+      "animation": "walkLeft",
+      "step": 2,
+      "facing": "left",
+      "x": 168,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 3,
+      "rankKey": "epic",
+      "column": 8,
+      "animation": "walkRight",
+      "step": 0,
+      "facing": "right",
+      "x": 192,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 3,
+      "rankKey": "epic",
+      "column": 9,
+      "animation": "walkRight",
+      "step": 1,
+      "facing": "right",
+      "x": 216,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 3,
+      "rankKey": "epic",
+      "column": 10,
+      "animation": "walkRight",
+      "step": 2,
+      "facing": "right",
+      "x": 240,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 3,
+      "rankKey": "epic",
+      "column": 11,
+      "animation": "walkUp",
+      "step": 0,
+      "facing": "up",
+      "x": 264,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 3,
+      "rankKey": "epic",
+      "column": 12,
+      "animation": "walkUp",
+      "step": 1,
+      "facing": "up",
+      "x": 288,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 3,
+      "rankKey": "epic",
+      "column": 13,
+      "animation": "walkUp",
+      "step": 2,
+      "facing": "up",
+      "x": 312,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 3,
+      "rankKey": "epic",
+      "column": 14,
+      "animation": "celebrate",
+      "step": 0,
+      "facing": "down",
+      "x": 336,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "durationMs": 180,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 3,
+      "rankKey": "epic",
+      "column": 15,
+      "animation": "celebrate",
+      "step": 1,
+      "facing": "down",
+      "x": 360,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "durationMs": 220,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 3,
+      "rankKey": "epic",
+      "column": 16,
+      "animation": "celebrate",
+      "step": 2,
+      "facing": "down",
+      "x": 384,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "durationMs": 260,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 3,
+      "rankKey": "epic",
+      "column": 17,
+      "animation": "fall",
+      "step": 0,
+      "facing": "right",
+      "x": 408,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "durationMs": 160,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 3,
+      "rankKey": "epic",
+      "column": 18,
+      "animation": "fall",
+      "step": 1,
+      "facing": "right",
+      "x": 432,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "durationMs": 220,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 3,
+      "rankKey": "epic",
+      "column": 19,
+      "animation": "fall",
+      "step": 2,
+      "facing": "right",
+      "x": 456,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "durationMs": 500,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 4,
+      "rankKey": "legendary",
+      "column": 0,
+      "animation": "idle",
+      "step": 0,
+      "facing": "down",
+      "x": 0,
+      "y": 96,
+      "w": 24,
+      "h": 24,
+      "durationMs": 480,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 4,
+      "rankKey": "legendary",
+      "column": 1,
+      "animation": "idle",
+      "step": 1,
+      "facing": "down",
+      "x": 24,
+      "y": 96,
+      "w": 24,
+      "h": 24,
+      "durationMs": 480,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 4,
+      "rankKey": "legendary",
+      "column": 2,
+      "animation": "walkDown",
+      "step": 0,
+      "facing": "down",
+      "x": 48,
+      "y": 96,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 4,
+      "rankKey": "legendary",
+      "column": 3,
+      "animation": "walkDown",
+      "step": 1,
+      "facing": "down",
+      "x": 72,
+      "y": 96,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 4,
+      "rankKey": "legendary",
+      "column": 4,
+      "animation": "walkDown",
+      "step": 2,
+      "facing": "down",
+      "x": 96,
+      "y": 96,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 4,
+      "rankKey": "legendary",
+      "column": 5,
+      "animation": "walkLeft",
+      "step": 0,
+      "facing": "left",
+      "x": 120,
+      "y": 96,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 4,
+      "rankKey": "legendary",
+      "column": 6,
+      "animation": "walkLeft",
+      "step": 1,
+      "facing": "left",
+      "x": 144,
+      "y": 96,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 4,
+      "rankKey": "legendary",
+      "column": 7,
+      "animation": "walkLeft",
+      "step": 2,
+      "facing": "left",
+      "x": 168,
+      "y": 96,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 4,
+      "rankKey": "legendary",
+      "column": 8,
+      "animation": "walkRight",
+      "step": 0,
+      "facing": "right",
+      "x": 192,
+      "y": 96,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 4,
+      "rankKey": "legendary",
+      "column": 9,
+      "animation": "walkRight",
+      "step": 1,
+      "facing": "right",
+      "x": 216,
+      "y": 96,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 4,
+      "rankKey": "legendary",
+      "column": 10,
+      "animation": "walkRight",
+      "step": 2,
+      "facing": "right",
+      "x": 240,
+      "y": 96,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 4,
+      "rankKey": "legendary",
+      "column": 11,
+      "animation": "walkUp",
+      "step": 0,
+      "facing": "up",
+      "x": 264,
+      "y": 96,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 4,
+      "rankKey": "legendary",
+      "column": 12,
+      "animation": "walkUp",
+      "step": 1,
+      "facing": "up",
+      "x": 288,
+      "y": 96,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 4,
+      "rankKey": "legendary",
+      "column": 13,
+      "animation": "walkUp",
+      "step": 2,
+      "facing": "up",
+      "x": 312,
+      "y": 96,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 4,
+      "rankKey": "legendary",
+      "column": 14,
+      "animation": "celebrate",
+      "step": 0,
+      "facing": "down",
+      "x": 336,
+      "y": 96,
+      "w": 24,
+      "h": 24,
+      "durationMs": 180,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 4,
+      "rankKey": "legendary",
+      "column": 15,
+      "animation": "celebrate",
+      "step": 1,
+      "facing": "down",
+      "x": 360,
+      "y": 96,
+      "w": 24,
+      "h": 24,
+      "durationMs": 220,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 4,
+      "rankKey": "legendary",
+      "column": 16,
+      "animation": "celebrate",
+      "step": 2,
+      "facing": "down",
+      "x": 384,
+      "y": 96,
+      "w": 24,
+      "h": 24,
+      "durationMs": 260,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 4,
+      "rankKey": "legendary",
+      "column": 17,
+      "animation": "fall",
+      "step": 0,
+      "facing": "right",
+      "x": 408,
+      "y": 96,
+      "w": 24,
+      "h": 24,
+      "durationMs": 160,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 4,
+      "rankKey": "legendary",
+      "column": 18,
+      "animation": "fall",
+      "step": 1,
+      "facing": "right",
+      "x": 432,
+      "y": 96,
+      "w": 24,
+      "h": 24,
+      "durationMs": 220,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 4,
+      "rankKey": "legendary",
+      "column": 19,
+      "animation": "fall",
+      "step": 2,
+      "facing": "right",
+      "x": 456,
+      "y": 96,
+      "w": 24,
+      "h": 24,
+      "durationMs": 500,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 5,
+      "rankKey": "mythic",
+      "column": 0,
+      "animation": "idle",
+      "step": 0,
+      "facing": "down",
+      "x": 0,
+      "y": 120,
+      "w": 24,
+      "h": 24,
+      "durationMs": 480,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 5,
+      "rankKey": "mythic",
+      "column": 1,
+      "animation": "idle",
+      "step": 1,
+      "facing": "down",
+      "x": 24,
+      "y": 120,
+      "w": 24,
+      "h": 24,
+      "durationMs": 480,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 5,
+      "rankKey": "mythic",
+      "column": 2,
+      "animation": "walkDown",
+      "step": 0,
+      "facing": "down",
+      "x": 48,
+      "y": 120,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 5,
+      "rankKey": "mythic",
+      "column": 3,
+      "animation": "walkDown",
+      "step": 1,
+      "facing": "down",
+      "x": 72,
+      "y": 120,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 5,
+      "rankKey": "mythic",
+      "column": 4,
+      "animation": "walkDown",
+      "step": 2,
+      "facing": "down",
+      "x": 96,
+      "y": 120,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 5,
+      "rankKey": "mythic",
+      "column": 5,
+      "animation": "walkLeft",
+      "step": 0,
+      "facing": "left",
+      "x": 120,
+      "y": 120,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 5,
+      "rankKey": "mythic",
+      "column": 6,
+      "animation": "walkLeft",
+      "step": 1,
+      "facing": "left",
+      "x": 144,
+      "y": 120,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 5,
+      "rankKey": "mythic",
+      "column": 7,
+      "animation": "walkLeft",
+      "step": 2,
+      "facing": "left",
+      "x": 168,
+      "y": 120,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 5,
+      "rankKey": "mythic",
+      "column": 8,
+      "animation": "walkRight",
+      "step": 0,
+      "facing": "right",
+      "x": 192,
+      "y": 120,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 5,
+      "rankKey": "mythic",
+      "column": 9,
+      "animation": "walkRight",
+      "step": 1,
+      "facing": "right",
+      "x": 216,
+      "y": 120,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 5,
+      "rankKey": "mythic",
+      "column": 10,
+      "animation": "walkRight",
+      "step": 2,
+      "facing": "right",
+      "x": 240,
+      "y": 120,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 5,
+      "rankKey": "mythic",
+      "column": 11,
+      "animation": "walkUp",
+      "step": 0,
+      "facing": "up",
+      "x": 264,
+      "y": 120,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 5,
+      "rankKey": "mythic",
+      "column": 12,
+      "animation": "walkUp",
+      "step": 1,
+      "facing": "up",
+      "x": 288,
+      "y": 120,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 5,
+      "rankKey": "mythic",
+      "column": 13,
+      "animation": "walkUp",
+      "step": 2,
+      "facing": "up",
+      "x": 312,
+      "y": 120,
+      "w": 24,
+      "h": 24,
+      "durationMs": 150,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 5,
+      "rankKey": "mythic",
+      "column": 14,
+      "animation": "celebrate",
+      "step": 0,
+      "facing": "down",
+      "x": 336,
+      "y": 120,
+      "w": 24,
+      "h": 24,
+      "durationMs": 180,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 5,
+      "rankKey": "mythic",
+      "column": 15,
+      "animation": "celebrate",
+      "step": 1,
+      "facing": "down",
+      "x": 360,
+      "y": 120,
+      "w": 24,
+      "h": 24,
+      "durationMs": 220,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 5,
+      "rankKey": "mythic",
+      "column": 16,
+      "animation": "celebrate",
+      "step": 2,
+      "facing": "down",
+      "x": 384,
+      "y": 120,
+      "w": 24,
+      "h": 24,
+      "durationMs": 260,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 5,
+      "rankKey": "mythic",
+      "column": 17,
+      "animation": "fall",
+      "step": 0,
+      "facing": "right",
+      "x": 408,
+      "y": 120,
+      "w": 24,
+      "h": 24,
+      "durationMs": 160,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 5,
+      "rankKey": "mythic",
+      "column": 18,
+      "animation": "fall",
+      "step": 1,
+      "facing": "right",
+      "x": 432,
+      "y": 120,
+      "w": 24,
+      "h": 24,
+      "durationMs": 220,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    },
+    {
+      "rank": 5,
+      "rankKey": "mythic",
+      "column": 19,
+      "animation": "fall",
+      "step": 2,
+      "facing": "right",
+      "x": 456,
+      "y": 120,
+      "w": 24,
+      "h": 24,
+      "durationMs": 500,
+      "anchor": {
+        "x": 12,
+        "y": 21
+      }
+    }
+  ]
+}

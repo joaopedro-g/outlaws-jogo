@@ -1,0 +1,279 @@
+{
+  "format": "PCM mono 44100Hz 16-bit",
+  "defaultVolume": 0.28,
+  "maximumVolume": 0.65,
+  "maximumVoices": 4,
+  "synthesis": "Original local western/pixel-action recipes shared with jogar/js/epoch-sfx.js. All 6 rarity levels checked; files contain base cues plus one Mythic exemplar.",
+  "sounds": [
+    {
+      "name": "staff",
+      "rarity": 0,
+      "file": "staff.wav",
+      "durationSeconds": 0.27,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "rms": 0.017508,
+      "sha256": "1e7a507c901024759e67cba6a91dbd05c4e913587975f5c0cda8f7cad0074568"
+    },
+    {
+      "name": "fire",
+      "rarity": 0,
+      "file": "fire.wav",
+      "durationSeconds": 0.53,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "rms": 0.011382,
+      "sha256": "168efc4da6d29a2de6668cbd4f4a2917a2ba3fa0cdbe53cc91d12ed5386d0429"
+    },
+    {
+      "name": "lightning",
+      "rarity": 0,
+      "file": "lightning.wav",
+      "durationSeconds": 0.34,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "rms": 0.009842,
+      "sha256": "367739bbc8c69d7386cda602812cbd6ab20abbfe449e837cb0bcbaf59aa8a147"
+    },
+    {
+      "name": "ice",
+      "rarity": 0,
+      "file": "ice.wav",
+      "durationSeconds": 0.6,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "rms": 0.014362,
+      "sha256": "1e14cd4a24b7723fda6ef61301c7c3227404ee6967fae8bd5a8c149944fd030f"
+    },
+    {
+      "name": "heal",
+      "rarity": 0,
+      "file": "heal.wav",
+      "durationSeconds": 0.66,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "rms": 0.01662,
+      "sha256": "ecc82701bdf02c13f439e06c8a4e7978c8877e25e777d5610e37b82726f5a077"
+    },
+    {
+      "name": "frog",
+      "rarity": 0,
+      "file": "frog.wav",
+      "durationSeconds": 0.48,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "rms": 0.012037,
+      "sha256": "f012637622fe438be769310f8457bfa8e6293982df62773b35f8cecc8a729768"
+    },
+    {
+      "name": "sword",
+      "rarity": 0,
+      "file": "sword.wav",
+      "durationSeconds": 0.28,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "rms": 0.012494,
+      "sha256": "c033cf17e341057e8c7b52ab880b3a169e0571e8181e8e875a24366867236b53"
+    },
+    {
+      "name": "flameblade",
+      "rarity": 0,
+      "file": "flameblade.wav",
+      "durationSeconds": 0.43,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "rms": 0.013576,
+      "sha256": "9088e890a46ab380223e5a005f187c770ff481a0ef10d4ae203e2302c8563fc3"
+    },
+    {
+      "name": "bow",
+      "rarity": 0,
+      "file": "bow.wav",
+      "durationSeconds": 0.26,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "rms": 0.011832,
+      "sha256": "ab3270d20733c0c2bbf7096f2734447ff49738da4c6c31d7c0ff9c29bb4e1845"
+    },
+    {
+      "name": "explosivearrow",
+      "rarity": 0,
+      "file": "explosivearrow.wav",
+      "durationSeconds": 0.51,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "rms": 0.008507,
+      "sha256": "4faa14f151e01644191d789bf174c34899c7926c3d6ba1ce64abf45dfcb611af"
+    },
+    {
+      "name": "firearrow",
+      "rarity": 0,
+      "file": "firearrow.wav",
+      "durationSeconds": 0.4,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "rms": 0.013078,
+      "sha256": "b0732e549d286e7749a6dcac6edcf7bc96364b7058246c700139dae21e45fd44"
+    },
+    {
+      "name": "triplearrow",
+      "rarity": 0,
+      "file": "triplearrow.wav",
+      "durationSeconds": 0.36,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "rms": 0.011566,
+      "sha256": "886b7f22d983c15ead11aaa32dcd696b2582a75ecb0ba400e37a851674d67086"
+    },
+    {
+      "name": "kamikaze",
+      "rarity": 0,
+      "file": "kamikaze.wav",
+      "durationSeconds": 0.58,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "rms": 0.014295,
+      "sha256": "88432e37a288fbf5e862d5717668234b36d0042954fe7c960362cee65904f5c6"
+    },
+    {
+      "name": "combatdrone",
+      "rarity": 0,
+      "file": "combatdrone.wav",
+      "durationSeconds": 0.65,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "rms": 0.009846,
+      "sha256": "0b577079608972c221f15a77618d394c813513e42f55ce48444b526c1d4a2bf3"
+    },
+    {
+      "name": "laser",
+      "rarity": 0,
+      "file": "laser.wav",
+      "durationSeconds": 0.31,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "rms": 0.015128,
+      "sha256": "48905005954cc4e3554ec6b505d9646a1e60565c3ef930b6fd31e18988bbda3e"
+    },
+    {
+      "name": "beam",
+      "rarity": 0,
+      "file": "beam.wav",
+      "durationSeconds": 0.62,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "rms": 0.017894,
+      "sha256": "6503a5530d0fd4dc1be74feb08345f188da43ac15b4c16f0ae69551c033b5979"
+    },
+    {
+      "name": "energyblade",
+      "rarity": 0,
+      "file": "energyblade.wav",
+      "durationSeconds": 0.38,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "rms": 0.01071,
+      "sha256": "0bd5c08487e8237b2f39855ada46d58311c21c017233fa6d4d60707bc8b7d424"
+    },
+    {
+      "name": "transform",
+      "rarity": 0,
+      "file": "transform.wav",
+      "durationSeconds": 0.6,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "rms": 0.014227,
+      "sha256": "48766abba2a3da20ae74eb740892e1fdd5188931c388159beb480a3bb25b2f2b"
+    },
+    {
+      "name": "mythic",
+      "rarity": 0,
+      "file": "mythic.wav",
+      "durationSeconds": 0.78,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "rms": 0.014835,
+      "sha256": "5c46b5d73cb788b155e03e9555eb993ca518dc51f3fe68b18a0e89509aec189d"
+    },
+    {
+      "name": "mythic",
+      "rarity": 5,
+      "file": "mythic-r5.wav",
+      "durationSeconds": 0.78,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "rms": 0.014068,
+      "sha256": "065fb71cdac89ed57f26bd18e355841956d1278257d8de9e5109d304430aed6d"
+    },
+    {
+      "name": "bossenter",
+      "rarity": 0,
+      "file": "bossenter.wav",
+      "durationSeconds": 0.73,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "rms": 0.012765,
+      "sha256": "3238ce04d6947247aa3f2a8443529f6ec545f397c2165126960a28f72da7adf3"
+    },
+    {
+      "name": "bossfight",
+      "rarity": 0,
+      "file": "bossfight.wav",
+      "durationSeconds": 0.53,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "rms": 0.010409,
+      "sha256": "287a1073e136cce1ebf8cb27894a1d041f6a8e308ae59d2eb5d466eb2f76ffbd"
+    },
+    {
+      "name": "boxreveal",
+      "rarity": 0,
+      "file": "boxreveal.wav",
+      "durationSeconds": 0.58,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "rms": 0.014986,
+      "sha256": "c6f663f296a01d4b80d22cee42ef93a6762185dde519c55dc6bc01fbd2b85799"
+    },
+    {
+      "name": "ak",
+      "rarity": 0,
+      "file": "ak.wav",
+      "durationSeconds": 0.29,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "rms": 0.008874,
+      "sha256": "aff7cd71eed4fe8e2bb3b4c592bf19ae1ef2d7b16c4ee5860421957a26abd62c"
+    },
+    {
+      "name": "awp",
+      "rarity": 0,
+      "file": "awp.wav",
+      "durationSeconds": 0.42,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "rms": 0.007662,
+      "sha256": "ee7a54456a4e2e0daceeea69dc22e9ec2317131707418cbfcad293305a77af3c"
+    },
+    {
+      "name": "grenade",
+      "rarity": 0,
+      "file": "grenade.wav",
+      "durationSeconds": 0.53,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "rms": 0.007382,
+      "sha256": "88c65f98a400a406c24ca2a93aaf16644892182995e81a57466edc916afbf441"
+    },
+    {
+      "name": "taser",
+      "rarity": 0,
+      "file": "taser.wav",
+      "durationSeconds": 0.33,
+      "peak": 0.055,
+      "peakAtDefaultVolume": 0.0154,
+      "rms": 0.008168,
+      "sha256": "550646d4710668144a845830cf6a8f19e2130ee4265114d447a1b6e182f83cf1"
+    }
+  ]
+}

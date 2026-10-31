@@ -1,0 +1,401 @@
+{
+  "image": "items.png",
+  "width": 192,
+  "height": 96,
+  "cell": 24,
+  "columns": 8,
+  "rows": 4,
+  "nearestNeighbor": true,
+  "alpha": "binary: 0 or 255",
+  "outline": "#17182d",
+  "palette": {
+    "outline": "#17182d",
+    "goldShadow": "#a95328",
+    "gold": "#e99b35",
+    "goldLight": "#ffd36b",
+    "cream": "#fff0b0",
+    "leatherShadow": "#754130",
+    "leather": "#b9743d",
+    "leatherLight": "#e5a65e",
+    "steelShadow": "#526781",
+    "steel": "#95b4cd",
+    "steelLight": "#e5eef5",
+    "gemShadow": "#315994",
+    "gem": "#459bd9",
+    "gemLight": "#88e0ee",
+    "dustShadow": "#8b6a52",
+    "dust": "#c3a477",
+    "dustLight": "#e8d19f",
+    "fireShadow": "#bd493a",
+    "fire": "#f08038",
+    "fireLight": "#ffc75a",
+    "green": "#57b775",
+    "greenLight": "#a1e18c"
+  },
+  "blocks": {
+    "coin": {
+      "first": 0,
+      "count": 4,
+      "fps": 9,
+      "loop": true,
+      "docs": "Flat gold coin spin, decorative. No balance or reward computation."
+    },
+    "objects": {
+      "first": 4,
+      "count": 4,
+      "loop": false,
+      "docs": "Loot sack, gem, repair hammer and vault key. Visual labels only."
+    },
+    "ranks": {
+      "first": 8,
+      "count": 6,
+      "loop": false,
+      "docs": "Common to Mythic. Separate emblems and colors preserve rank recognition at 1x."
+    },
+    "dust": {
+      "first": 14,
+      "count": 4,
+      "fps": 12,
+      "loop": false,
+      "docs": "Short dust trail for existing movement or impact."
+    },
+    "spark": {
+      "first": 18,
+      "count": 4,
+      "fps": 15,
+      "loop": false,
+      "docs": "Flat pixel sparks for an existing hit or loot event."
+    },
+    "explosion": {
+      "first": 22,
+      "count": 6,
+      "fps": 14,
+      "loop": false,
+      "docs": "Existing break/impact/explosion event only. This atlas introduces no bomb, weapon or mechanic."
+    },
+    "ui": {
+      "first": 28,
+      "count": 4,
+      "loop": false,
+      "docs": "Loot glint, guard warning, exit arrow and coin burst. Decorative, no click handlers."
+    }
+  },
+  "frames": [
+    {
+      "id": 0,
+      "name": "coin-spin-0",
+      "block": "coin",
+      "x": 0,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "durationMs": 110
+    },
+    {
+      "id": 1,
+      "name": "coin-spin-1",
+      "block": "coin",
+      "x": 24,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "durationMs": 110
+    },
+    {
+      "id": 2,
+      "name": "coin-spin-2",
+      "block": "coin",
+      "x": 48,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "durationMs": 110
+    },
+    {
+      "id": 3,
+      "name": "coin-spin-3",
+      "block": "coin",
+      "x": 72,
+      "y": 0,
+      "w": 24,
+      "h": 24,
+      "durationMs": 110
+    },
+    {
+      "id": 4,
+      "name": "loot-sack",
+      "block": "objects",
+      "x": 96,
+      "y": 0,
+      "w": 24,
+      "h": 24
+    },
+    {
+      "id": 5,
+      "name": "cut-gem",
+      "block": "objects",
+      "x": 120,
+      "y": 0,
+      "w": 24,
+      "h": 24
+    },
+    {
+      "id": 6,
+      "name": "repair-hammer",
+      "block": "objects",
+      "x": 144,
+      "y": 0,
+      "w": 24,
+      "h": 24
+    },
+    {
+      "id": 7,
+      "name": "vault-key",
+      "block": "objects",
+      "x": 168,
+      "y": 0,
+      "w": 24,
+      "h": 24
+    },
+    {
+      "id": 8,
+      "name": "rank-seal-common",
+      "block": "ranks",
+      "x": 0,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "rarity": 0
+    },
+    {
+      "id": 9,
+      "name": "rank-seal-uncommon",
+      "block": "ranks",
+      "x": 24,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "rarity": 1
+    },
+    {
+      "id": 10,
+      "name": "rank-seal-rare",
+      "block": "ranks",
+      "x": 48,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "rarity": 2
+    },
+    {
+      "id": 11,
+      "name": "rank-seal-epic",
+      "block": "ranks",
+      "x": 72,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "rarity": 3
+    },
+    {
+      "id": 12,
+      "name": "rank-seal-legendary",
+      "block": "ranks",
+      "x": 96,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "rarity": 4
+    },
+    {
+      "id": 13,
+      "name": "rank-seal-mythic",
+      "block": "ranks",
+      "x": 120,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "rarity": 5
+    },
+    {
+      "id": 14,
+      "name": "dust-0",
+      "block": "dust",
+      "x": 144,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "durationMs": 80
+    },
+    {
+      "id": 15,
+      "name": "dust-1",
+      "block": "dust",
+      "x": 168,
+      "y": 24,
+      "w": 24,
+      "h": 24,
+      "durationMs": 80
+    },
+    {
+      "id": 16,
+      "name": "dust-2",
+      "block": "dust",
+      "x": 0,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "durationMs": 80
+    },
+    {
+      "id": 17,
+      "name": "dust-3",
+      "block": "dust",
+      "x": 24,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "durationMs": 80
+    },
+    {
+      "id": 18,
+      "name": "spark-0",
+      "block": "spark",
+      "x": 48,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "durationMs": 65
+    },
+    {
+      "id": 19,
+      "name": "spark-1",
+      "block": "spark",
+      "x": 72,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "durationMs": 65
+    },
+    {
+      "id": 20,
+      "name": "spark-2",
+      "block": "spark",
+      "x": 96,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "durationMs": 65
+    },
+    {
+      "id": 21,
+      "name": "spark-3",
+      "block": "spark",
+      "x": 120,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "durationMs": 65
+    },
+    {
+      "id": 22,
+      "name": "explosion-0",
+      "block": "explosion",
+      "x": 144,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "durationMs": 70
+    },
+    {
+      "id": 23,
+      "name": "explosion-1",
+      "block": "explosion",
+      "x": 168,
+      "y": 48,
+      "w": 24,
+      "h": 24,
+      "durationMs": 70
+    },
+    {
+      "id": 24,
+      "name": "explosion-2",
+      "block": "explosion",
+      "x": 0,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "durationMs": 70
+    },
+    {
+      "id": 25,
+      "name": "explosion-3",
+      "block": "explosion",
+      "x": 24,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "durationMs": 70
+    },
+    {
+      "id": 26,
+      "name": "explosion-4",
+      "block": "explosion",
+      "x": 48,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "durationMs": 70
+    },
+    {
+      "id": 27,
+      "name": "explosion-5",
+      "block": "explosion",
+      "x": 72,
+      "y": 72,
+      "w": 24,
+      "h": 24,
+      "durationMs": 70
+    },
+    {
+      "id": 28,
+      "name": "loot-shine",
+      "block": "ui",
+      "x": 96,
+      "y": 72,
+      "w": 24,
+      "h": 24
+    },
+    {
+      "id": 29,
+      "name": "guard-alert",
+      "block": "ui",
+      "x": 120,
+      "y": 72,
+      "w": 24,
+      "h": 24
+    },
+    {
+      "id": 30,
+      "name": "exit-arrow",
+      "block": "ui",
+      "x": 144,
+      "y": 72,
+      "w": 24,
+      "h": 24
+    },
+    {
+      "id": 31,
+      "name": "coin-burst",
+      "block": "ui",
+      "x": 168,
+      "y": 72,
+      "w": 24,
+      "h": 24
+    }
+  ],
+  "motion": {
+    "reducedMotion": "Use a representative static frame or hide transient FX; do not play any block."
+  },
+  "provenance": "Original procedural pixel proposal, built with draw-arcade-items.cjs. No original JP asset modified."
+}

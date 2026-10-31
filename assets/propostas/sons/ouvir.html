@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; media-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'">
+  <title>OUTLAWS · Sound desk</title>
+  <style>
+    *{box-sizing:border-box}html{color-scheme:dark}body{margin:0;background:#19130f;color:#e9d4aa;font:16px/1.55 ui-monospace,monospace;background-image:repeating-linear-gradient(90deg,transparent 0 95px,#21180f 95px 99px)}main{max-width:1080px;margin:auto;padding:34px 24px 140px}header{border-bottom:3px solid #806031;padding-bottom:25px;display:flex;justify-content:space-between;gap:24px;align-items:start}.brand{color:#f0be5e;font-size:11px;letter-spacing:4px}h1{margin:8px 0;font-size:clamp(26px,5vw,44px);letter-spacing:-1px;line-height:1.15}h1::after{content:'';display:block;width:64px;height:4px;background:#e9ba69;margin-top:18px}p{margin:12px 0;color:#b7a489;max-width:680px;font:15px/1.7 system-ui,sans-serif}a{color:#f0be5e}select{color:inherit;background:#271d13;border:2px solid #806031;padding:9px;font:inherit;font-size:13px}.bar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin:22px 0;min-height:28px}.badge{color:#a9be86;font:12px/1.4 ui-monospace,monospace}.status{font:13px/1.4 system-ui,sans-serif;color:#d5b979}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.card{background:#251b12;border:2px solid #75532e;box-shadow:3px 3px 0 #0b0806;padding:19px;position:relative}.card::before{content:'';position:absolute;top:-2px;left:18px;width:32px;height:2px;background:#d2a760}.card h2{font-size:16px;color:#f3dcad;margin:0 0 9px}.card p{font-size:13px;min-height:44px;margin:0 0 14px}.card small{color:#a99069;display:block;font-size:11px;letter-spacing:1px;margin-bottom:14px}.actions{display:flex;gap:7px;flex-wrap:wrap}.actions button{font:12px ui-monospace,monospace;background:#d2ae68;color:#24190e;border:2px solid #e9cb8e;box-shadow:0 3px 0 #5b3e21;padding:9px 10px;cursor:pointer;min-height:44px;min-width:44px}.actions button.wav{background:#352717;color:#e9d4aa;border-color:#806031}.actions button:active{transform:translateY(2px);box-shadow:none}.actions a{align-self:center;font:11px/1.4 system-ui,sans-serif;text-decoration:underline}.actions select{font-size:12px;padding:6px;width:64px}button:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid #f5d38a;outline-offset:4px}footer{margin-top:28px;padding-top:18px;border-top:1px solid #614324;color:#a99069;font:12px/1.7 system-ui,sans-serif}footer code{color:#d5b979}@media(max-width:800px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:540px){main{padding:24px 14px 140px}header{gap:12px}.grid{grid-template-columns:1fr}.bar{align-items:start;flex-direction:column}.card p{min-height:0}.card{padding:17px}header select{max-width:90px}}
+  </style>
+<style>
+.desk-nav{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}.desk-nav a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;padding:10px 12px;border:2px solid #806031;background:#271d13;color:#f0be5e;font:12px/1.4 ui-monospace,monospace;text-decoration:none}main button,main select,main input[type=range],.actions a,.actions button{min-height:44px;min-width:44px}.actions a{display:inline-flex;align-items:center;padding:8px}.outlaws-sfx button,.outlaws-sfx summary,.outlaws-sfx-panel label,.outlaws-sfx input[type=range]{min-height:44px!important}.outlaws-sfx button,.outlaws-sfx summary{min-width:44px!important}
+</style>
+</head>
+<body>
+<main data-sfx="off">
+  <nav class="desk-nav" aria-label="Preview navigation"><a href="../../../" data-nav="back">Back to OUTLAWS</a><a href="../../../jogar/?demo" data-nav="demo">Try the demo</a></nav>
+  <header>
+    <div><div class="brand">OUTLAWS</div><h1 data-text="title">Sound desk</h1><p data-text="intro">A small western pocket orchestra. Hear each cue as live synthesis or its matching WAV.</p></div>
+    <label><select id="review-language" aria-label="Language"><option value="en">English</option><option value="pt">Português</option><option value="es">Español</option><option value="fil">Filipino</option></select></label>
+  </header>
+  <div class="bar"><span class="badge" data-text="quiet">LOW VOLUME · OPTIONAL AMBIENCE · CLICK TO LISTEN</span><span class="status" role="status" aria-live="polite" id="review-status"></span></div>
+  <section class="grid" id="sound-grid" aria-label="Sound previews"></section>
+  <footer><span data-text="footer">Original sounds, made here. No downloaded audio. The sound button remembers mute and volume. Nothing plays until you click.</span><br><span data-text="recipe">Generate or verify the WAV files:</span> <code>node assets/propostas/sons/generate.cjs [--check]</code></footer>
+</main>
+<script src="../../../jogar/js/i18n.js"></script>
+<script src="../../../jogar/js/sfx.js"></script>
+<script src="review.js"></script>
+</body>
+</html>
